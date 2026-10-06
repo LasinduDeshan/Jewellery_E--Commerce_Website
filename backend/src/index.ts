@@ -1,1 +1,1 @@
-console.log('Backend ready');
+import './server.js';
