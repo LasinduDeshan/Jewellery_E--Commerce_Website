@@ -17,7 +17,7 @@ const generateToken = (user: IUser): string => {
 };
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
-  const { name, email, password, phoneNumber, role } = req.body;
+  const { name, email, password, phoneNumber } = req.body;
 
   if (!name || !email || !password) {
     throw new ApiError(400, 'Please provide name, email, and password');
@@ -33,7 +33,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     email: email.toLowerCase(),
     password,
     phoneNumber,
-    role: role === 'admin' ? 'admin' : 'customer',
+    role: 'customer',
     preferredCurrency: 'AUD',
   });
 
