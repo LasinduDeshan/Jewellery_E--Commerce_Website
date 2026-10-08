@@ -8,34 +8,21 @@ import {
   updateProductController,
   deleteProductController,
 } from '../controllers/product.controller.js';
+import {
+  authenticate,
+  authorizeAdmin,
+} from '../middleware/auth.middleware.js';
 
 const router = Router();
 
-// --------------------------------------------------
-// Public catalogue routes
-// --------------------------------------------------
-
-// Get products with search, filtering, sorting and pagination
+// Public product browsing
 router.get('/', getProductsController);
-
-// Get a single product by MongoDB ID
 router.get('/id/:id', getProductByIdController);
-
-// Get a single product by SEO-friendly slug
 router.get('/:slug', getProductBySlugController);
 
-
-// --------------------------------------------------
-// Product management routes
-// --------------------------------------------------
-
-// Create product
-router.post('/', createProductController);
-
-// Update product
-router.put('/:id', updateProductController);
-
-// Deactivate product
-router.delete('/:id', deleteProductController);
+// Admin-only product management
+router.post('/', authenticate, authorizeAdmin, createProductController);
+router.put('/:id', authenticate, authorizeAdmin, updateProductController);
+router.delete('/:id', authenticate, authorizeAdmin, deleteProductController);
 
 export default router;
