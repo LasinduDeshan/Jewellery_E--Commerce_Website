@@ -81,6 +81,11 @@ export const Footer: React.FC = () => {
                 Admin Custom Desk
               </Link>
             </li>
+            <li>
+              <Link href="/admin/orders" className="hover:text-white transition-colors">
+                Admin Fulfilment & Shipping
+              </Link>
+            </li>
           </ul>
         </div>
 

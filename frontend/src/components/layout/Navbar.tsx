@@ -16,6 +16,7 @@ import {
   Package,
   LogOut,
   ChevronDown,
+  Truck,
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -139,6 +140,23 @@ export const Navbar: React.FC = () => {
                       <span>Wishlist ({wishlistCount})</span>
                     </Link>
 
+                    {/* Admin Access Links */}
+                    <div className="border-t border-stone-100 my-1"></div>
+                    <Link
+                      href="/admin/orders"
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-amber-50 text-amber-900 font-medium"
+                    >
+                      <Truck className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Fulfilment & Shipping (5.4)</span>
+                    </Link>
+                    <Link
+                      href="/admin/custom-requests"
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-amber-50 text-amber-900 font-medium"
+                    >
+                      <Shield className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Custom Sapphire Desk</span>
+                    </Link>
+
                     <button
                       onClick={logout}
                       className="w-full text-left flex items-center gap-2 px-4 py-2 hover:bg-red-50 text-red-600 border-t border-stone-100 mt-1 cursor-pointer"
@@ -198,11 +216,20 @@ export const Navbar: React.FC = () => {
               )}
             </Link>
             <Link
+              href="/admin/orders"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-sm font-medium text-stone-700 hover:bg-stone-100 rounded flex items-center gap-2"
+            >
+              <Truck className="w-4 h-4 text-amber-600" />
+              <span>📦 Orders & Shipping (5.4)</span>
+            </Link>
+            <Link
               href="/admin/custom-requests"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 text-sm font-medium text-stone-700 hover:bg-stone-100 rounded"
+              className="block px-3 py-2 text-sm font-medium text-stone-700 hover:bg-stone-100 rounded flex items-center gap-2"
             >
-              🛡️ Admin Custom Desk
+              <Shield className="w-4 h-4 text-amber-600" />
+              <span>💎 Admin Custom Desk</span>
             </Link>
             {!user ? (
               <Link
