@@ -200,7 +200,14 @@ export default function AdminCustomRequestsPage() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
+            <Link
+              href="/admin/orders"
+              className="text-xs text-stone-300 hover:text-white px-3 py-1.5 rounded-lg bg-stone-800 border border-stone-700 flex items-center gap-1.5 transition-colors"
+            >
+              <FileText className="w-3.5 h-3.5 text-amber-400" />
+              <span>Fulfilment & Shipping Desk</span>
+            </Link>
             <Link
               href="/customize"
               className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1 font-medium"
