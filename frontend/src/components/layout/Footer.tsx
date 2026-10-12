@@ -26,27 +26,27 @@ export const Footer: React.FC = () => {
 
         <div>
           <h4 className="text-xs font-semibold tracking-widest text-amber-500 uppercase mb-4">
-            Customization Studio
+            Jewellery & Stories
           </h4>
           <ul className="space-y-2 text-xs text-stone-400">
             <li>
-              <Link href="/customize" className="hover:text-white transition-colors">
-                Bespoke Sapphire Rings
+              <Link href="/shop" className="hover:text-white transition-colors">
+                Ready-to-Wear Collection
               </Link>
             </li>
             <li>
               <Link href="/customize" className="hover:text-white transition-colors">
-                Padparadscha Pendants
+                Bespoke Design Studio
               </Link>
             </li>
             <li>
-              <Link href="/customize" className="hover:text-white transition-colors">
-                Sapphire Birthstone Guide
+              <Link href="/story" className="hover:text-white transition-colors">
+                Our Story & Heritage (5.7)
               </Link>
             </li>
             <li>
-              <Link href="/customize" className="hover:text-white transition-colors">
-                Ceylon Cuts & Faceting
+              <Link href="/cart" className="hover:text-white transition-colors">
+                Shopping Bag & Checkout
               </Link>
             </li>
           </ul>
@@ -72,18 +72,13 @@ export const Footer: React.FC = () => {
               </a>
             </li>
             <li>
-              <Link href="/customize" className="hover:text-white transition-colors">
-                Ring & Chain Sizing Guide
+              <Link href="/account" className="hover:text-white transition-colors">
+                Client Portal & Orders
               </Link>
             </li>
             <li>
-              <Link href="/admin/custom-requests" className="hover:text-white transition-colors">
-                Admin Custom Desk
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin/orders" className="hover:text-white transition-colors">
-                Admin Fulfilment & Shipping
+              <Link href="/admin" className="hover:text-white transition-colors text-amber-400 font-semibold">
+                Master Admin Hub (5.8)
               </Link>
             </li>
           </ul>

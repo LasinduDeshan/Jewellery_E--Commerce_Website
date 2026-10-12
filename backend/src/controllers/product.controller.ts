@@ -9,6 +9,7 @@ import {
   getProducts,
   getProductById,
   getProductBySlug,
+  getRelatedProducts,
   updateProduct,
   deleteProduct,
 } from '../services/product.service.js';
@@ -55,22 +56,26 @@ export const createProductController = asyncHandler(
       throw new ApiError(400, 'Product stock quantity is required');
     }
 
-    if (!productData.images || productData.images.length < 4) {
-      throw new ApiError(
-        400,
-        'A product must have at least 4 images'
-      );
-    }
-
-    if (!productData.description) {
-      throw new ApiError(400, 'Product description is required');
-    }
-
     if (!productData.careInstructions) {
-      throw new ApiError(
-        400,
-        'Product care instructions are required'
-      );
+      productData.careInstructions =
+        'Clean gently with lukewarm soapy water and a soft cloth. Store separately in velvet pouch.';
+    }
+
+    if (!productData.images || productData.images.length === 0) {
+      throw new ApiError(400, 'At least one product image is required');
+    }
+
+    // Auto-generate slug if not provided
+    if (!productData.slug && productData.name) {
+      const base = String(productData.name)
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+      const suffix = productData.sku
+        ? String(productData.sku).toLowerCase().trim()
+        : Math.random().toString(36).substring(2, 7);
+      productData.slug = `${base}-${suffix}`;
     }
 
     const product = await createProduct(productData);
@@ -288,3 +293,25 @@ export const deleteProductController = asyncHandler(
     );
   }
 );
+
+
+// ============================================================
+// GET RELATED PRODUCTS
+// GET /api/products/:identifier/related
+// ============================================================
+
+export const getRelatedProductsController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const identifier = String(req.params.identifier);
+    const limit = req.query.limit ? Number(req.query.limit) : 4;
+
+    const related = await getRelatedProducts(identifier, limit);
+
+    res.status(200).json(
+      ApiResponse.success(
+        related,
+        'Related products retrieved successfully'
+      )
+    );
+  }
+);

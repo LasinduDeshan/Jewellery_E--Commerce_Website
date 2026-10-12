@@ -31,10 +31,18 @@ export default function HomePage() {
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/customize"
+              href="/shop"
               className="w-full sm:w-auto px-8 py-4 rounded-md bg-amber-600 hover:bg-amber-500 text-stone-950 font-semibold tracking-wider uppercase text-xs sm:text-sm transition-all duration-300 shadow-xl shadow-amber-950/40 flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Sparkles className="w-4 h-4" />
+              <Gem className="w-4 h-4" />
+              <span>Shop Ready-to-Wear Collection</span>
+            </Link>
+
+            <Link
+              href="/customize"
+              className="w-full sm:w-auto px-7 py-4 rounded-md bg-stone-900 hover:bg-stone-800 text-stone-200 border border-stone-700 font-medium tracking-wider uppercase text-xs sm:text-sm transition-all flex items-center justify-center gap-2"
+            >
+              <Sparkles className="w-4 h-4 text-amber-400" />
               <span>Customize Your Jewellery</span>
             </Link>
 
@@ -42,7 +50,7 @@ export default function HomePage() {
               href="https://wa.me/94771234567"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto px-7 py-4 rounded-md bg-stone-900 hover:bg-stone-800 text-stone-200 border border-stone-700 font-medium tracking-wider uppercase text-xs sm:text-sm transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-4 rounded-md bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 border border-emerald-700/60 font-medium tracking-wider uppercase text-xs sm:text-sm transition-all flex items-center justify-center gap-2"
             >
               <MessageCircle className="w-4 h-4 text-emerald-400" />
               <span>WhatsApp Concierge</span>
@@ -89,6 +97,96 @@ export default function HomePage() {
               Independent gemological authentication accompanying every custom piece. Secure full-value white-glove global shipping.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Featured Jewellery Collection Section (Section 5.1) */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-800">
+              Ready-to-Wear Ateliers
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-serif text-stone-900 mt-1">
+              Featured Ceylon Sapphires
+            </h2>
+          </div>
+
+          <Link
+            href="/shop"
+            className="text-xs font-bold text-amber-900 hover:text-amber-700 uppercase tracking-wider flex items-center gap-1.5"
+          >
+            <span>Explore Entire Collection</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            {
+              title: 'Royal Blue Ceylon Sapphire Regal Halo Ring',
+              slug: 'royal-blue-ceylon-sapphire-regal-halo-ring',
+              metal: '925 Solid Sterling Silver',
+              gem: '1.85ct Natural Royal Blue Sapphire',
+              price: 840,
+              image:
+                'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=700&q=80',
+            },
+            {
+              title: 'Padparadscha Lotus Blossom Pendant',
+              slug: 'padparadscha-lotus-blossom-pendant',
+              metal: '18K Rose Gold Vermeil',
+              gem: '1.42ct Cushion Cut Padparadscha',
+              price: 1120,
+              image:
+                'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=700&q=80',
+            },
+            {
+              title: 'Cornflower Blue Sapphire Eternity Promise Ring',
+              slug: 'cornflower-blue-sapphire-eternity-promise-ring',
+              metal: '925 Rhodium Finished Silver',
+              gem: '1.20ct Vivid Cornflower Sapphires',
+              price: 590,
+              image:
+                'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=700&q=80',
+            },
+          ].map((item, idx) => (
+            <Link
+              key={idx}
+              href={`/product/${item.slug}`}
+              className="group bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col"
+            >
+              <div className="aspect-square bg-stone-100 overflow-hidden relative">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <span className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                  NGJA Certified
+                </span>
+              </div>
+              <div className="p-5 flex-1 flex flex-col justify-between">
+                <div>
+                  <span className="text-[11px] text-amber-800 font-bold block mb-1">
+                    {item.gem}
+                  </span>
+                  <h3 className="font-serif text-base font-semibold text-stone-900 group-hover:text-amber-700 transition-colors">
+                    {item.title}
+                  </h3>
+                  <span className="text-xs text-stone-500 mt-1 block">{item.metal}</span>
+                </div>
+                <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
+                  <span className="text-base font-bold font-serif text-stone-900">
+                    ${item.price} AUD
+                  </span>
+                  <span className="text-xs font-bold text-amber-800 group-hover:underline">
+                    View Details →
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 

@@ -5,6 +5,7 @@ import {
   getProductsController,
   getProductByIdController,
   getProductBySlugController,
+  getRelatedProductsController,
   updateProductController,
   deleteProductController,
 } from '../controllers/product.controller.js';

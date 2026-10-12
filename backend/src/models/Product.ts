@@ -296,9 +296,9 @@ const ProductSchema = new Schema<IProduct>(
 
       validate: {
         validator: (images: IProductImage[]) =>
-          Array.isArray(images) && images.length >= 4,
+          Array.isArray(images) && images.length >= 1,
 
-        message: 'A product must have at least 4 images.',
+        message: 'A product must have at least 1 image.',
       },
     },
 
@@ -351,6 +351,33 @@ const ProductSchema = new Schema<IProduct>(
 );
 
 // ------------------------------------------------------
+// Pre-validate hook to ensure slug is always generated
+// ------------------------------------------------------
+ProductSchema.pre('validate', function () {
+  if (!this.slug && this.name) {
+    const base = this.name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+    const suffix = this.sku
+      ? this.sku.toLowerCase().trim()
+      : Math.random().toString(36).substring(2, 7);
+    this.slug = `${base}-${suffix}`;
+  }
+
+  if (!this.careInstructions) {
+    this.careInstructions =
+      'Clean gently with lukewarm soapy water and a soft microfibre cloth. Store in separate velvet pouch.';
+  }
+
+  if (!this.description) {
+    this.description =
+      'Handcrafted fine jewellery featuring authentic Sri Lankan gemstones.';
+  }
+});
+
+// ------------------------------------------------------
 // Indexes
 // ------------------------------------------------------
 
@@ -368,7 +395,5 @@ ProductSchema.index({ 'gemstone.type': 1 });
 ProductSchema.index({ price: 1 });
 ProductSchema.index({ stockQuantity: 1 });
 
-export const Product = mongoose.model<IProduct>(
-  'Product',
-  ProductSchema
-);
+export const Product =
+  mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);
