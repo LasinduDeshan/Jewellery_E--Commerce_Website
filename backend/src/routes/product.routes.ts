@@ -5,6 +5,7 @@ import {
   getProductsController,
   getProductByIdController,
   getProductBySlugController,
+  getRelatedProductsController,
   updateProductController,
   deleteProductController,
 } from '../controllers/product.controller.js';
@@ -17,6 +18,9 @@ const router = Router();
 
 // Get products with search, filtering, sorting and pagination
 router.get('/', getProductsController);
+
+// Get related products
+router.get('/:identifier/related', getRelatedProductsController);
 
 // Get a single product by MongoDB ID
 router.get('/id/:id', getProductByIdController);

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../context/AuthContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { useCart } from '../../context/CartContext';
 import {
   Sparkles,
   MessageCircle,
@@ -17,11 +18,13 @@ import {
   LogOut,
   ChevronDown,
   Truck,
+  ShoppingBag,
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const { wishlistCount } = useWishlist();
+  const { cartCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
@@ -45,28 +48,48 @@ export const Navbar: React.FC = () => {
           </Link>
 
           {/* Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-8 text-xs font-semibold tracking-wider uppercase text-stone-700">
+          <nav className="hidden md:flex items-center space-x-7 text-xs font-semibold tracking-wider uppercase text-stone-700">
             <Link href="/" className="hover:text-amber-600 transition-colors">
               Home
+            </Link>
+            <Link href="/shop" className="hover:text-amber-600 transition-colors">
+              Collection
             </Link>
             <Link
               href="/customize"
               className="text-amber-700 font-bold flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-amber-50 border border-amber-200/80 hover:bg-amber-100 transition-colors"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              <span>Customize Jewellery</span>
+              <span>Customize</span>
+            </Link>
+            <Link href="/story" className="hover:text-amber-600 transition-colors">
+              Our Story
             </Link>
             <Link
-              href="/admin/custom-requests"
-              className="hover:text-amber-600 transition-colors flex items-center gap-1"
+              href="/admin"
+              className="hover:text-amber-600 transition-colors flex items-center gap-1 text-stone-500"
             >
-              <Shield className="w-3.5 h-3.5 text-stone-400" />
-              <span>Admin Desk</span>
+              <Shield className="w-3.5 h-3.5" />
+              <span>Admin</span>
             </Link>
           </nav>
 
           {/* Right Action Icons & Account Area */}
           <div className="hidden sm:flex items-center space-x-4">
+            {/* Cart Link with Badge */}
+            <Link
+              href="/cart"
+              className="relative p-2 rounded-full hover:bg-stone-100 text-stone-700 hover:text-amber-700 transition-colors"
+              title="Shopping Cart"
+            >
+              <ShoppingBag className="w-5 h-5" />
+              {cartCount > 0 && (
+                <span className="absolute top-0 right-0 bg-amber-600 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center shadow-sm">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+
             {/* Wishlist Link with Badge */}
             <Link
               href="/account"
@@ -75,7 +98,7 @@ export const Navbar: React.FC = () => {
             >
               <Heart className="w-5 h-5" />
               {wishlistCount > 0 && (
-                <span className="absolute top-0 right-0 bg-amber-600 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center shadow-sm">
+                <span className="absolute top-0 right-0 bg-stone-700 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center shadow-sm">
                   {wishlistCount}
                 </span>
               )}
@@ -197,11 +220,37 @@ export const Navbar: React.FC = () => {
               Home
             </Link>
             <Link
+              href="/shop"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-sm font-medium text-stone-700 hover:bg-stone-100 rounded"
+            >
+              💎 Jewellery Collection
+            </Link>
+            <Link
+              href="/cart"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-sm font-medium text-stone-700 hover:bg-stone-100 rounded flex items-center justify-between"
+            >
+              <span>🛍️ Shopping Bag</span>
+              {cartCount > 0 && (
+                <span className="text-xs bg-amber-600 text-white px-2 py-0.5 rounded-full font-bold">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+            <Link
               href="/customize"
               onClick={() => setMobileMenuOpen(false)}
               className="block px-3 py-2 text-sm font-semibold text-amber-700 bg-amber-50 rounded"
             >
               ✨ Customize Jewellery Studio
+            </Link>
+            <Link
+              href="/story"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-sm font-medium text-stone-700 hover:bg-stone-100 rounded"
+            >
+              📜 Our Story & Heritage
             </Link>
             <Link
               href="/account"

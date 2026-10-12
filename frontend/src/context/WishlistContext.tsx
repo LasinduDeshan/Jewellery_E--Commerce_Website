@@ -20,6 +20,7 @@ interface WishlistContextType {
   wishlistCount: number;
   isInWishlist: (productId: string) => boolean;
   toggleWishlist: (product: WishlistItem) => Promise<void>;
+  addToWishlist: (product: WishlistItem) => Promise<void>;
   removeFromWishlist: (productId: string) => Promise<void>;
   clearWishlist: () => void;
 }
@@ -137,6 +138,7 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         wishlistCount: wishlist.length,
         isInWishlist,
         toggleWishlist,
+        addToWishlist: toggleWishlist,
         removeFromWishlist,
         clearWishlist,
       }}
