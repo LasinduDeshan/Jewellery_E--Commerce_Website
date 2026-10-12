@@ -1,19 +1,27 @@
 import { Router } from 'express';
 import {
-  getProductReviews,
-  createReview,
-  getAllReviewsAdmin,
-  updateReviewStatus,
+  createReviewController,
+  getProductReviewsController,
+  getAllReviewsController,
+  approveReviewController,
+  rejectReviewController,
 } from '../controllers/review.controller.js';
+import {
+  authenticate,
+  authorizeAdmin,
+} from '../middleware/auth.middleware.js';
 
 const router = Router();
 
-// Public: Product page reviews
-router.get('/product/:productId', getProductReviews);
-router.post('/', createReview);
+// Public: view approved reviews for a product
+router.get('/product/:productId', getProductReviewsController);
 
-// Admin moderation
-router.get('/admin', getAllReviewsAdmin);
-router.patch('/admin/:id/status', updateReviewStatus);
+// Customer: submit a review
+router.post('/', authenticate, createReviewController);
+
+// Admin: review moderation
+router.get('/', authenticate, authorizeAdmin, getAllReviewsController);
+router.patch('/:id/approve', authenticate, authorizeAdmin, approveReviewController);
+router.delete('/:id/reject', authenticate, authorizeAdmin, rejectReviewController);
 
 export default router;

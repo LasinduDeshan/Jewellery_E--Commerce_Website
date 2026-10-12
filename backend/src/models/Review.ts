@@ -1,79 +1,54 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IReview extends Document {
-  productId: string;
-  productName: string;
-  userId?: string;
-  customerName: string;
-  customerEmail?: string;
-  rating: number; // 1 to 5
-  title: string;
+  product: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId;
+  order: mongoose.Types.ObjectId;
+  rating: number;
   comment: string;
-  photos: string[]; // Customer photo upload urls
-  verifiedPurchase: boolean;
-  status: 'pending' | 'approved' | 'rejected';
-  adminNotes?: string;
+  isApproved: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const ReviewSchema = new Schema<IReview>(
   {
-    productId: {
-      type: String,
-      required: true,
-      index: true,
-    },
-    productName: {
-      type: String,
+    product: {
+      type: Schema.Types.ObjectId,
+      ref: 'Product',
       required: true,
     },
-    userId: {
-      type: String,
-    },
-    customerName: {
-      type: String,
+
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
-      trim: true,
     },
-    customerEmail: {
-      type: String,
-      trim: true,
-      lowercase: true,
+
+    order: {
+      type: Schema.Types.ObjectId,
+      ref: 'Order',
+      required: true,
     },
+
     rating: {
       type: Number,
       required: true,
       min: 1,
       max: 5,
     },
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+
     comment: {
       type: String,
       required: true,
       trim: true,
+      minlength: 3,
+      maxlength: 1000,
     },
-    photos: {
-      type: [String],
-      default: [],
-    },
-    verifiedPurchase: {
+
+    isApproved: {
       type: Boolean,
-      default: true,
-    },
-    status: {
-      type: String,
-      enum: ['pending', 'approved', 'rejected'],
-      default: 'approved', // Auto-approved or moderated
-      index: true,
-    },
-    adminNotes: {
-      type: String,
-      trim: true,
+      default: false,
     },
   },
   {
@@ -81,4 +56,13 @@ const ReviewSchema = new Schema<IReview>(
   }
 );
 
-export const Review = mongoose.models.Review || mongoose.model<IReview>('Review', ReviewSchema);
+// A customer can review a particular product only once per order.
+ReviewSchema.index(
+  { product: 1, user: 1, order: 1 },
+  { unique: true }
+);
+
+ReviewSchema.index({ product: 1, isApproved: 1 });
+ReviewSchema.index({ user: 1 });
+
+export const Review = mongoose.model<IReview>('Review', ReviewSchema);
