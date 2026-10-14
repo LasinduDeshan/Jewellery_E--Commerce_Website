@@ -85,7 +85,28 @@ export default function ShopCataloguePage() {
     fetchCatalog();
   }, []);
 
-  // Filtered & Sorted products
+  // Parse URL query params (e.g. ?gender=women, ?gender=men, ?category=rings, ?search=...)
+  useEffect(() => {
+    const syncFromUrl = () => {
+      if (typeof window === 'undefined') return;
+      const params = new URLSearchParams(window.location.search);
+      const genderParam = params.get('gender');
+      const categoryParam = params.get('category');
+      const searchParam = params.get('search');
+      const metalParam = params.get('metal');
+      const gemParam = params.get('gemstone');
+
+      if (genderParam) setSelectedGender(genderParam);
+      if (categoryParam) setSelectedCategory(categoryParam);
+      if (searchParam) setSearchTerm(searchParam);
+      if (metalParam) setSelectedMetal(metalParam);
+      if (gemParam) setSelectedGemstone(gemParam);
+    };
+
+    syncFromUrl();
+    window.addEventListener('popstate', syncFromUrl);
+    return () => window.removeEventListener('popstate', syncFromUrl);
+  }, []);
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       // Search
@@ -182,30 +203,30 @@ export default function ShopCataloguePage() {
     (searchTerm ? 1 : 0);
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
 
       {/* Toast Notification */}
       {notification && (
-        <div className="fixed bottom-6 right-6 z-50 bg-stone-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-amber-500/30 text-xs animate-in slide-in-from-bottom">
-          <Check className="w-4 h-4 text-emerald-400" />
+        <div className="fixed bottom-6 right-6 z-50 bg-black text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-neutral-700 text-xs animate-in slide-in-from-bottom">
+          <Check className="w-4 h-4 text-white" />
           <span>{notification}</span>
-          <Link href="/cart" className="underline font-bold text-amber-400 ml-2">
+          <Link href="/cart" className="underline font-bold text-white ml-2">
             View Bag
           </Link>
         </div>
       )}
 
       {/* Hero Header */}
-      <section className="bg-stone-950 text-white py-12 px-4 sm:px-6 lg:px-8 border-b border-stone-800">
+      <section className="bg-black text-white py-12 px-4 sm:px-6 lg:px-8 border-b border-neutral-800">
         <div className="max-w-7xl mx-auto text-center">
-          <span className="text-amber-400 text-xs font-semibold tracking-widest uppercase block mb-2">
+          <span className="text-neutral-400 text-xs font-semibold tracking-widest uppercase block mb-2">
             Section 5.1 • Certified Fine Jewellery
           </span>
-          <h1 className="text-3xl sm:text-5xl font-serif tracking-tight text-stone-100">
+          <h1 className="text-3xl sm:text-5xl font-normal tracking-tight text-white">
             Natural Ceylon Sapphire Collection
           </h1>
-          <p className="mt-3 text-sm text-stone-400 max-w-2xl mx-auto font-light leading-relaxed">
+          <p className="mt-3 text-sm text-neutral-400 max-w-2xl mx-auto font-light leading-relaxed">
             Ethically gathered from Sri Lankan riverbeds, set in solid 925 sterling silver and 18K rose gold vermeil. Priced in AUD with insured express Australian delivery.
           </p>
 
@@ -217,13 +238,13 @@ export default function ShopCataloguePage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search by gemstone, ring, pendant, metal..."
-                className="w-full bg-stone-900 border border-stone-700 rounded-full py-3 pl-12 pr-10 text-sm text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                className="w-full bg-neutral-900 border border-neutral-700 rounded-full py-3 pl-12 pr-10 text-sm text-white placeholder-neutral-400 focus:outline-none focus:border-white focus:ring-1 focus:ring-white"
               />
-              <Search className="w-4 h-4 text-stone-400 absolute left-4 top-3.5" />
+              <Search className="w-4 h-4 text-neutral-400 absolute left-4 top-3.5" />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-3.5 top-3.5 text-stone-400 hover:text-white"
+                  className="absolute right-3.5 top-3.5 text-neutral-400 hover:text-white cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -238,17 +259,17 @@ export default function ShopCataloguePage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Desktop Filter Sidebar */}
           <aside className="hidden lg:block w-64 shrink-0 space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-stone-200">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-amber-700" />
-                <h3 className="text-xs font-bold uppercase tracking-wider text-stone-900">
+                <SlidersHorizontal className="w-4 h-4 text-black" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-black">
                   Filter Collection
                 </h3>
               </div>
               {activeFilterCount > 0 && (
                 <button
                   onClick={clearAllFilters}
-                  className="text-[11px] text-amber-700 hover:underline cursor-pointer font-medium"
+                  className="text-[11px] text-neutral-600 hover:text-black hover:underline cursor-pointer font-medium"
                 >
                   Reset ({activeFilterCount})
                 </button>
@@ -257,7 +278,7 @@ export default function ShopCataloguePage() {
 
             {/* Category Filter */}
             <div>
-              <label className="text-xs font-semibold text-stone-800 uppercase tracking-wider block mb-2.5">
+              <label className="text-xs font-semibold text-neutral-800 uppercase tracking-wider block mb-2.5">
                 Category
               </label>
               <div className="space-y-1 text-xs">
@@ -274,12 +295,12 @@ export default function ShopCataloguePage() {
                     onClick={() => setSelectedCategory(cat.id)}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center justify-between ${
                       selectedCategory === cat.id
-                        ? 'bg-amber-100/70 text-amber-900 font-semibold'
-                        : 'text-stone-600 hover:bg-stone-100'
+                        ? 'bg-black text-white font-semibold'
+                        : 'text-neutral-600 hover:bg-neutral-100'
                     }`}
                   >
                     <span>{cat.label}</span>
-                    {selectedCategory === cat.id && <Check className="w-3.5 h-3.5 text-amber-800" />}
+                    {selectedCategory === cat.id && <Check className="w-3.5 h-3.5 text-white" />}
                   </button>
                 ))}
               </div>
@@ -287,7 +308,7 @@ export default function ShopCataloguePage() {
 
             {/* Metal Filter */}
             <div>
-              <label className="text-xs font-semibold text-stone-800 uppercase tracking-wider block mb-2.5">
+              <label className="text-xs font-semibold text-neutral-800 uppercase tracking-wider block mb-2.5">
                 Precious Metal
               </label>
               <div className="grid grid-cols-2 gap-2 text-xs">
@@ -295,22 +316,22 @@ export default function ShopCataloguePage() {
                   onClick={() => setSelectedMetal(selectedMetal === 'silver' ? 'all' : 'silver')}
                   className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
                     selectedMetal === 'silver'
-                      ? 'border-amber-600 bg-amber-50 text-amber-900 font-bold'
-                      : 'border-stone-200 bg-white text-stone-700 hover:border-stone-300'
+                      ? 'border-black bg-black text-white font-bold'
+                      : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400'
                   }`}
                 >
-                  <div className="w-4 h-4 rounded-full bg-slate-300 border border-slate-400 mx-auto mb-1" />
+                  <div className={`w-4 h-4 rounded-full mx-auto mb-1 border ${selectedMetal === 'silver' ? 'bg-white border-neutral-300' : 'bg-neutral-300 border-neutral-400'}`} />
                   <span>925 Silver</span>
                 </button>
                 <button
                   onClick={() => setSelectedMetal(selectedMetal === 'rose-gold' ? 'all' : 'rose-gold')}
                   className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
                     selectedMetal === 'rose-gold'
-                      ? 'border-amber-600 bg-amber-50 text-amber-900 font-bold'
-                      : 'border-stone-200 bg-white text-stone-700 hover:border-stone-300'
+                      ? 'border-black bg-black text-white font-bold'
+                      : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400'
                   }`}
                 >
-                  <div className="w-4 h-4 rounded-full bg-rose-300 border border-rose-400 mx-auto mb-1" />
+                  <div className={`w-4 h-4 rounded-full mx-auto mb-1 border ${selectedMetal === 'rose-gold' ? 'bg-white border-neutral-300' : 'bg-neutral-400 border-neutral-500'}`} />
                   <span>18K Rose Gold</span>
                 </button>
               </div>
@@ -318,7 +339,7 @@ export default function ShopCataloguePage() {
 
             {/* Gemstone Variety */}
             <div>
-              <label className="text-xs font-semibold text-stone-800 uppercase tracking-wider block mb-2.5">
+              <label className="text-xs font-semibold text-neutral-800 uppercase tracking-wider block mb-2.5">
                 Gemstone Variety
               </label>
               <div className="space-y-1 text-xs">
@@ -336,12 +357,12 @@ export default function ShopCataloguePage() {
                     onClick={() => setSelectedGemstone(g.id)}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center justify-between ${
                       selectedGemstone === g.id
-                        ? 'bg-amber-100/70 text-amber-900 font-semibold'
-                        : 'text-stone-600 hover:bg-stone-100'
+                        ? 'bg-black text-white font-semibold'
+                        : 'text-neutral-600 hover:bg-neutral-100'
                     }`}
                   >
                     <span>{g.label}</span>
-                    {selectedGemstone === g.id && <Check className="w-3.5 h-3.5 text-amber-800" />}
+                    {selectedGemstone === g.id && <Check className="w-3.5 h-3.5 text-white" />}
                   </button>
                 ))}
               </div>
@@ -349,7 +370,7 @@ export default function ShopCataloguePage() {
 
             {/* Gender / Style Tag (Section 5.1 & 5.8) */}
             <div>
-              <label className="text-xs font-semibold text-stone-800 uppercase tracking-wider block mb-2.5">
+              <label className="text-xs font-semibold text-neutral-800 uppercase tracking-wider block mb-2.5">
                 Style / Gender
               </label>
               <div className="grid grid-cols-3 gap-1.5 text-[11px]">
@@ -359,8 +380,8 @@ export default function ShopCataloguePage() {
                     onClick={() => setSelectedGender(gen)}
                     className={`py-1.5 px-2 rounded-lg border text-center capitalize cursor-pointer ${
                       selectedGender === gen
-                        ? 'bg-stone-900 text-white border-stone-900 font-semibold'
-                        : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                        ? 'bg-black text-white border-black font-semibold'
+                        : 'bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50'
                     }`}
                   >
                     {gen === 'all' ? 'Any' : gen}
@@ -370,17 +391,17 @@ export default function ShopCataloguePage() {
             </div>
 
             {/* Bespoke Customization CTA card */}
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-stone-100 border border-amber-200 text-xs space-y-2">
-              <div className="flex items-center gap-1.5 text-amber-900 font-bold">
-                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            <div className="p-4 rounded-2xl bg-neutral-100 border border-neutral-200 text-xs space-y-2">
+              <div className="flex items-center gap-1.5 text-black font-bold">
+                <Sparkles className="w-3.5 h-3.5 text-black" />
                 <span>Need a Custom Piece?</span>
               </div>
-              <p className="text-stone-600 text-[11px] leading-relaxed">
+              <p className="text-neutral-600 text-[11px] leading-relaxed">
                 Choose your exact unheated sapphire from our Ratnapura vaults and design your dream ring.
               </p>
               <Link
                 href="/customize"
-                className="inline-block text-[11px] font-bold text-amber-800 hover:underline pt-1"
+                className="inline-block text-[11px] font-bold text-black hover:underline pt-1"
               >
                 Launch Studio & Request Quote →
               </Link>
@@ -390,13 +411,13 @@ export default function ShopCataloguePage() {
           {/* Products Grid & Toolbar */}
           <div className="flex-1">
             {/* Toolbar Header */}
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200 mb-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-neutral-200 mb-6">
               <div className="flex items-center gap-2">
-                <span className="text-xs text-stone-500 font-medium">
+                <span className="text-xs text-neutral-500 font-medium">
                   Showing <strong>{filteredProducts.length}</strong> heirloom pieces
                 </span>
                 {activeFilterCount > 0 && (
-                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold">
+                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-neutral-100 text-black font-semibold border border-neutral-200">
                     {activeFilterCount} active filters
                   </span>
                 )}
@@ -406,20 +427,20 @@ export default function ShopCataloguePage() {
                 {/* Mobile Filter Toggle */}
                 <button
                   onClick={() => setMobileFilterOpen(true)}
-                  className="lg:hidden px-3 py-1.5 rounded-lg border border-stone-300 bg-white text-xs font-medium text-stone-700 flex items-center gap-1.5"
+                  className="lg:hidden px-3 py-1.5 rounded-lg border border-neutral-300 bg-white text-xs font-medium text-neutral-800 flex items-center gap-1.5 cursor-pointer"
                 >
                   <Filter className="w-3.5 h-3.5" />
                   <span>Filters</span>
                 </button>
 
                 {/* Sort Dropdown */}
-                <div className="flex items-center gap-1.5 text-xs text-stone-600">
-                  <ArrowUpDown className="w-3.5 h-3.5 text-stone-400" />
+                <div className="flex items-center gap-1.5 text-xs text-neutral-600">
+                  <ArrowUpDown className="w-3.5 h-3.5 text-neutral-400" />
                   <span className="hidden sm:inline">Sort:</span>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="bg-white border border-stone-200 rounded-lg px-2.5 py-1.5 text-xs text-stone-800 focus:outline-none focus:border-amber-500 cursor-pointer"
+                    className="bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-neutral-800 focus:outline-none focus:border-black cursor-pointer"
                   >
                     <option value="newest">Featured & Newest</option>
                     <option value="price-low-high">Price: Low to High</option>
@@ -433,19 +454,19 @@ export default function ShopCataloguePage() {
             {/* Products Grid */}
             {loading ? (
               <div className="py-24 text-center">
-                <div className="w-8 h-8 border-2 border-amber-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-xs text-stone-500">Loading fine Ceylon jewellery catalogue...</p>
+                <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-xs text-neutral-500">Loading fine Ceylon jewellery catalogue...</p>
               </div>
             ) : filteredProducts.length === 0 ? (
-              <div className="py-20 text-center bg-white rounded-2xl border border-stone-200 p-8">
-                <Gem className="w-10 h-10 text-stone-300 mx-auto mb-3" />
-                <h3 className="font-serif text-lg text-stone-800">No matching jewellery pieces found</h3>
-                <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
+              <div className="py-20 text-center bg-white rounded-2xl border border-neutral-200 p-8">
+                <Gem className="w-10 h-10 text-neutral-300 mx-auto mb-3" />
+                <h3 className="text-lg text-black font-medium">No matching jewellery pieces found</h3>
+                <p className="text-xs text-neutral-500 mt-1 max-w-sm mx-auto">
                   Try adjusting your metal, gemstone variety, or category filters.
                 </p>
                 <button
                   onClick={clearAllFilters}
-                  className="mt-4 px-4 py-2 bg-stone-900 text-white rounded-lg text-xs font-semibold hover:bg-stone-800 cursor-pointer"
+                  className="mt-4 px-4 py-2 bg-black text-white rounded-lg text-xs font-semibold hover:bg-neutral-800 cursor-pointer"
                 >
                   Reset All Filters
                 </button>
@@ -463,12 +484,12 @@ export default function ShopCataloguePage() {
                   return (
                     <div
                       key={product._id}
-                      className="group bg-white rounded-2xl border border-stone-200/90 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col"
+                      className="group bg-white rounded-2xl border border-neutral-200 hover:border-black overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col"
                     >
                       {/* Image Frame with Wishlist Button */}
                       <Link
                         href={`/product/${product.slug}`}
-                        className="relative block aspect-square overflow-hidden bg-stone-100"
+                        className="relative block aspect-square overflow-hidden bg-neutral-100"
                       >
                         <img
                           src={mainImage}
@@ -478,7 +499,7 @@ export default function ShopCataloguePage() {
 
                         {/* Stock Urgency Tag (Section 5.2) */}
                         {product.stockQuantity <= 2 && (
-                          <div className="absolute top-3 left-3 bg-red-600/90 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-xs">
+                          <div className="absolute top-3 left-3 bg-black/90 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-xs border border-neutral-700">
                             Only {product.stockQuantity} Left
                           </div>
                         )}
@@ -488,8 +509,8 @@ export default function ShopCataloguePage() {
                           onClick={(e) => handleToggleWishlist(product, e)}
                           className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors shadow-sm cursor-pointer ${
                             inWish
-                              ? 'bg-pink-50 text-pink-600'
-                              : 'bg-white/80 hover:bg-white text-stone-600 hover:text-pink-600'
+                              ? 'bg-black text-white'
+                              : 'bg-white/80 hover:bg-white text-neutral-700 hover:text-black'
                           }`}
                           title="Save to Wishlist"
                         >
@@ -501,7 +522,7 @@ export default function ShopCataloguePage() {
                       <div className="p-5 flex-1 flex flex-col justify-between">
                         <div>
                           {/* Metal & Gemstone Pill */}
-                          <div className="flex items-center gap-1.5 text-[11px] text-amber-800 font-semibold mb-1">
+                          <div className="flex items-center gap-1.5 text-[11px] text-neutral-600 font-semibold mb-1">
                             <span>{product.metal?.type === 'rose-gold' ? '18K Rose Gold' : '925 Silver'}</span>
                             <span>•</span>
                             <span className="truncate">{product.gemstone?.type}</span>
@@ -509,30 +530,30 @@ export default function ShopCataloguePage() {
 
                           {/* Title */}
                           <Link href={`/product/${product.slug}`}>
-                            <h4 className="font-serif text-stone-900 font-medium text-base line-clamp-1 hover:text-amber-700 transition-colors">
+                            <h4 className="text-black font-medium text-base line-clamp-1 hover:text-neutral-600 transition-colors">
                               {product.name}
                             </h4>
                           </Link>
 
                           {/* Certification Trust Pill */}
-                          <div className="flex items-center gap-1 text-[10px] text-stone-500 mt-1">
-                            <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                          <div className="flex items-center gap-1 text-[10px] text-neutral-500 mt-1">
+                            <ShieldCheck className="w-3 h-3 text-black" />
                             <span>NGJA / GIC Certified Gemstone</span>
                           </div>
                         </div>
 
                         {/* Price & Quick Add */}
-                        <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
+                        <div className="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between">
                           <div>
-                            <span className="text-[10px] text-stone-400 block uppercase">Price (AUD)</span>
-                            <span className="text-base font-serif font-bold text-stone-950">
+                            <span className="text-[10px] text-neutral-400 block uppercase">Price (AUD)</span>
+                            <span className="text-base font-bold text-black">
                               ${product.price} AUD
                             </span>
                           </div>
 
                           <button
                             onClick={(e) => handleQuickAdd(product, e)}
-                            className="px-3.5 py-2 rounded-lg bg-stone-900 hover:bg-amber-600 text-white text-xs font-semibold tracking-wider transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+                            className="px-3.5 py-2 rounded-lg bg-black hover:bg-neutral-800 text-white text-xs font-semibold tracking-wider transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
                             title="Add to Shopping Bag"
                           >
                             <ShoppingBag className="w-3.5 h-3.5" />
@@ -553,11 +574,11 @@ export default function ShopCataloguePage() {
       {mobileFilterOpen && (
         <div className="fixed inset-0 z-50 flex bg-black/60 backdrop-blur-xs lg:hidden">
           <div className="w-full max-w-xs bg-white h-full p-6 overflow-y-auto space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-stone-200">
-              <h3 className="font-serif text-base font-semibold">Filter Jewellery</h3>
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
+              <h3 className="text-base font-semibold text-black">Filter Jewellery</h3>
               <button
                 onClick={() => setMobileFilterOpen(false)}
-                className="p-1 text-stone-500 hover:text-stone-900"
+                className="p-1 text-neutral-500 hover:text-black cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -565,7 +586,7 @@ export default function ShopCataloguePage() {
 
             {/* Mobile Category */}
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider block mb-2">Category</span>
+              <span className="text-xs font-bold uppercase tracking-wider block mb-2 text-black">Category</span>
               <div className="space-y-1 text-xs">
                 {['all', 'rings', 'necklaces', 'engagement-promise-rings', 'bracelets', 'earrings'].map((cat) => (
                   <button
@@ -575,7 +596,7 @@ export default function ShopCataloguePage() {
                       setMobileFilterOpen(false);
                     }}
                     className={`block w-full text-left py-1.5 px-2 rounded capitalize ${
-                      selectedCategory === cat ? 'bg-amber-100 font-bold text-amber-900' : 'text-stone-700'
+                      selectedCategory === cat ? 'bg-black font-bold text-white' : 'text-neutral-700 hover:bg-neutral-100'
                     }`}
                   >
                     {cat.replace(/-/g, ' ')}
@@ -586,20 +607,20 @@ export default function ShopCataloguePage() {
 
             {/* Mobile Metal */}
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider block mb-2">Precious Metal</span>
+              <span className="text-xs font-bold uppercase tracking-wider block mb-2 text-black">Precious Metal</span>
               <div className="flex gap-2 text-xs">
                 <button
                   onClick={() => setSelectedMetal('silver')}
-                  className={`flex-1 py-2 border rounded text-center ${
-                    selectedMetal === 'silver' ? 'border-amber-600 bg-amber-50 font-bold' : ''
+                  className={`flex-1 py-2 border rounded text-center cursor-pointer ${
+                    selectedMetal === 'silver' ? 'border-black bg-black text-white font-bold' : 'border-neutral-200 text-neutral-700'
                   }`}
                 >
                   925 Silver
                 </button>
                 <button
                   onClick={() => setSelectedMetal('rose-gold')}
-                  className={`flex-1 py-2 border rounded text-center ${
-                    selectedMetal === 'rose-gold' ? 'border-amber-600 bg-amber-50 font-bold' : ''
+                  className={`flex-1 py-2 border rounded text-center cursor-pointer ${
+                    selectedMetal === 'rose-gold' ? 'border-black bg-black text-white font-bold' : 'border-neutral-200 text-neutral-700'
                   }`}
                 >
                   Rose Gold
@@ -612,7 +633,7 @@ export default function ShopCataloguePage() {
                 clearAllFilters();
                 setMobileFilterOpen(false);
               }}
-              className="w-full py-2.5 rounded-lg border border-stone-300 text-xs font-bold text-stone-700"
+              className="w-full py-2.5 rounded-lg border border-neutral-300 text-xs font-bold text-black hover:border-black cursor-pointer"
             >
               Clear All Filters
             </button>

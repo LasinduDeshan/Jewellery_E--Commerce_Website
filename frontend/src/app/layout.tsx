@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../context/AuthContext";
 import { WishlistProvider } from "../context/WishlistContext";
 import { CartProvider } from "../context/CartContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -20,6 +23,8 @@ export const metadata: Metadata = {
   description:
     "Handcrafted Ceylon sapphire jewellery in 925 sterling silver and solid gold, ethically sourced from Sri Lanka and delivered to Australia and worldwide.",
 };
+
+import { WhatsAppFloatingButton } from "../components/layout/WhatsAppFloatingButton";
 
 export default function RootLayout({
   children,
@@ -29,12 +34,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${cormorant.variable} ${inter.className} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#FAF9F6] text-stone-900">
+      <body className="min-h-full flex flex-col bg-white text-neutral-900 font-sans selection:bg-black selection:text-white">
         <AuthProvider>
           <WishlistProvider>
-            <CartProvider>{children}</CartProvider>
+            <CartProvider>
+              {children}
+              <WhatsAppFloatingButton />
+            </CartProvider>
           </WishlistProvider>
         </AuthProvider>
       </body>

@@ -81,9 +81,9 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     COUNTRY_CODES.find((c) => c.dialCode === selectedDialCode) || COUNTRY_CODES[0];
 
   return (
-    <div className={`relative flex items-center rounded-lg border border-stone-300 bg-white focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-amber-500 transition-all ${className}`}>
+    <div className={`relative flex items-center rounded-lg border border-neutral-300 bg-white focus-within:ring-2 focus-within:ring-black focus-within:border-black transition-all ${className}`}>
       {/* Country Code Dropdown Container */}
-      <div className="relative flex items-center bg-stone-50/80 border-r border-stone-200 rounded-l-lg hover:bg-stone-100 transition-colors">
+      <div className="relative flex items-center bg-neutral-50 border-r border-neutral-200 rounded-l-lg hover:bg-neutral-100 transition-colors">
         <select
           value={selectedDialCode}
           onChange={(e) => handleCountryChange(e.target.value)}

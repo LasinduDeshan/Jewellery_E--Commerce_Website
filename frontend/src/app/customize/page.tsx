@@ -86,7 +86,7 @@ export default function CustomizePage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col bg-[#FAF9F6]">
+    <main className="min-h-screen flex flex-col bg-white">
       <Navbar />
 
       {/* 8.1.1 Hero & Expectations */}

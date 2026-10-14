@@ -76,26 +76,26 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col bg-[#FAF9F6]">
+    <main className="min-h-screen flex flex-col bg-white">
       <Navbar />
 
       <div className="flex-1 flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-2xl border border-stone-200 shadow-xl relative overflow-hidden">
-          {/* Subtle Top Gold Gradient */}
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600" />
+        <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-2xl border border-neutral-200 shadow-xl relative overflow-hidden">
+          {/* Subtle Top Monochrome Gradient */}
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-neutral-900 via-neutral-500 to-neutral-900" />
 
           {/* Header */}
           <div className="text-center">
-            <div className="w-12 h-12 rounded-full bg-stone-900 text-amber-400 flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <div className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center mx-auto mb-4 shadow-sm">
               <Gem className="w-6 h-6" />
             </div>
-            <span className="text-xs font-semibold tracking-widest text-amber-700 uppercase">
+            <span className="text-xs font-semibold tracking-widest text-neutral-500 uppercase">
               Bespoke Client Portal
             </span>
-            <h2 className="mt-1 text-2xl sm:text-3xl font-serif text-stone-900 font-normal">
+            <h2 className="mt-1 text-2xl sm:text-3xl font-serif text-neutral-900 font-normal">
               Sign In to Your Account
             </h2>
-            <p className="mt-2 text-xs text-stone-500">
+            <p className="mt-2 text-xs text-neutral-500">
               Track your Ceylon sapphire orders, manage your wishlist, and review custom quotes.
             </p>
           </div>
@@ -111,7 +111,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={handleDemoCustomerLogin}
-            className="w-full py-2.5 px-4 rounded-lg border border-stone-300 hover:bg-stone-50 text-stone-700 text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer"
+            className="w-full py-2.5 px-4 rounded-lg border border-neutral-300 hover:bg-neutral-50 text-neutral-700 text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -135,50 +135,50 @@ export default function LoginPage() {
           </button>
 
           <div className="relative flex items-center justify-center">
-            <div className="border-t border-stone-200 w-full" />
-            <span className="bg-white px-3 text-[11px] uppercase tracking-wider text-stone-400">
+            <div className="border-t border-neutral-200 w-full" />
+            <span className="bg-white px-3 text-[11px] uppercase tracking-wider text-neutral-400">
               Or with email
             </span>
-            <div className="border-t border-stone-200 w-full" />
+            <div className="border-t border-neutral-200 w-full" />
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
+                <Mail className="w-4 h-4 text-neutral-400 absolute left-3 top-3" />
                 <input
                   type="email"
                   required
                   placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-stone-300 text-stone-900 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-neutral-300 text-neutral-900 text-xs focus:ring-2 focus:ring-black focus:outline-none"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
                   Password
                 </label>
-                <a href="#forgot" className="text-[11px] text-amber-700 hover:text-amber-800">
+                <a href="#forgot" className="text-[11px] text-neutral-600 hover:text-black">
                   Forgot password?
                 </a>
               </div>
               <div className="relative">
-                <Lock className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
+                <Lock className="w-4 h-4 text-neutral-400 absolute left-3 top-3" />
                 <input
                   type="password"
                   required
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-stone-300 text-stone-900 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-neutral-300 text-neutral-900 text-xs focus:ring-2 focus:ring-black focus:outline-none"
                 />
               </div>
             </div>
@@ -186,7 +186,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-stone-900 hover:bg-stone-800 text-white rounded-lg text-xs font-semibold uppercase tracking-widest transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-3 bg-black hover:bg-neutral-800 text-white rounded-lg text-xs font-semibold uppercase tracking-widest transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isLoading ? (
                 <span>Verifying...</span>
@@ -200,9 +200,9 @@ export default function LoginPage() {
           </form>
 
           {/* Footer Link */}
-          <div className="text-center text-xs text-stone-500 pt-2">
+          <div className="text-center text-xs text-neutral-500 pt-2">
             Don&apos;t have an account yet?{' '}
-            <Link href="/register" className="text-amber-700 font-semibold hover:underline">
+            <Link href="/register" className="text-black font-semibold hover:underline">
               Create Client Account
             </Link>
           </div>
