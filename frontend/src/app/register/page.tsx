@@ -72,26 +72,26 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col bg-[#FAF9F6]">
+    <main className="min-h-screen flex flex-col bg-white">
       <Navbar />
 
       <div className="flex-1 flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-2xl border border-stone-200 shadow-xl relative overflow-hidden">
-          {/* Top Gold Gradient */}
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600" />
+        <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-2xl border border-neutral-200 shadow-xl relative overflow-hidden">
+          {/* Top Monochrome Gradient */}
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-neutral-900 via-neutral-500 to-neutral-900" />
 
           {/* Header */}
           <div className="text-center">
-            <div className="w-12 h-12 rounded-full bg-stone-900 text-amber-400 flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <div className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center mx-auto mb-4 shadow-sm">
               <Gem className="w-6 h-6" />
             </div>
-            <span className="text-xs font-semibold tracking-widest text-amber-700 uppercase">
+            <span className="text-xs font-semibold tracking-widest text-neutral-500 uppercase">
               Join Our Atelier
             </span>
-            <h2 className="mt-1 text-2xl sm:text-3xl font-serif text-stone-900 font-normal">
+            <h2 className="mt-1 text-2xl sm:text-3xl font-serif text-neutral-900 font-normal">
               Create Client Account
             </h2>
-            <p className="mt-2 text-xs text-stone-500">
+            <p className="mt-2 text-xs text-neutral-500">
               Save bespoke pieces, track Sri Lankan courier dispatches, and receive personalized gem quotes.
             </p>
           </div>
@@ -106,41 +106,41 @@ export default function RegisterPage() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1">
-                Full Name <span className="text-amber-600">*</span>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
+                Full Name <span className="text-neutral-900">*</span>
               </label>
               <div className="relative">
-                <User className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
+                <User className="w-4 h-4 text-neutral-400 absolute left-3 top-3" />
                 <input
                   type="text"
                   required
                   placeholder="e.g. Lady Genevieve"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-stone-300 text-stone-900 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-neutral-300 text-neutral-900 text-xs focus:ring-2 focus:ring-black focus:outline-none"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1">
-                Email Address <span className="text-amber-600">*</span>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
+                Email Address <span className="text-neutral-900">*</span>
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
+                <Mail className="w-4 h-4 text-neutral-400 absolute left-3 top-3" />
                 <input
                   type="email"
                   required
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-stone-300 text-stone-900 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-neutral-300 text-neutral-900 text-xs focus:ring-2 focus:ring-black focus:outline-none"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
                 Phone Number (Australia / International)
               </label>
               <PhoneInput
@@ -151,35 +151,35 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1">
-                Password <span className="text-amber-600">*</span>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
+                Password <span className="text-neutral-900">*</span>
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
+                <Lock className="w-4 h-4 text-neutral-400 absolute left-3 top-3" />
                 <input
                   type="password"
                   required
                   placeholder="Minimum 6 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-stone-300 text-stone-900 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-neutral-300 text-neutral-900 text-xs focus:ring-2 focus:ring-black focus:outline-none"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1">
-                Confirm Password <span className="text-amber-600">*</span>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
+                Confirm Password <span className="text-neutral-900">*</span>
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
+                <Lock className="w-4 h-4 text-neutral-400 absolute left-3 top-3" />
                 <input
                   type="password"
                   required
                   placeholder="Re-enter password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-stone-300 text-stone-900 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-neutral-300 text-neutral-900 text-xs focus:ring-2 focus:ring-black focus:outline-none"
                 />
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-stone-900 hover:bg-stone-800 text-white rounded-lg text-xs font-semibold uppercase tracking-widest transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2"
+              className="w-full py-3 bg-black hover:bg-neutral-800 text-white rounded-lg text-xs font-semibold uppercase tracking-widest transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2"
             >
               {isLoading ? (
                 <span>Creating Account...</span>
@@ -201,9 +201,9 @@ export default function RegisterPage() {
           </form>
 
           {/* Footer Link */}
-          <div className="text-center text-xs text-stone-500 pt-2">
+          <div className="text-center text-xs text-neutral-500 pt-2">
             Already have an account?{' '}
-            <Link href="/login" className="text-amber-700 font-semibold hover:underline">
+            <Link href="/login" className="text-black font-semibold hover:underline">
               Sign In
             </Link>
           </div>
