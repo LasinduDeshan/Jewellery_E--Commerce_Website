@@ -42,6 +42,8 @@ export interface IOrder extends Document {
   shippingPrice: number;
   dutyEstimated: number;
   totalPrice: number;
+  couponCode?: string;
+  discountAmount: number;
   currency: 'AUD' | 'USD';
   status:
     | 'Processing'
@@ -124,6 +126,16 @@ const OrderSchema = new Schema<IOrder>(
     shippingPrice: { type: Number, default: 0 },
     dutyEstimated: { type: Number, default: 0 },
     totalPrice: { type: Number, required: true, default: 0 },
+    couponCode: {
+      type: String,
+      uppercase: true,
+      trim: true,
+    },
+    discountAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     currency: { type: String, enum: ['AUD', 'USD'], default: 'AUD' },
     status: {
       type: String,
