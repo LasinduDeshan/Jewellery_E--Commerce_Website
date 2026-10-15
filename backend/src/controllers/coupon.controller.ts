@@ -40,7 +40,26 @@ export const validateCoupon = async (req: Request, res: Response): Promise<void>
   const cleanCode = String(code).trim().toUpperCase();
 
   try {
-    const coupon = await Coupon.findOne({ code: cleanCode, isActive: true });
+    const coupon = await Coupon.findOne({
+      code: cleanCode,
+      isActive: true,
+      $and: [
+        {
+          $or: [
+            { expiryDate: { $exists: false } },
+            { expiryDate: null },
+            { expiryDate: { $gt: new Date() } },
+          ],
+        },
+        {
+          $or: [
+            { usageLimit: { $exists: false } },
+            { usageLimit: null },
+            { $expr: { $lt: ['$usageCount', '$usageLimit'] } },
+          ],
+        },
+      ],
+    });
     if (coupon) {
       if (coupon.minOrderAmount && Number(cartTotal) < coupon.minOrderAmount) {
         res.status(400).json({
@@ -73,7 +92,24 @@ export const validateCoupon = async (req: Request, res: Response): Promise<void>
     // fallback
   }
 
-  const matched = inMemoryCoupons.find((c) => c.code === cleanCode && c.isActive);
+  const matched = inMemoryCoupons.find((c) => {
+    if (c.code !== cleanCode || !c.isActive) {
+      return false;
+    }
+
+    if (c.expiryDate && new Date(c.expiryDate) <= new Date()) {
+      return false;
+    }
+
+    if (
+      c.usageLimit != null &&
+      c.usageCount >= c.usageLimit
+    ) {
+      return false;
+    }
+
+    return true;
+  });
   if (!matched) {
     res.status(404).json({ success: false, message: 'Invalid or expired promotional code' });
     return;
@@ -123,10 +159,70 @@ export const getAllCoupons = async (req: Request, res: Response): Promise<void> 
 
 // Admin: Create new coupon
 export const createCoupon = async (req: Request, res: Response): Promise<void> => {
-  const { code, description, discountType, discountValue, minOrderAmount } = req.body;
+  const {
+    code,
+    description,
+    discountType,
+    discountValue,
+    minOrderAmount,
+    expiryDate,
+    usageLimit,
+  } = req.body;
 
-  if (!code || !discountValue) {
-    res.status(400).json({ success: false, message: 'Code and discount value are required' });
+  if (
+    !code ||
+    discountValue === undefined ||
+    !Number.isFinite(Number(discountValue)) ||
+    Number(discountValue) <= 0
+  ) {
+    res.status(400).json({
+      success: false,
+      message: 'A valid code and positive discount value are required',
+    });
+    return;
+  }
+
+  if (
+    discountType !== undefined &&
+    !['percentage', 'fixed'].includes(discountType)
+  ) {
+    res.status(400).json({
+      success: false,
+      message: 'Discount type must be percentage or fixed',
+    });
+    return;
+  }
+
+  if (
+    discountType === 'percentage' &&
+    Number(discountValue) > 100
+  ) {
+    res.status(400).json({
+      success: false,
+      message: 'Percentage discount cannot exceed 100%',
+    });
+    return;
+  }
+
+  if (
+    usageLimit !== undefined &&
+    (!Number.isInteger(Number(usageLimit)) || Number(usageLimit) < 1)
+  ) {
+    res.status(400).json({
+      success: false,
+      message: 'Usage limit must be a positive whole number',
+    });
+    return;
+  }
+
+  if (
+    expiryDate !== undefined &&
+    (!Number.isFinite(Date.parse(expiryDate)) || !expiryDate)
+  ) {
+    res.status(400).json({
+      success: false,
+      message: 'Please provide a valid expiry date',
+    });
     return;
   }
 
@@ -136,6 +232,8 @@ export const createCoupon = async (req: Request, res: Response): Promise<void> =
     discountType: discountType || 'percentage',
     discountValue: Number(discountValue),
     minOrderAmount: Number(minOrderAmount) || 0,
+    expiryDate: expiryDate ? new Date(expiryDate) : undefined,
+    usageLimit: usageLimit ? Number(usageLimit) : undefined,
     isActive: true,
     usageCount: 0,
     createdAt: new Date(),

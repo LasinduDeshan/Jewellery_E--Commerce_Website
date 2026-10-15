@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import { Order, IOrder } from '../models/Order.js';
+import { Coupon } from '../models/Coupon.js';
 import { ApiError } from '../utils/apiError.js';
 import { ApiResponse } from '../utils/apiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -344,10 +346,63 @@ export const createOrder = asyncHandler(async (req: AuthRequest, res: Response) 
     dutyEstimated = 0,
     totalPrice,
     currency = 'AUD',
+    couponCode,
   } = req.body;
 
   if (!orderItems || orderItems.length === 0) {
     throw new ApiError(400, 'Order items cannot be empty');
+  }
+
+  let appliedCouponCode: string | undefined;
+  let discountAmount = 0;
+
+  if (couponCode) {
+    const cleanCode = String(couponCode).trim().toUpperCase();
+
+    const coupon = await Coupon.findOne({
+      code: cleanCode,
+      isActive: true,
+      $and: [
+        {
+          $or: [
+            { expiryDate: { $exists: false } },
+            { expiryDate: null },
+            { expiryDate: { $gt: new Date() } },
+          ],
+        },
+        {
+          $or: [
+            { usageLimit: { $exists: false } },
+            { usageLimit: null },
+            { $expr: { $lt: ['$usageCount', '$usageLimit'] } },
+          ],
+        },
+      ],
+    });
+
+    if (!coupon) {
+      throw new ApiError(400, 'Invalid, expired, or exhausted coupon');
+    }
+
+    const subtotal = Number(itemsPrice);
+
+    if (!Number.isFinite(subtotal) || subtotal <= 0) {
+      throw new ApiError(400, 'A valid order subtotal is required');
+    }
+
+    if (subtotal < (coupon.minOrderAmount ?? 0)) {
+      throw new ApiError(
+        400,
+        `Minimum order amount of AUD ${coupon.minOrderAmount} required`
+      );
+    }
+
+    discountAmount =
+      coupon.discountType === 'percentage'
+        ? Math.round((subtotal * coupon.discountValue) / 100 * 100) / 100
+        : Math.min(coupon.discountValue, subtotal);
+
+    appliedCouponCode = coupon.code;
   }
 
   const initialTimeline = [
@@ -389,46 +444,101 @@ export const createOrder = asyncHandler(async (req: AuthRequest, res: Response) 
   ];
 
   let order: any;
-  try {
-    order = await Order.create({
-      user: req.user?.userId || 'user_guest',
-      customerName: shippingAddress?.fullName || 'Valued Customer',
-      customerEmail: req.user?.email || 'customer@example.com',
-      orderItems,
-      shippingAddress,
-      paymentMethod: paymentMethod || 'CreditCard',
-      itemsPrice,
-      shippingPrice,
-      dutyEstimated,
-      totalPrice,
-      currency,
-      status: 'Processing',
-      timeline: initialTimeline,
-    });
-  } catch (e) {
-    order = {
-      _id: `ord_${Date.now()}`,
-      orderNumber: `AJ-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
-      user: req.user?.userId || 'user_guest',
-      customerName: shippingAddress?.fullName || 'Valued Customer',
-      customerEmail: req.user?.email || 'customer@example.com',
-      orderItems,
-      shippingAddress,
-      paymentMethod: paymentMethod || 'CreditCard',
-      itemsPrice,
-      shippingPrice,
-      dutyEstimated,
-      totalPrice,
-      currency,
-      status: 'Processing',
-      timeline: initialTimeline,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    inMemoryOrders.unshift(order);
+
+  const orderPayload = {
+    user: req.user?.userId || 'user_guest',
+    customerName: shippingAddress?.fullName || 'Valued Customer',
+    customerEmail: req.user?.email || 'customer@example.com',
+    orderItems,
+    shippingAddress,
+    paymentMethod: paymentMethod || 'CreditCard',
+    itemsPrice,
+    shippingPrice,
+    dutyEstimated,
+    couponCode: appliedCouponCode,
+    discountAmount,
+    totalPrice: Math.max(
+      0,
+      Number(totalPrice ?? (Number(itemsPrice) + Number(shippingPrice) + Number(dutyEstimated))) -
+        discountAmount
+    ),
+    currency,
+    status: 'Processing',
+    timeline: initialTimeline,
+  };
+
+  if (appliedCouponCode) {
+    // Coupon orders must be saved in MongoDB; never use the
+    // in-memory fallback for a coupon redemption.
+    const session = await mongoose.startSession();
+
+    try {
+      await session.withTransaction(async () => {
+        // Atomically reserve one use, provided the coupon is
+        // still active, unexpired and below its usage limit.
+        const redeemedCoupon = await Coupon.findOneAndUpdate(
+          {
+            code: appliedCouponCode,
+            isActive: true,
+            $and: [
+              {
+                $or: [
+                  { expiryDate: { $exists: false } },
+                  { expiryDate: null },
+                  { expiryDate: { $gt: new Date() } },
+                ],
+              },
+              {
+                $or: [
+                  { usageLimit: { $exists: false } },
+                  { usageLimit: null },
+                  { $expr: { $lt: ['$usageCount', '$usageLimit'] } },
+                ],
+              },
+            ],
+          },
+          { $inc: { usageCount: 1 } },
+          { new: true, session }
+        );
+
+        if (!redeemedCoupon) {
+          throw new ApiError(
+            400,
+            'Coupon is no longer available. Please validate it again.'
+          );
+        }
+
+        const createdOrders = await Order.create([orderPayload], {
+          session,
+        });
+
+        order = createdOrders[0];
+      });
+    } finally {
+      await session.endSession();
+    }
+  } else {
+    // Preserve the existing non-coupon order behaviour for now.
+    try {
+      order = await Order.create(orderPayload);
+    } catch (error) {
+      order = {
+        _id: `ord_${Date.now()}`,
+        orderNumber: `AJ-${new Date().getFullYear()}-${Math.floor(
+          1000 + Math.random() * 9000
+        )}`,
+        ...orderPayload,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      inMemoryOrders.unshift(order);
+    }
   }
 
-  res.status(201).json(ApiResponse.success(order, 'Order created successfully'));
+  res.status(201).json(
+    ApiResponse.success(order, 'Order created successfully')
+  );
 });
 
 // Admin Endpoint: Update manual courier tracking & NGJA status (Section 5.4)
