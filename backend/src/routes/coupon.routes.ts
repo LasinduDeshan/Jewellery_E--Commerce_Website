@@ -5,6 +5,10 @@ import {
   createCoupon,
   toggleCouponStatus,
 } from '../controllers/coupon.controller.js';
+import {
+  authenticate,
+  authorizeAdmin,
+} from '../middleware/auth.middleware.js';
 
 const router = Router();
 
@@ -12,8 +16,8 @@ const router = Router();
 router.post('/validate', validateCoupon);
 
 // Admin: Manage coupons
-router.get('/', getAllCoupons);
-router.post('/', createCoupon);
-router.patch('/:id/toggle', toggleCouponStatus);
+router.get('/', authenticate, authorizeAdmin, getAllCoupons);
+router.post('/', authenticate, authorizeAdmin, createCoupon);
+router.patch('/:id/toggle', authenticate, authorizeAdmin, toggleCouponStatus);
 
 export default router;

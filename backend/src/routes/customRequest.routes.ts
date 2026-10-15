@@ -5,15 +5,19 @@ import {
   getCustomRequestById,
   updateCustomRequestStatus,
 } from '../controllers/customRequest.controller.js';
+import {
+  authenticate,
+  authorizeAdmin,
+} from '../middleware/auth.middleware.js';
 
 const router = Router();
 
-// Public route to submit a bespoke quote request
+// Public: customers can submit custom jewellery requests.
 router.post('/', createCustomRequest);
 
-// Admin routes to view and manage requests
-router.get('/', getCustomRequests);
-router.get('/:id', getCustomRequestById);
-router.patch('/:id', updateCustomRequestStatus);
+// Admin only: view and manage requests.
+router.get('/', authenticate, authorizeAdmin, getCustomRequests);
+router.get('/:id', authenticate, authorizeAdmin, getCustomRequestById);
+router.patch('/:id', authenticate, authorizeAdmin, updateCustomRequestStatus);
 
 export default router;
