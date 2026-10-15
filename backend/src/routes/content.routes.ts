@@ -3,6 +3,10 @@ import {
   getContentBySlug,
   updateContent,
 } from '../controllers/content.controller.js';
+import {
+  authenticate,
+  authorizeAdmin,
+} from '../middleware/auth.middleware.js';
 
 const router = Router();
 
@@ -10,6 +14,6 @@ const router = Router();
 router.get('/:slug', getContentBySlug);
 
 // Admin: Update CMS content
-router.put('/:slug', updateContent);
+router.put('/:slug', authenticate, authorizeAdmin, updateContent);
 
 export default router;

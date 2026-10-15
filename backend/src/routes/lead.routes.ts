@@ -4,6 +4,10 @@ import {
   getAllLeads,
   updateLead,
 } from '../controllers/lead.controller.js';
+import {
+  authenticate,
+  authorizeAdmin,
+} from '../middleware/auth.middleware.js';
 
 const router = Router();
 
@@ -11,7 +15,7 @@ const router = Router();
 router.post('/whatsapp', logWhatsAppInquiry);
 
 // Admin review & status updates
-router.get('/', getAllLeads);
-router.patch('/:id', updateLead);
+router.get('/', authenticate, authorizeAdmin, getAllLeads);
+router.patch('/:id', authenticate, authorizeAdmin, updateLead);
 
 export default router;
