@@ -6,6 +6,7 @@ import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { ProductCard } from '../../components/ui/ProductCard';
 import {
   Search,
   SlidersHorizontal,
@@ -473,97 +474,13 @@ export default function ShopCataloguePage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => {
-                  const inWish = isInWishlist(product._id);
-                  const mainImage =
-                    product.images[0]?.url ||
-                    'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=600&q=80';
-                  const hoverImage =
-                    product.images[1]?.url || mainImage;
-
-                  return (
-                    <div
-                      key={product._id}
-                      className="group bg-white rounded-2xl border border-neutral-200 hover:border-black overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col"
-                    >
-                      {/* Image Frame with Wishlist Button */}
-                      <Link
-                        href={`/product/${product.slug}`}
-                        className="relative block aspect-square overflow-hidden bg-neutral-100"
-                      >
-                        <img
-                          src={mainImage}
-                          alt={product.name}
-                          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                        />
-
-                        {/* Stock Urgency Tag (Section 5.2) */}
-                        {product.stockQuantity <= 2 && (
-                          <div className="absolute top-3 left-3 bg-black/90 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-xs border border-neutral-700">
-                            Only {product.stockQuantity} Left
-                          </div>
-                        )}
-
-                        {/* Wishlist Button */}
-                        <button
-                          onClick={(e) => handleToggleWishlist(product, e)}
-                          className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors shadow-sm cursor-pointer ${
-                            inWish
-                              ? 'bg-black text-white'
-                              : 'bg-white/80 hover:bg-white text-neutral-700 hover:text-black'
-                          }`}
-                          title="Save to Wishlist"
-                        >
-                          <Heart className={`w-4 h-4 ${inWish ? 'fill-current' : ''}`} />
-                        </button>
-                      </Link>
-
-                      {/* Product Content Details */}
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
-                          {/* Metal & Gemstone Pill */}
-                          <div className="flex items-center gap-1.5 text-[11px] text-neutral-600 font-semibold mb-1">
-                            <span>{product.metal?.type === 'rose-gold' ? '18K Rose Gold' : '925 Silver'}</span>
-                            <span>•</span>
-                            <span className="truncate">{product.gemstone?.type}</span>
-                          </div>
-
-                          {/* Title */}
-                          <Link href={`/product/${product.slug}`}>
-                            <h4 className="text-black font-medium text-base line-clamp-1 hover:text-neutral-600 transition-colors">
-                              {product.name}
-                            </h4>
-                          </Link>
-
-                          {/* Certification Trust Pill */}
-                          <div className="flex items-center gap-1 text-[10px] text-neutral-500 mt-1">
-                            <ShieldCheck className="w-3 h-3 text-black" />
-                            <span>NGJA / GIC Certified Gemstone</span>
-                          </div>
-                        </div>
-
-                        {/* Price & Quick Add */}
-                        <div className="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between">
-                          <div>
-                            <span className="text-[10px] text-neutral-400 block uppercase">Price (AUD)</span>
-                            <span className="text-base font-bold text-black">
-                              ${product.price} AUD
-                            </span>
-                          </div>
-
-                          <button
-                            onClick={(e) => handleQuickAdd(product, e)}
-                            className="px-3.5 py-2 rounded-lg bg-black hover:bg-neutral-800 text-white text-xs font-semibold tracking-wider transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
-                            title="Add to Shopping Bag"
-                          >
-                            <ShoppingBag className="w-3.5 h-3.5" />
-                            <span>Add</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={product._id}
+                    product={product}
+                    onQuickAdd={handleQuickAdd}
+                  />
+                ))}
               </div>
             )}
           </div>

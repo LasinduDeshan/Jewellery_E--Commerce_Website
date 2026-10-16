@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Cormorant_Garamond } from "next/font/google";
+import { Inter, Cormorant_Infant } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../context/AuthContext";
 import { WishlistProvider } from "../context/WishlistContext";
@@ -11,10 +11,11 @@ const inter = Inter({
   display: "swap",
 });
 
-const cormorant = Cormorant_Garamond({
+const cormorant = Cormorant_Infant({
   variable: "--font-cormorant",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
