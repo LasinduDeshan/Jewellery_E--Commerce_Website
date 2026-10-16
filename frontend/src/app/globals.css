@@ -27,8 +27,8 @@
     font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   }
 
-  .font-cormorant {
-    font-family: var(--font-cormorant), "Cormorant Garamond", Georgia, serif !important;
+  .font-cormorant, .font-cormorant-infant, .font-topic {
+    font-family: var(--font-cormorant), "Cormorant Infant", Georgia, serif !important;
   }
 }
 

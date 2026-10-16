@@ -15,16 +15,16 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export const ArtisanalProcess: React.FC = () => {
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-stone-900 text-stone-100 border-t border-stone-800">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-neutral-950 text-white border-t border-neutral-800">
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-amber-400 text-xs font-semibold tracking-widest uppercase">
+          <span className="text-neutral-400 text-xs font-semibold tracking-widest uppercase">
             Ceylon Heritage & Craftsmanship
           </span>
-          <h2 className="text-3xl sm:text-4xl font-serif text-white mt-2 font-normal">
+          <h2 className="text-3xl sm:text-4xl font-cormorant text-white mt-2 font-normal">
             How Your Bespoke Jewellery is Born
           </h2>
-          <p className="mt-4 text-stone-400 text-sm sm:text-base leading-relaxed">
+          <p className="mt-4 text-neutral-400 text-sm sm:text-base leading-relaxed font-light">
             From the historic gem-rich gravels of Ratnapura to our master setting bench, every piece follows an unbroken lineage of Sri Lankan artisanal perfection.
           </p>
         </div>
@@ -34,28 +34,28 @@ export const ArtisanalProcess: React.FC = () => {
             return (
               <div
                 key={step.stepNumber}
-                className="relative rounded-xl bg-stone-800/60 border border-stone-700/80 p-6 flex flex-col justify-between hover:border-amber-500/50 transition-colors"
+                className="relative rounded-2xl bg-neutral-900 border border-neutral-800 p-6 flex flex-col justify-between hover:border-neutral-500 transition-colors"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="font-serif text-3xl font-bold text-amber-500/40">
+                    <span className="font-cormorant text-4xl font-bold text-white/20">
                       {step.stepNumber}
                     </span>
-                    <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 text-white flex items-center justify-center">
                       {iconMap[step.iconName] || <Sparkles className="w-5 h-5" />}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-amber-400 text-xs font-medium mb-1">
-                    <MapPin className="w-3 h-3" />
+                  <div className="flex items-center gap-1.5 text-neutral-400 text-xs font-medium mb-1">
+                    <MapPin className="w-3 h-3 text-neutral-500" />
                     <span>{step.location}</span>
                   </div>
 
-                  <h3 className="text-lg font-serif text-white mb-2">
+                  <h3 className="text-xl font-cormorant font-medium text-white mb-2">
                     {step.title}
                   </h3>
 
-                  <p className="text-xs text-stone-400 leading-relaxed">
+                  <p className="text-xs text-neutral-400 leading-relaxed font-light">
                     {step.description}
                   </p>
                 </div>

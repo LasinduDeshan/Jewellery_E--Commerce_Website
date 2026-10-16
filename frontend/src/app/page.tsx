@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 import { ProvenanceHero } from '../components/home/ProvenanceHero';
+import { EditorialGrid } from '../components/home/EditorialGrid';
+import { ProductCard } from '../components/ui/ProductCard';
 import {
   Sparkles,
   Gem,
@@ -267,13 +269,9 @@ export default function HomePage() {
         id="featured-collection"
         className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full"
       >
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-neutral-200">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 ">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-neutral-600 mb-2">
-              <Gem className="w-3.5 h-3.5 text-black" />
-              <span>Direct From Sri Lanka Ateliers</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl text-black font-normal tracking-tight">
+            <h2 className="text-4xl sm:text-5xl font-cormorant text-black font-normal tracking-tight leading-tight">
               Featured Ceylon Sapphires
             </h2>
             <p className="text-xs sm:text-sm text-neutral-600 font-light mt-1 max-w-xl">
@@ -294,7 +292,7 @@ export default function HomePage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveCategory(tab.id)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition-all cursor-pointer whitespace-nowrap ${
+                className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   activeCategory === tab.id
                     ? 'bg-black text-white shadow-xs'
                     : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
@@ -307,107 +305,10 @@ export default function HomePage() {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProducts.slice(0, 6).map((item) => {
-            const inWish = isInWishlist(item._id);
-            const primaryImage =
-              item.images && item.images[0]?.url
-                ? item.images[0].url
-                : 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80';
-
-            return (
-              <div
-                key={item._id}
-                className="group bg-white rounded-3xl border border-neutral-200 hover:border-black overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col"
-              >
-                <div className="aspect-square bg-neutral-100 overflow-hidden relative">
-                  <Link href={`/product/${item.slug}`}>
-                    <img
-                      src={primaryImage}
-                      alt={item.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                  </Link>
-
-                  {/* Badges */}
-                  <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                    <span className="bg-black/85 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
-                      NGJA Certified
-                    </span>
-                    {item.stockQuantity <= 2 && (
-                      <span className="bg-neutral-900/90 border border-neutral-700 backdrop-blur-md text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
-                        Only {item.stockQuantity} Left
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Wishlist Button */}
-                  <button
-                    onClick={() => {
-                      if (inWish) removeFromWishlist(item._id);
-                      else
-                        addToWishlist({
-                          _id: item._id,
-                          title: item.name,
-                          slug: item.slug,
-                          price: item.price,
-                          image: primaryImage,
-                          gemstone: item.gemstone?.type || 'Ceylon Sapphire',
-                          metal: item.metal?.type || 'silver',
-                        });
-                    }}
-                    aria-label="Toggle Wishlist"
-                    className="absolute top-3 right-3 p-2 rounded-full bg-white/90 hover:bg-white text-neutral-800 backdrop-blur shadow-xs transition-transform active:scale-90 cursor-pointer"
-                  >
-                    <Heart
-                      className={`w-4 h-4 ${inWish ? 'fill-black text-black' : 'text-neutral-700'}`}
-                    />
-                  </button>
-                </div>
-
-                <div className="p-6 flex-1 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between text-[11px] text-neutral-600 font-bold mb-1">
-                      <span>{item.gemstone?.type || 'Ceylon Sapphire'}</span>
-                      {item.gemstone?.carat && (
-                        <span className="text-neutral-400 font-mono font-normal">
-                          {item.gemstone.carat} ct
-                        </span>
-                      )}
-                    </div>
-
-                    <Link href={`/product/${item.slug}`}>
-                      <h3 className="text-lg font-medium text-black group-hover:text-neutral-600 transition-colors line-clamp-1">
-                        {item.name}
-                      </h3>
-                    </Link>
-
-                    <p className="text-xs text-neutral-500 mt-1 line-clamp-1">
-                      {item.metal?.purity || item.metal?.type || 'Precious Metal'}
-                    </p>
-                  </div>
-
-                  <div className="mt-5 pt-4 border-t border-neutral-100 flex items-center justify-between">
-                    <div>
-                      <span className="text-lg font-bold text-black">
-                        ${item.price} AUD
-                      </span>
-                      <span className="block text-[10px] text-neutral-400 uppercase tracking-wider">
-                        Incl. Express Transit
-                      </span>
-                    </div>
-
-                    <Link
-                      href={`/product/${item.slug}`}
-                      className="px-4 py-2 rounded-full bg-black hover:bg-neutral-800 text-white text-xs font-semibold uppercase tracking-wider transition-colors"
-                    >
-                      View Piece
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 justify-center max-w-6xl mx-auto">
+          {filteredProducts.slice(0, 8).map((item) => (
+            <ProductCard key={item._id} product={item} compact={true} />
+          ))}
         </div>
 
         {/* View Entire Collection Link */}
@@ -423,64 +324,119 @@ export default function HomePage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 4. BESPOKE CUSTOMIZER STUDIO CALLOUT (SECTION 5.5 / 5.2)     */}
+      {/* 4. HIGH-FASHION EDITORIAL IMAGE GRID (MAGAZINE ASYMMETRIC)   */}
       {/* ============================================================ */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full mb-12">
-        <div className="bg-gradient-to-br from-black via-neutral-950 to-neutral-900 text-white rounded-3xl p-8 sm:p-14 border border-neutral-800 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10">
-          {/* Ambient Subtle Lighting */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-neutral-600/10 rounded-full blur-3xl pointer-events-none" />
+      <EditorialGrid />
 
-          <div className="max-w-2xl relative z-10 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-[11px] font-bold uppercase tracking-wider">
-              <Sparkles className="w-3 h-3 text-white" />
-              <span>Interactive Bespoke Studio</span>
-            </div>
+      {/* ============================================================ */}
+      {/* 5. BESPOKE CUSTOMIZER STUDIO CALLOUT (SECTION 5.5 / 5.2)     */}
+      {/* Full-Width Borderless Triptych & Customization Studio Layout */}
+      {/* ============================================================ */}
+      <section className="w-full bg-white py-16 sm:py-24 border-t border-neutral-200/80 overflow-hidden">
+        {/* Section Heading matching site theme */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-10 sm:mb-14">
+          
+          <h2 className="text-2xl sm:text-6xl font-cormorant text-black font-normal tracking-tight">
+            Customize Your Jewellery
+          </h2>
+          <p className="mt-3 text-xs sm:text-sm text-neutral-500 max-w-xl mx-auto font-light leading-relaxed">
+            Collaborate 1-on-1 with our master Ratnapura lapidaries and goldsmiths to sculpt a bespoke Ceylon sapphire heirloom that belongs solely to you.
+          </p>
+        </div>
 
-            <h2 className="text-3xl sm:text-5xl text-white font-normal leading-tight">
-              Design Your One-of-a-Kind Ceylon Heirloom
-            </h2>
-
-            <p className="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-xl">
-              Can't find your dream piece? Select your rare Ceylon sapphire (Royal Blue, Padparadscha, Teal, or Canary), choose between 925 Sterling Silver or 18K Rose Gold, pick your optical faceting cut, and collaborate 1-on-1 with our master lapidaries.
-            </p>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-xs">
-                <span className="text-white block font-semibold">1. Choose Gem</span>
-                <span className="text-[10px] text-neutral-400">Natural unheated rough</span>
-              </div>
-              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-xs">
-                <span className="text-white block font-semibold">2. Select Metal</span>
-                <span className="text-[10px] text-neutral-400">Solid silver or rose gold</span>
-              </div>
-              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-xs col-span-2 sm:col-span-1">
-                <span className="text-white block font-semibold">3. Free Quote</span>
-                <span className="text-[10px] text-neutral-400">24–48hr expert render</span>
-              </div>
-            </div>
+        {/* Top Half: Full-Width 3-Photo Triptych (Center Dominant + Left/Right Peek Frames) */}
+        <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8 w-full overflow-hidden">
+          {/* Left Peek Image */}
+          <div className="w-24 sm:w-44 md:w-64 lg:w-80 aspect-[3/4] sm:aspect-[4/5] overflow-hidden shrink-0 bg-neutral-100 rounded-2xl border border-neutral-200/80 shadow-2xs">
+            <img
+              src="/img/a4dbfd433c3bd35c67c18b4894f6321a.jpg"
+              alt="Atelier jewellery study"
+              className="w-full h-full object-cover object-center grayscale contrast-[1.05] hover:grayscale-0 hover:scale-105 transition-all duration-700 ease-out cursor-pointer"
+            />
           </div>
 
-          <div className="relative z-10 flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0 w-full sm:w-auto">
+          {/* Center Dominant Image */}
+          <div className="w-64 sm:w-96 md:w-[480px] lg:w-[560px] aspect-square sm:aspect-[4/5] overflow-hidden shrink-0 bg-neutral-100 rounded-3xl border border-neutral-200 shadow-md">
+            <img
+              src="/img/58b04d6c32e22fba64656208a9442068.jpg"
+              alt="Precious Ceylon heirloom detail"
+              className="w-full h-full object-cover object-center grayscale contrast-[1.05] hover:grayscale-0 hover:scale-105 transition-all duration-700 ease-out cursor-pointer"
+            />
+          </div>
+
+          {/* Right Peek Image */}
+          <div className="w-24 sm:w-44 md:w-64 lg:w-80 aspect-[3/4] sm:aspect-[4/5] overflow-hidden shrink-0 bg-neutral-100 rounded-2xl border border-neutral-200/80 shadow-2xs">
+            <img
+              src="/img/49218f1fb573490eea4bc7f2e7d02113.jpg"
+              alt="Handcrafted bespoke Ceylon jewellery"
+              className="w-full h-full object-cover object-center grayscale contrast-[1.05] hover:grayscale-0 hover:scale-105 transition-all duration-700 ease-out cursor-pointer"
+            />
+          </div>
+        </div>
+
+        {/* 3 Step Interactive Atelier Cards */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 sm:mt-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 rounded-2xl bg-neutral-50 border border-neutral-200 hover:border-black transition-all text-left group">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 block mb-2">Step 01</span>
+              <h3 className="font-cormorant text-xl font-medium text-black mb-1">Select Raw Sapphire</h3>
+              <p className="text-xs text-neutral-500 font-light leading-relaxed">
+                Choose unheated Royal Blue, rare Padparadscha, Peacock Teal, or Golden Yellow rough from our Ratnapura vaults.
+              </p>
+            </div>
+            <div className="p-6 rounded-2xl bg-neutral-50 border border-neutral-200 hover:border-black transition-all text-left group">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 block mb-2">Step 02</span>
+              <h3 className="font-cormorant text-xl font-medium text-black mb-1">Choose Cut & Precious Metal</h3>
+              <p className="text-xs text-neutral-500 font-light leading-relaxed">
+                Opt for cushion, oval, emerald, or pear faceting set in solid 925 sterling silver or 18K solid gold / rose vermeil.
+              </p>
+            </div>
+            <div className="p-6 rounded-2xl bg-neutral-50 border border-neutral-200 hover:border-black transition-all text-left group">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 block mb-2">Step 03</span>
+              <h3 className="font-cormorant text-xl font-medium text-black mb-1">Receive 3D CAD & Quote</h3>
+              <p className="text-xs text-neutral-500 font-light leading-relaxed">
+                Get a photorealistic 3D rendering and transparent quote within 24–48 hours, with zero purchase obligation.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Half: Centered Quote Mark, Poetic Atelier Statement & CTAs */}
+        <div className="max-w-3xl mx-auto text-center px-4 sm:px-6 mt-12 flex flex-col items-center">
+          {/* 3-Line Italicized Quotation (Matching Reference Style) */}
+          <p className="text-lg sm:text-xl md:text-2xl font-cormorant italic text-neutral-900 leading-relaxed max-w-xl">
+            “In a world of mass production, true bespoke art remains rare.<br className="hidden sm:inline" />
+            However pure and understated you are,<br className="hidden sm:inline" />
+            your one-of-a-kind Ceylon heirloom is irreplaceable.”
+          </p>
+
+          {/* Description Subtext */}
+          <p className="text-xs text-neutral-500 font-light mt-4 max-w-md leading-relaxed">
+            Can't find your dream piece? Select your rare Ceylon sapphire (Royal Blue, Padparadscha, Teal, or Canary), choose 925 Sterling Silver or 18K Rose Gold, and collaborate 1-on-1 with our master lapidaries.
+          </p>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 mt-8 w-full sm:w-auto">
             <Link
               href="/customize"
-              className="px-8 py-4 rounded-full bg-white hover:bg-neutral-200 text-black font-bold text-xs uppercase tracking-widest transition-all shadow-xl shadow-black/60 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-black hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-widest transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer group"
             >
-              <Sparkles className="w-4 h-4 text-black" />
-              <span>Launch Design Studio</span>
-              <ArrowRight className="w-4 h-4" />
+              <Sparkles className="w-3.5 h-3.5 text-white" />
+              <span>Launch Custom Studio</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
 
             <a
               href="https://wa.me/94771234567"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white hover:bg-neutral-100 text-neutral-900 border border-neutral-300 hover:border-black font-bold text-xs uppercase tracking-widest transition-all shadow-2xs flex items-center justify-center gap-2 cursor-pointer"
             >
-              <MessageCircle className="w-4 h-4 text-white" />
+              <MessageCircle className="w-3.5 h-3.5 text-neutral-800" />
               <span>WhatsApp Concierge</span>
             </a>
           </div>
+
         </div>
       </section>
 
@@ -511,7 +467,7 @@ export default function HomePage() {
               The Ethical Chain of Custody
             </span>
 
-            <h2 className="text-3xl sm:text-4xl text-black font-normal leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-cormorant text-black font-normal leading-tight">
               Why Sri Lankan Sapphires Are Revered Worldwide
             </h2>
 

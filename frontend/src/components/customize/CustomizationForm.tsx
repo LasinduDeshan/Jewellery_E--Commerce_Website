@@ -172,17 +172,17 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
         <span className="text-neutral-500 text-xs font-semibold tracking-widest uppercase">
           Step 6 • Request a Quote
         </span>
-        <h2 className="text-3xl sm:text-4xl font-serif text-neutral-900 mt-2 font-normal">
+        <h2 className="text-3xl sm:text-4xl font-cormorant text-black mt-2 font-normal">
           Customize Your Sapphire Piece
         </h2>
-        <p className="mt-3 text-neutral-600 text-sm max-w-xl mx-auto">
+        <p className="mt-3 text-neutral-600 text-sm max-w-xl mx-auto font-light">
           Review or fine-tune your selected specifications below, then submit your request to receive a detailed quote with gem availability and pricing options.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-neutral-200 shadow-xl p-6 sm:p-10 space-y-10">
+      <form onSubmit={handleSubmit} className="bg-white rounded-3xl border border-neutral-200 shadow-xl p-6 sm:p-10 space-y-10">
         {errorMessage && (
-          <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm flex items-center gap-2">
+          <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-center gap-2">
             <AlertCircle className="w-5 h-5 shrink-0" />
             <span>{errorMessage}</span>
           </div>
@@ -201,14 +201,14 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
                   type="button"
                   key={type.id}
                   onClick={() => setSelectedJewelleryType(type.id)}
-                  className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
+                  className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
                     active
                       ? 'border-black bg-neutral-100 ring-2 ring-black/20 shadow-sm'
-                      : 'border-neutral-200 hover:border-neutral-300 bg-neutral-50'
+                      : 'border-neutral-200 hover:border-black bg-neutral-50'
                   }`}
                 >
-                  <div className="font-serif font-medium text-neutral-900 text-base">{type.label}</div>
-                  <div className="text-[11px] text-neutral-500 mt-0.5">{type.sublabel}</div>
+                  <div className="font-cormorant font-medium text-neutral-900 text-lg">{type.label}</div>
+                  <div className="text-[11px] text-neutral-500 mt-0.5 font-light">{type.sublabel}</div>
                 </button>
               );
             })}
@@ -500,14 +500,14 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
 
         {/* Submit Action */}
         <div className="pt-6 border-t border-neutral-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-xs text-neutral-500">
+          <div className="text-xs text-neutral-500 font-light">
             🔒 Your bespoke request is confidential. No upfront payment required.
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-auto px-8 py-3.5 bg-black hover:bg-neutral-800 text-white rounded-md text-xs font-semibold uppercase tracking-widest transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            className="w-full sm:w-auto px-8 py-3.5 bg-black hover:bg-neutral-800 text-white rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
           >
             {isSubmitting ? (
               <span>Submitting Request...</span>

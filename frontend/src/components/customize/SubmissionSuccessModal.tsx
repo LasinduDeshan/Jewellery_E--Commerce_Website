@@ -41,7 +41,7 @@ export const SubmissionSuccessModal: React.FC<SubmissionSuccessModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="bg-white rounded-2xl max-w-xl w-full p-8 shadow-2xl border border-stone-200 text-center relative overflow-hidden">
+      <div className="bg-white rounded-3xl max-w-xl w-full p-8 shadow-2xl border border-neutral-200 text-center relative overflow-hidden">
         {/* Decorative Top Accent */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-black" />
 
@@ -52,7 +52,7 @@ export const SubmissionSuccessModal: React.FC<SubmissionSuccessModalProps> = ({
         <span className="text-xs font-semibold tracking-widest uppercase text-neutral-500">
           Request Confirmed
         </span>
-        <h3 className="text-2xl sm:text-3xl font-serif text-neutral-900 mt-1 font-medium">
+        <h3 className="text-3xl font-cormorant text-neutral-900 mt-1 font-normal">
           Thank You, {customerName}!
         </h3>
 

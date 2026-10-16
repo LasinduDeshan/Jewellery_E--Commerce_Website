@@ -23,7 +23,7 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
         <div className="flex items-center justify-between p-6 border-b border-neutral-200">
           <div className="flex items-center gap-2.5">
             <Ruler className="w-5 h-5 text-neutral-900" />
-            <h3 className="text-xl font-serif text-neutral-900 font-medium tracking-tight">
+            <h3 className="text-2xl font-cormorant text-neutral-900 font-normal tracking-tight">
               Jewellery Sizing Guide
             </h3>
           </div>
