@@ -255,87 +255,63 @@ export default function AdminProductsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] flex flex-col">
-      {/* Header */}
-      <header className="bg-stone-900 text-white border-b border-stone-800 py-4 px-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/admin"
-              className="p-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors"
-              title="Return to Master Admin"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <div>
-              <h1 className="text-lg font-serif tracking-wide text-white font-medium flex items-center gap-2">
-                <Gem className="w-5 h-5 text-amber-400" />
-                <span>Product Catalogue & Inventory Desk (Section 5.8)</span>
-              </h1>
-              <p className="text-[11px] text-stone-400">
-                Add, edit, remove products, inventory counts, 360° videos, and Gender/Style tags.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={openCreateModal}
-              className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-xs uppercase tracking-wider rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add New Jewellery</span>
-            </button>
-            <button
-              onClick={fetchProducts}
-              className="p-2 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-            </button>
-          </div>
+    <div className="space-y-6 max-w-7xl w-full">
+      {/* Top Controls Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
+        <div className="relative w-full sm:w-80">
+          <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3.5 top-3" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by name, SKU, or gemstone..."
+            className="w-full pl-9 pr-4 py-2 bg-neutral-50 hover:bg-neutral-100 focus:bg-white border border-neutral-200/90 rounded-full text-xs text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-black transition-all"
+          />
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8 flex-1 w-full space-y-6">
-        {statusMsg && (
-          <div className="p-4 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-2xl text-xs flex items-center justify-between shadow-xs">
-            <span className="font-medium flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-              {statusMsg}
-            </span>
-            <button
-              onClick={() => setStatusMsg('')}
-              className="text-stone-400 hover:text-stone-700 p-1"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        )}
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+          <span className="text-xs text-neutral-500 font-light">
+            Total Active Pieces: <strong className="text-black font-semibold">{products.length}</strong>
+          </span>
 
-        {/* Search & Stats Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-stone-200 shadow-xs">
-          <div className="relative w-full sm:w-80">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by name, SKU, or gemstone..."
-              className="w-full pl-9 pr-4 py-2 rounded-xl border border-stone-300 text-xs focus:outline-none focus:border-amber-500"
-            />
-            <Search className="w-4 h-4 text-stone-400 absolute left-3 top-2.5" />
-          </div>
+          <button
+            onClick={openCreateModal}
+            className="px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-full text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs shrink-0"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Add New Jewellery</span>
+          </button>
 
-          <div className="text-xs text-stone-500 font-medium">
-            Total Active Pieces: <strong className="text-stone-900">{products.length}</strong>
-          </div>
+          <button
+            onClick={fetchProducts}
+            className="p-2 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black transition-colors shadow-2xs cursor-pointer shrink-0"
+            title="Refresh Products"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+          </button>
         </div>
+      </div>
+
+      {statusMsg && (
+        <div className="p-3.5 bg-neutral-100 text-neutral-900 border border-neutral-300 rounded-2xl text-xs flex items-center justify-between shadow-2xs">
+          <span className="font-medium flex items-center gap-2">
+            <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+            {statusMsg}
+          </span>
+          <button
+            onClick={() => setStatusMsg('')}
+            className="text-neutral-400 hover:text-black p-1"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
         {/* Product Table */}
         <div className="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-stone-50 border-b border-stone-200 text-stone-600 uppercase tracking-wider text-[10px]">
+              <thead className="bg-neutral-50/80 border-b border-neutral-200/90 text-neutral-500 text-xs font-medium">
                 <tr>
                   <th className="py-3 px-4">Item</th>
                   <th className="py-3 px-4">Category</th>
@@ -369,7 +345,7 @@ export default function AdminProductsPage() {
                       {item.category?.replace(/-/g, ' ')}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className="px-2 py-0.5 rounded-full bg-stone-100 text-stone-700 font-bold uppercase text-[10px]">
+                      <span className="px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-700 font-medium capitalize text-xs border border-neutral-200/60">
                         {item.gender || 'women'}
                       </span>
                     </td>
@@ -412,14 +388,13 @@ export default function AdminProductsPage() {
             </table>
           </div>
         </div>
-      </main>
 
       {/* CREATE / EDIT MODAL */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 overflow-y-auto">
           <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-5 my-8">
             <div className="flex items-center justify-between pb-3 border-b border-stone-200">
-              <h3 className="font-serif text-lg font-bold text-stone-900">
+              <h3 className="text-lg font-semibold text-black">
                 {editingProduct ? 'Edit Jewellery Piece' : 'Add New Jewellery to Catalogue'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="p-1 text-stone-400 hover:text-stone-900">
@@ -629,20 +604,20 @@ export default function AdminProductsPage() {
                 </div>
               </div>
 
-              <div className="pt-3 flex gap-3 border-t border-stone-200">
+              <div className="pt-3 flex gap-3 border-t border-neutral-100">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="flex-1 py-3 border border-stone-300 rounded-xl text-stone-700 font-semibold hover:bg-stone-50 cursor-pointer"
+                  className="flex-1 py-3 border border-neutral-200/90 rounded-full text-neutral-700 font-medium hover:bg-neutral-50 cursor-pointer text-xs transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saveLoading}
-                  className="flex-1 py-3 bg-stone-900 text-white rounded-xl font-bold hover:bg-amber-600 transition-colors cursor-pointer"
+                  className="flex-1 py-3 bg-black text-white rounded-full font-medium hover:bg-neutral-800 transition-colors cursor-pointer text-xs shadow-2xs"
                 >
-                  {saveLoading ? 'Saving...' : 'Save Product'}
+                  {saveLoading ? 'Saving Product...' : 'Save Product to Catalogue'}
                 </button>
               </div>
             </form>

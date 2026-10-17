@@ -57,7 +57,7 @@ export const createCustomRequest = asyncHandler(async (req: Request, res: Respon
   } catch (error) {
     // Fallback in-memory persistence
     createdRequest = {
-      _id: `mock_${Date.now()}`,
+      _id: `req_${Date.now()}`,
       ticketId,
       fullName,
       email,
