@@ -30,6 +30,12 @@
   .font-cormorant, .font-cormorant-infant, .font-topic {
     font-family: var(--font-cormorant), "Cormorant Infant", Georgia, serif !important;
   }
+
+  /* Admin Panel Inter Font Enforcement & Normal Tracking */
+  .admin-scope, .admin-scope * {
+    font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    letter-spacing: normal !important;
+  }
 }
 
 /* Custom smooth animations & glassmorphism (Monochrome White, Black, Gray) */

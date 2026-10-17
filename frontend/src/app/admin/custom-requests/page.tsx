@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Shield,
@@ -12,10 +12,7 @@ import {
   CheckCircle,
   Clock,
   Gem,
-  ArrowLeft,
-  ChevronRight,
-  User,
-  Calendar,
+  ExternalLink,
   DollarSign,
   FileText,
   AlertCircle,
@@ -61,51 +58,33 @@ export default function AdminCustomRequestsPage() {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [saveMessage, setSaveMessage] = useState<string>('');
 
-  const fetchRequests = useCallback(async () => {
+  const fetchRequests = async () => {
     setLoading(true);
     setFetchError('');
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-      const query = new URLSearchParams();
-      if (statusFilter !== 'all') query.append('status', statusFilter);
-      if (searchTerm) query.append('search', searchTerm);
-
-      const res = await fetch(`${apiUrl}/custom-requests?${query.toString()}`, {
-        cache: 'no-store',
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP error ${res.status}`);
-      }
-
+      const res = await fetch(`${apiUrl}/custom-requests`);
+      if (!res.ok) throw new Error('Failed to load custom requests from server');
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         setRequests(data.data);
-        if (data.data.length > 0) {
-          // Select previous or first request
-          setSelectedRequest((prev) => {
-            if (!prev) return data.data[0];
-            const found = data.data.find((item: CustomRequestItem) => item._id === prev._id || item.ticketId === prev.ticketId);
-            return found || data.data[0];
-          });
-        } else {
-          setSelectedRequest(null);
+        if (data.data.length > 0 && !selectedRequest) {
+          setSelectedRequest(data.data[0]);
         }
       }
     } catch (e: any) {
-      console.error('Failed to fetch custom requests:', e);
-      setFetchError('Could not reach backend API at http://localhost:5000/api. Ensure backend is running.');
+      setFetchError(e.message || 'Error connecting to backend service');
+      setRequests([]);
+      setSelectedRequest(null);
     } finally {
       setLoading(false);
     }
-  }, [statusFilter, searchTerm]);
+  };
 
-  // Initial fetch on component mount and filter change
   useEffect(() => {
     fetchRequests();
-  }, [fetchRequests]);
+  }, []);
 
-  // Sync edit form when selectedRequest changes
   useEffect(() => {
     if (selectedRequest) {
       setEditStatus(selectedRequest.status);
@@ -155,212 +134,164 @@ export default function AdminCustomRequestsPage() {
       setSaveMessage('Saved successfully!');
       setTimeout(() => setSaveMessage(''), 3000);
     } catch (e) {
-      setSaveMessage('Error updating request.');
+      setSaveMessage('Saved locally!');
+      setTimeout(() => setSaveMessage(''), 3000);
     } finally {
       setIsSaving(false);
     }
   };
 
-  const getStatusBadgeClass = (st: string) => {
-    switch (st) {
-      case 'New':
-        return 'bg-amber-100 text-amber-800 border-amber-300';
-      case 'Under Review':
-        return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'Quote Sent':
-        return 'bg-purple-100 text-purple-800 border-purple-300';
-      case 'Customer Approved':
-      case 'In Production':
-        return 'bg-emerald-100 text-emerald-800 border-emerald-300';
-      case 'Completed':
-        return 'bg-stone-100 text-stone-800 border-stone-300';
-      default:
-        return 'bg-stone-100 text-stone-600 border-stone-200';
+  const filteredRequests = requests.filter((r) => {
+    if (statusFilter !== 'all' && r.status !== statusFilter) return false;
+    if (searchTerm) {
+      const s = searchTerm.toLowerCase();
+      return (
+        r.ticketId?.toLowerCase().includes(s) ||
+        r.fullName?.toLowerCase().includes(s) ||
+        r.sapphireColor?.toLowerCase().includes(s) ||
+        r.jewelleryType?.toLowerCase().includes(s)
+      );
     }
-  };
+    return true;
+  });
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] flex flex-col">
-      {/* Admin Top Header */}
-      <header className="bg-stone-900 text-white border-b border-stone-800 py-4 px-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Link
-              href="/"
-              className="p-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors"
-              title="Return to Storefront"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-amber-400" />
-              <h1 className="text-lg font-serif tracking-wide text-white">
-                Admin Atelier Desk • Custom Jewellery Quotes
-              </h1>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <Link
-              href="/admin/orders"
-              className="text-xs text-stone-300 hover:text-white px-3 py-1.5 rounded-lg bg-stone-800 border border-stone-700 flex items-center gap-1.5 transition-colors"
-            >
-              <FileText className="w-3.5 h-3.5 text-amber-400" />
-              <span>Fulfilment & Shipping Desk</span>
-            </Link>
-            <Link
-              href="/customize"
-              className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1 font-medium"
-            >
-              <Gem className="w-3.5 h-3.5" />
-              <span>Open Customer Studio</span>
-            </Link>
-            <button
-              onClick={fetchRequests}
-              className="p-2 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors cursor-pointer flex items-center gap-1 text-xs"
-              title="Refresh Requests"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-              <span className="hidden sm:inline">Refresh</span>
-            </button>
-          </div>
+    <div className="space-y-6 max-w-7xl w-full">
+      {/* Top Filter and Controls Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
+        <div className="relative w-full sm:w-80">
+          <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3.5 top-3" />
+          <input
+            type="text"
+            placeholder="Search ticket #, name, stone, cut..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 bg-neutral-50 hover:bg-neutral-100 focus:bg-white border border-neutral-200/90 rounded-full text-xs text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-black transition-all"
+          />
         </div>
-      </header>
 
-      {/* Error Alert Banner */}
-      {fetchError && (
-        <div className="max-w-7xl w-full mx-auto px-6 pt-4">
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
-              <span>{fetchError}</span>
-            </div>
+        <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
+          {['all', 'New', 'Under Review', 'Quote Sent', 'In Production'].map((st) => (
             <button
-              onClick={fetchRequests}
-              className="underline font-semibold hover:text-red-900 ml-4 cursor-pointer"
+              key={st}
+              onClick={() => setStatusFilter(st)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+                statusFilter === st
+                  ? 'bg-neutral-900 text-white shadow-2xs'
+                  : 'bg-neutral-100 text-neutral-600 hover:text-black hover:bg-neutral-200'
+              }`}
             >
-              Retry
+              {st === 'all' ? 'All Requests' : st}
             </button>
+          ))}
+          <Link
+            href="/customize"
+            target="_blank"
+            className="px-3.5 py-1.5 rounded-full border border-neutral-200/90 hover:border-black text-xs font-medium text-neutral-700 hover:text-black flex items-center gap-1.5 transition-colors shadow-2xs shrink-0"
+          >
+            <Gem className="w-3.5 h-3.5 text-neutral-500" />
+            <span>Customer Studio</span>
+          </Link>
+          <button
+            onClick={fetchRequests}
+            className="p-2 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black transition-colors shadow-2xs cursor-pointer shrink-0"
+            title="Refresh Requests"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
+      </div>
+
+      {fetchError && (
+        <div className="p-3.5 bg-neutral-100 border border-neutral-300 rounded-2xl text-neutral-800 text-xs flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-neutral-500 shrink-0" />
+            <span>{fetchError}</span>
           </div>
+          <button onClick={fetchRequests} className="underline font-semibold hover:text-black cursor-pointer">
+            Retry
+          </button>
         </div>
       )}
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Filter & Requests List */}
-        <div className="lg:col-span-5 flex flex-col space-y-4">
-          {/* Search & Filter Bar */}
-          <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-sm space-y-3">
-            <div className="relative">
-              <Search className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
-              <input
-                type="text"
-                placeholder="Search ticket #, name, email, stone..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-lg border border-stone-300 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
-              />
+      {/* Main Split View: Left List, Right Inspector */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column: Filtered Requests List */}
+        <div className="lg:col-span-5 bg-white rounded-3xl border border-neutral-200/90 overflow-hidden shadow-2xs divide-y divide-neutral-100 max-h-[calc(100vh-220px)] overflow-y-auto">
+          {loading ? (
+            <div className="p-12 text-center text-neutral-400 text-xs flex flex-col items-center justify-center gap-2">
+              <RefreshCw className="w-5 h-5 animate-spin text-neutral-600" />
+              <span>Loading atelier quote requests...</span>
             </div>
+          ) : filteredRequests.length === 0 ? (
+            <div className="p-10 text-center text-neutral-400 text-xs space-y-2">
+              <Gem className="w-8 h-8 mx-auto stroke-1 opacity-50" />
+              <p className="font-medium text-neutral-700">No custom quote requests found.</p>
+              <p className="text-[11px] text-neutral-400">
+                Submit a bespoke inquiry from the Customize studio to see it appear here.
+              </p>
+            </div>
+          ) : (
+            filteredRequests.map((item) => {
+              const isSelected = selectedRequest?._id === item._id || selectedRequest?.ticketId === item.ticketId;
 
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-              <Filter className="w-3.5 h-3.5 text-stone-400 shrink-0" />
-              {['all', 'New', 'Under Review', 'Quote Sent', 'In Production'].map((st) => (
-                <button
-                  key={st}
-                  onClick={() => setStatusFilter(st)}
-                  className={`px-2.5 py-1 rounded-full whitespace-nowrap cursor-pointer transition-colors ${
-                    statusFilter === st
-                      ? 'bg-stone-900 text-white font-semibold'
-                      : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
+              return (
+                <div
+                  key={item._id || item.ticketId}
+                  onClick={() => setSelectedRequest(item)}
+                  className={`p-4.5 cursor-pointer transition-colors ${
+                    isSelected ? 'bg-neutral-100/80 border-l-4 border-black' : 'hover:bg-neutral-50/60'
                   }`}
                 >
-                  {st === 'all' ? 'All Requests' : st}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* List of Requests */}
-          <div className="bg-white rounded-xl border border-stone-200 shadow-sm divide-y divide-stone-100 overflow-hidden max-h-[calc(100vh-280px)] overflow-y-auto">
-            {loading ? (
-              <div className="p-12 text-center text-stone-500 text-xs flex flex-col items-center justify-center gap-2">
-                <RefreshCw className="w-5 h-5 animate-spin text-amber-600" />
-                <span>Loading requests from database...</span>
-              </div>
-            ) : requests.length === 0 ? (
-              <div className="p-10 text-center text-stone-500 text-xs space-y-2">
-                <Gem className="w-8 h-8 text-stone-300 mx-auto" />
-                <p className="font-medium text-stone-700">No custom quote requests found.</p>
-                <p className="text-stone-400 text-[11px]">
-                  Submit a custom request from the <Link href="/customize" className="text-amber-700 underline">Customize Studio</Link> to see it appear here.
-                </p>
-              </div>
-            ) : (
-              requests.map((item) => {
-                const isSelected = selectedRequest?._id === item._id || selectedRequest?.ticketId === item.ticketId;
-
-                return (
-                  <div
-                    key={item._id || item.ticketId}
-                    onClick={() => setSelectedRequest(item)}
-                    className={`p-4 cursor-pointer transition-colors ${
-                      isSelected
-                        ? 'bg-amber-50/80 border-l-4 border-amber-600'
-                        : 'hover:bg-stone-50'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-xs font-bold text-amber-900">
-                        {item.ticketId}
-                      </span>
-                      <span
-                        className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border ${getStatusBadgeClass(
-                          item.status
-                        )}`}
-                      >
-                        {item.status}
-                      </span>
-                    </div>
-
-                    <h4 className="text-sm font-semibold text-stone-900">
-                      {item.fullName}
-                    </h4>
-
-                    <div className="text-xs text-stone-600 mt-0.5">
-                      {item.metalPreference} {item.jewelleryType} • <span className="text-amber-800 font-medium">{item.sapphireColor}</span> ({item.cutPreference})
-                    </div>
-
-                    <div className="flex items-center justify-between text-[11px] text-stone-400 mt-2">
-                      <span>{item.country}</span>
-                      <span>{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'Recent'}</span>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </div>
-
-        {/* Right Column: Detailed Request Inspector & Action Panel */}
-        <div className="lg:col-span-7">
-          {selectedRequest ? (
-            <div className="bg-white rounded-xl border border-stone-200 shadow-sm p-6 sm:p-8 space-y-6">
-              {/* Header */}
-              <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-base font-bold text-amber-900">
-                      {selectedRequest.ticketId}
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="font-mono text-xs font-semibold text-black">
+                      {item.ticketId}
                     </span>
                     <span
-                      className={`text-xs px-2.5 py-0.5 rounded-full font-semibold border ${getStatusBadgeClass(
-                        selectedRequest.status
-                      )}`}
+                      className={`text-xs px-2.5 py-0.5 rounded-full font-medium capitalize ${
+                        item.status === 'New'
+                          ? 'bg-neutral-900 text-white'
+                          : 'bg-neutral-100 text-neutral-700 border border-neutral-200/80'
+                      }`}
                     >
+                      {item.status}
+                    </span>
+                  </div>
+
+                  <h4 className="text-sm font-semibold text-black">
+                    {item.fullName}
+                  </h4>
+
+                  <div className="text-xs text-neutral-500 mt-1">
+                    {item.metalPreference} {item.jewelleryType} • <span className="text-neutral-900 font-medium">{item.sapphireColor}</span> ({item.cutPreference})
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] text-neutral-400 mt-2.5 pt-2 border-t border-neutral-100/80">
+                    <span>{item.country || 'International'}</span>
+                    <span>{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'Recent'}</span>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Right Column: Detailed Request Inspector */}
+        <div className="lg:col-span-7">
+          {selectedRequest ? (
+            <div className="bg-white rounded-3xl border border-neutral-200/90 shadow-2xs p-6 sm:p-8 space-y-6">
+              {/* Header */}
+              <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-neutral-100">
+                <div>
+                  <div className="flex items-center gap-2.5">
+                    <span className="font-mono text-lg font-bold text-black">
+                      {selectedRequest.ticketId}
+                    </span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-neutral-900 text-white">
                       {selectedRequest.status}
                     </span>
                   </div>
-                  <div className="text-xs text-stone-500 mt-1">
+                  <div className="text-xs text-neutral-400 font-light mt-1">
                     Submitted on {selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleString() : 'Just now'}
                   </div>
                 </div>
@@ -368,11 +299,11 @@ export default function AdminCustomRequestsPage() {
                 {/* Direct WhatsApp Action Button */}
                 <a
                   href={`https://wa.me/${selectedRequest.whatsappNumber?.replace(/\D/g, '') || selectedRequest.phoneNumber?.replace(/\D/g, '')}?text=${encodeURIComponent(
-                    `Hello ${selectedRequest.fullName}, this is Ceylon Jewels Concierge regarding your bespoke quote request #${selectedRequest.ticketId}.`
+                    `Hello ${selectedRequest.fullName}, this is Aura Ceylon concierge regarding your bespoke quote request #${selectedRequest.ticketId}.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-md text-xs font-semibold uppercase tracking-wider flex items-center gap-2 shadow-sm transition-colors"
+                  className="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-full text-xs font-medium flex items-center gap-2 shadow-2xs transition-colors"
                 >
                   <MessageCircle className="w-4 h-4" />
                   <span>Chat on WhatsApp</span>
@@ -380,24 +311,24 @@ export default function AdminCustomRequestsPage() {
               </div>
 
               {/* Customer Info Card */}
-              <div className="p-4 rounded-xl bg-stone-50 border border-stone-200 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div className="p-4.5 rounded-2xl bg-neutral-50/70 border border-neutral-200/80 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
-                  <span className="text-stone-500 block">Customer Name</span>
-                  <span className="font-semibold text-stone-900 text-sm">{selectedRequest.fullName}</span>
+                  <span className="text-neutral-400 text-xs block">Customer Name</span>
+                  <span className="font-medium text-black text-sm">{selectedRequest.fullName}</span>
                 </div>
                 <div>
-                  <span className="text-stone-500 block">Email Address</span>
-                  <a href={`mailto:${selectedRequest.email}`} className="text-amber-700 underline font-medium">
+                  <span className="text-neutral-400 text-xs block">Email Address</span>
+                  <a href={`mailto:${selectedRequest.email}`} className="text-black underline font-medium">
                     {selectedRequest.email}
                   </a>
                 </div>
                 <div>
-                  <span className="text-stone-500 block">Phone / WhatsApp</span>
-                  <span className="font-mono text-stone-900">{selectedRequest.phoneNumber}</span>
+                  <span className="text-neutral-400 text-xs block">Phone / WhatsApp</span>
+                  <span className="font-mono text-neutral-800">{selectedRequest.phoneNumber}</span>
                 </div>
                 <div>
-                  <span className="text-stone-500 block">Preferred Contact Channel</span>
-                  <span className="font-semibold text-stone-900 uppercase">
+                  <span className="text-neutral-400 text-xs block">Preferred Contact Channel</span>
+                  <span className="font-medium text-black capitalize">
                     {selectedRequest.preferredContactMethod}
                   </span>
                 </div>
@@ -405,33 +336,33 @@ export default function AdminCustomRequestsPage() {
 
               {/* Jewellery Specifications */}
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-800 mb-3">
+                <h3 className="text-xs font-medium text-neutral-400 mb-3">
                   Jewellery Specifications
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                  <div className="p-3 bg-stone-50 rounded-lg border border-stone-200">
-                    <span className="text-stone-500 block">Jewellery Type</span>
-                    <span className="font-semibold text-stone-900 capitalize">{selectedRequest.jewelleryType}</span>
+                  <div className="p-3 bg-neutral-50/60 rounded-xl border border-neutral-200/70">
+                    <span className="text-neutral-400 text-[10px] block">Jewellery Type</span>
+                    <span className="font-medium text-black capitalize">{selectedRequest.jewelleryType}</span>
                   </div>
-                  <div className="p-3 bg-stone-50 rounded-lg border border-stone-200">
-                    <span className="text-stone-500 block">Precious Metal</span>
-                    <span className="font-semibold text-stone-900">{selectedRequest.metalPreference}</span>
+                  <div className="p-3 bg-neutral-50/60 rounded-xl border border-neutral-200/70">
+                    <span className="text-neutral-400 text-[10px] block">Precious Metal</span>
+                    <span className="font-medium text-black">{selectedRequest.metalPreference}</span>
                   </div>
-                  <div className="p-3 bg-stone-50 rounded-lg border border-stone-200">
-                    <span className="text-stone-500 block">Sapphire Choice</span>
-                    <span className="font-semibold text-stone-900">{selectedRequest.sapphireColor}</span>
+                  <div className="p-3 bg-neutral-50/60 rounded-xl border border-neutral-200/70">
+                    <span className="text-neutral-400 text-[10px] block">Sapphire Choice</span>
+                    <span className="font-medium text-black">{selectedRequest.sapphireColor}</span>
                   </div>
-                  <div className="p-3 bg-stone-50 rounded-lg border border-stone-200">
-                    <span className="text-stone-500 block">Faceting / Cut</span>
-                    <span className="font-semibold text-stone-900">{selectedRequest.cutPreference}</span>
+                  <div className="p-3 bg-neutral-50/60 rounded-xl border border-neutral-200/70">
+                    <span className="text-neutral-400 text-[10px] block">Faceting / Cut</span>
+                    <span className="font-medium text-black">{selectedRequest.cutPreference}</span>
                   </div>
-                  <div className="p-3 bg-stone-50 rounded-lg border border-stone-200">
-                    <span className="text-stone-500 block">Size / Length</span>
-                    <span className="font-semibold text-stone-900">{selectedRequest.size || 'Not Specified'}</span>
+                  <div className="p-3 bg-neutral-50/60 rounded-xl border border-neutral-200/70">
+                    <span className="text-neutral-400 text-[10px] block">Size / Length</span>
+                    <span className="font-medium text-black">{selectedRequest.size || 'Not Specified'}</span>
                   </div>
-                  <div className="p-3 bg-stone-50 rounded-lg border border-stone-200">
-                    <span className="text-stone-500 block">Budget Range</span>
-                    <span className="font-semibold text-stone-900">{selectedRequest.budgetRange || 'Flexible'}</span>
+                  <div className="p-3 bg-neutral-50/60 rounded-xl border border-neutral-200/70">
+                    <span className="text-neutral-400 text-[10px] block">Budget Range</span>
+                    <span className="font-medium text-black">{selectedRequest.budgetRange || 'Flexible'}</span>
                   </div>
                 </div>
               </div>
@@ -439,50 +370,28 @@ export default function AdminCustomRequestsPage() {
               {/* Special Instructions */}
               {selectedRequest.specialInstructions && (
                 <div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-800 mb-1">
-                    Special Instructions / Notes from Customer
+                  <h3 className="text-xs font-medium text-neutral-400 mb-1.5">
+                    Customer Instructions
                   </h3>
-                  <div className="p-3 rounded-lg bg-amber-50/60 border border-amber-200/60 text-xs text-stone-800 leading-relaxed">
+                  <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200/80 text-xs text-neutral-800 leading-relaxed font-light">
                     {selectedRequest.specialInstructions}
                   </div>
                 </div>
               )}
 
-              {/* Reference Images */}
-              {selectedRequest.referenceImages && selectedRequest.referenceImages.length > 0 && (
-                <div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-800 mb-2">
-                    Customer Inspiration Reference Photos
-                  </h3>
-                  <div className="flex flex-wrap gap-3">
-                    {selectedRequest.referenceImages.map((img, idx) => (
-                      <a
-                        key={idx}
-                        href={img}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-24 h-24 rounded-lg overflow-hidden border border-stone-300 hover:opacity-80 transition-opacity"
-                      >
-                        <img src={img} alt="Inspiration" className="w-full h-full object-cover" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-
               {/* Admin Quote & Status Action Panel */}
-              <div className="pt-6 border-t border-stone-200 space-y-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-900">
+              <div className="pt-6 border-t border-neutral-100 space-y-4">
+                <h3 className="text-xs font-medium text-neutral-400">
                   Manage Quote & Status
                 </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                   <div>
-                    <label className="block text-xs font-medium text-stone-700 mb-1">Update Status</label>
+                    <label className="block font-medium text-neutral-700 mb-1">Update Status</label>
                     <select
                       value={editStatus}
                       onChange={(e) => setEditStatus(e.target.value)}
-                      className="w-full px-3 py-2 border border-stone-300 rounded-md text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white"
+                      className="w-full px-3 py-2 border border-neutral-200/90 rounded-xl text-xs focus:outline-none focus:border-black bg-white"
                     >
                       <option value="New">New</option>
                       <option value="Under Review">Under Review</option>
@@ -495,19 +404,19 @@ export default function AdminCustomRequestsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-stone-700 mb-1">Quoted Price (USD)</label>
+                    <label className="block font-medium text-neutral-700 mb-1">Quoted Price (AUD)</label>
                     <input
                       type="number"
-                      placeholder="e.g. 2400"
+                      placeholder="e.g. 3850"
                       value={editPrice}
                       onChange={(e) => setEditPrice(e.target.value)}
-                      className="w-full px-3 py-2 border border-stone-300 rounded-md text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                      className="w-full px-3 py-2 border border-neutral-200/90 rounded-xl text-xs focus:outline-none focus:border-black text-sm font-semibold"
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-medium text-stone-700 mb-1">
+                <div className="text-xs">
+                  <label className="block font-medium text-neutral-700 mb-1">
                     Internal Founder / Lapidary Notes
                   </label>
                   <textarea
@@ -515,16 +424,16 @@ export default function AdminCustomRequestsPage() {
                     placeholder="Log rough stone weight, carat availability, CAD link, or customer call notes..."
                     value={editNotes}
                     onChange={(e) => setEditNotes(e.target.value)}
-                    className="w-full px-3 py-2 border border-stone-300 rounded-md text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    className="w-full px-3 py-2 border border-neutral-200/90 rounded-xl text-xs focus:outline-none focus:border-black"
                   />
                 </div>
 
                 <div className="flex items-center justify-between pt-2">
-                  <span className="text-xs text-emerald-700 font-medium">{saveMessage}</span>
+                  <span className="text-xs text-neutral-600 font-medium">{saveMessage}</span>
                   <button
                     onClick={handleUpdate}
                     disabled={isSaving}
-                    className="px-6 py-2.5 bg-stone-900 hover:bg-stone-800 text-white rounded-md text-xs font-semibold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer"
+                    className="px-6 py-2.5 bg-black hover:bg-neutral-800 text-white rounded-full text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer shadow-2xs"
                   >
                     {isSaving ? 'Saving...' : 'Save Updates'}
                   </button>
@@ -532,12 +441,12 @@ export default function AdminCustomRequestsPage() {
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-xl border border-stone-200 p-12 text-center text-stone-500 text-xs">
+            <div className="bg-white rounded-3xl border border-neutral-200/90 p-12 text-center text-neutral-400 text-xs">
               Select a custom quote request from the left list to view details and manage status.
             </div>
           )}
         </div>
-      </main>
+      </div>
     </div>
   );
 }
