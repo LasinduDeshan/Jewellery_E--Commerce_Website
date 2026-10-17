@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
+import { useAuthModal } from '../../context/AuthModalContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useCart } from '../../context/CartContext';
 import {
@@ -175,6 +176,7 @@ export const Navbar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const { openAuthModal } = useAuthModal();
   const { wishlistCount } = useWishlist();
   const { cartCount } = useCart();
 
@@ -523,7 +525,11 @@ export const Navbar: React.FC = () => {
               {/* Persistent Account Login / Profile Dropdown */}
               <div
                 className="relative"
-                onMouseEnter={() => openDropdown('user')}
+                onMouseEnter={() => {
+                  if (user) {
+                    openDropdown('user');
+                  }
+                }}
               >
                 {user ? (
                   <button
@@ -560,23 +566,16 @@ export const Navbar: React.FC = () => {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => toggleDropdown('user')}
-                    className={`p-2 sm:px-3.5 sm:py-2 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
-                      activeDropdown === 'user'
-                        ? 'bg-neutral-200 text-black'
-                        : isTransparent
-                        ? 'bg-white/10 hover:bg-white/20 text-white border border-white/30 backdrop-blur-sm'
-                        : 'bg-black hover:bg-neutral-800 text-white shadow-xs'
+                    onClick={() => openAuthModal('login')}
+                    className={`p-2 sm:px-3.5 sm:py-2 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
+                      isTransparent
+                        ? 'bg-white/10 hover:bg-white/25 text-white border border-white/30 backdrop-blur-sm'
+                        : 'bg-black hover:bg-neutral-800 text-white'
                     }`}
-                    title="Account & Portal"
+                    title="Sign In to Aura Ceylon"
                   >
                     <User className="w-3.5 h-3.5" />
                     <span className="hidden sm:inline">Sign In</span>
-                    <ChevronDown
-                      className={`w-3 h-3 hidden sm:inline transition-transform ${
-                        activeDropdown === 'user' ? 'rotate-180' : ''
-                      }`}
-                    />
                   </button>
                 )}
               </div>
@@ -959,20 +958,26 @@ export const Navbar: React.FC = () => {
                 </div>
 
                 <div className="p-3 space-y-2">
-                  <Link
-                    href="/login"
-                    onClick={closeAll}
-                    className="block w-full py-2 px-3 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold text-center transition-colors shadow-xs"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeAll();
+                      openAuthModal('login');
+                    }}
+                    className="block w-full py-2 px-3 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold text-center transition-colors shadow-xs cursor-pointer"
                   >
                     Sign In
-                  </Link>
-                  <Link
-                    href="/register"
-                    onClick={closeAll}
-                    className="block w-full py-2 px-3 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 text-xs font-semibold text-center transition-colors border border-neutral-200"
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeAll();
+                      openAuthModal('register');
+                    }}
+                    className="block w-full py-2 px-3 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 text-xs font-semibold text-center transition-colors border border-neutral-200 cursor-pointer"
                   >
                     Create Account
-                  </Link>
+                  </button>
                 </div>
 
                 <div className="border-t border-neutral-100 pt-1 pb-1">
@@ -1307,20 +1312,26 @@ export const Navbar: React.FC = () => {
                 </button>
               ) : (
                 <div className="grid grid-cols-2 gap-2">
-                  <Link
-                    href="/login"
-                    onClick={closeAll}
-                    className="block w-full py-2 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold text-center"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeAll();
+                      openAuthModal('login');
+                    }}
+                    className="block w-full py-2 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold text-center cursor-pointer"
                   >
                     Sign In
-                  </Link>
-                  <Link
-                    href="/register"
-                    onClick={closeAll}
-                    className="block w-full py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-black text-xs font-bold text-center border border-neutral-200"
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeAll();
+                      openAuthModal('register');
+                    }}
+                    className="block w-full py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-black text-xs font-bold text-center border border-neutral-200 cursor-pointer"
                   >
                     Register
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>

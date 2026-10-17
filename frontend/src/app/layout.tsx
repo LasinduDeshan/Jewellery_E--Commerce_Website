@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Cormorant_Infant } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../context/AuthContext";
+import { AuthModalProvider } from "../context/AuthModalContext";
 import { WishlistProvider } from "../context/WishlistContext";
 import { CartProvider } from "../context/CartContext";
 
@@ -39,12 +40,14 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-white text-neutral-900 font-sans selection:bg-black selection:text-white">
         <AuthProvider>
-          <WishlistProvider>
-            <CartProvider>
-              {children}
-              <WhatsAppFloatingButton />
-            </CartProvider>
-          </WishlistProvider>
+          <AuthModalProvider>
+            <WishlistProvider>
+              <CartProvider>
+                {children}
+                <WhatsAppFloatingButton />
+              </CartProvider>
+            </WishlistProvider>
+          </AuthModalProvider>
         </AuthProvider>
       </body>
     </html>
