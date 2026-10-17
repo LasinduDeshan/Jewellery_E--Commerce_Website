@@ -142,3 +142,85 @@ export const changePassword = asyncHandler(async (req: AuthRequest, res: Respons
 
   res.status(200).json(ApiResponse.success(null, 'Password changed successfully'));
 });
+
+export const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new ApiError(400, 'Please provide your registered email address');
+  }
+
+  const user = await User.findOne({ email: email.toLowerCase() });
+  if (!user) {
+    throw new ApiError(404, 'No account found with this email address');
+  }
+
+  // Generate 6-digit OTP code valid for 15 minutes
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  user.resetPasswordOtp = otp;
+  user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
+  await user.save();
+
+  console.log(`[Auth] Password Reset OTP for ${user.email}: ${otp}`);
+
+  res.status(200).json(
+    ApiResponse.success(
+      {
+        email: user.email,
+        otp, // included for easy dev/local testing without external mailer setup
+      },
+      'A 6-digit verification code has been generated for your account.'
+    )
+  );
+});
+
+export const resetPassword = asyncHandler(async (req: Request, res: Response) => {
+  const { email, otp, newPassword } = req.body;
+
+  if (!email || !otp || !newPassword) {
+    throw new ApiError(400, 'Please provide email, verification code, and new password');
+  }
+
+  if (newPassword.length < 6) {
+    throw new ApiError(400, 'Password must be at least 6 characters');
+  }
+
+  const user = await User.findOne({ email: email.toLowerCase() });
+  if (!user) {
+    throw new ApiError(404, 'No account found with this email address');
+  }
+
+  if (!user.resetPasswordOtp || user.resetPasswordOtp !== otp.trim()) {
+    throw new ApiError(400, 'Invalid verification code');
+  }
+
+  if (!user.resetPasswordExpires || user.resetPasswordExpires < new Date()) {
+    throw new ApiError(400, 'Verification code has expired. Please request a new code');
+  }
+
+  user.password = newPassword;
+  user.resetPasswordOtp = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+
+  const token = generateToken(user);
+
+  res.status(200).json(
+    ApiResponse.success(
+      {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          phoneNumber: user.phoneNumber,
+          preferredCurrency: user.preferredCurrency,
+          savedAddresses: user.savedAddresses,
+        },
+        token,
+      },
+      'Password reset successful. You are now logged in.'
+    )
+  );
+});
+

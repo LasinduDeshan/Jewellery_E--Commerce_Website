@@ -25,6 +25,8 @@ export interface IUser extends Document {
   preferredCurrency: 'AUD' | 'USD';
   savedAddresses: ISavedAddress[];
   wishlist: mongoose.Types.ObjectId[];
+  resetPasswordOtp?: string;
+  resetPasswordExpires?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -55,6 +57,8 @@ const UserSchema = new Schema<IUser>(
     preferredCurrency: { type: String, enum: ['AUD', 'USD'], default: 'AUD' },
     savedAddresses: [SavedAddressSchema],
     wishlist: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
+    resetPasswordOtp: { type: String },
+    resetPasswordExpires: { type: Date },
   },
   { timestamps: true }
 );
