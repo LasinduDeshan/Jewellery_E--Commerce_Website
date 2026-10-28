@@ -96,27 +96,72 @@ const googleClient = new OAuth2Client(config.googleClientId);
 
 export const googleLogin = asyncHandler(
   async (req: Request, res: Response) => {
-    const { credential } = req.body;
+    const { credential, accessToken } = req.body;
 
-    if (!credential) {
-      throw new ApiError(400, 'Google credential is required');
+    if (!credential && !accessToken) {
+      throw new ApiError(400, 'Google credential or access token is required');
     }
 
     if (!config.googleClientId) {
       throw new ApiError(500, 'Google authentication is not configured');
     }
 
-    let payload;
+    let payload: {
+      sub: string;
+      email: string;
+      email_verified?: boolean;
+      name?: string;
+      picture?: string;
+    } | undefined;
 
-    try {
-      const ticket = await googleClient.verifyIdToken({
-        idToken: credential,
-        audience: config.googleClientId,
-      });
+    if (credential) {
+      try {
+        const ticket = await googleClient.verifyIdToken({
+          idToken: credential,
+          audience: config.googleClientId,
+        });
 
-      payload = ticket.getPayload();
-    } catch {
-      throw new ApiError(401, 'Invalid Google credential');
+        const p = ticket.getPayload();
+        if (p) {
+          payload = {
+            sub: p.sub,
+            email: p.email || '',
+            email_verified: p.email_verified,
+            name: p.name,
+            picture: p.picture,
+          };
+        }
+      } catch {
+        throw new ApiError(401, 'Invalid Google credential');
+      }
+    } else if (accessToken) {
+      try {
+        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        if (!userInfoRes.ok) {
+          throw new Error('Failed to fetch user info from Google');
+        }
+
+        const data = (await userInfoRes.json()) as {
+          sub: string;
+          email: string;
+          email_verified?: boolean;
+          name?: string;
+          picture?: string;
+        };
+
+        payload = {
+          sub: data.sub,
+          email: data.email,
+          email_verified: data.email_verified,
+          name: data.name,
+          picture: data.picture,
+        };
+      } catch {
+        throw new ApiError(401, 'Invalid Google access token');
+      }
     }
 
     if (!payload?.sub || !payload.email || payload.email_verified !== true) {
