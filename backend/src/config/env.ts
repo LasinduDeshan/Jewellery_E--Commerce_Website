@@ -9,4 +9,5 @@ export const config = {
   jwtSecret: process.env.JWT_SECRET || 'jewellery_secret_jwt_key_2026_ceylon',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   founderEmail: process.env.FOUNDER_EMAIL || 'concierge@ceylonjewels.com',
+  googleClientId: process.env.GOOGLE_CLIENT_ID || '',
 };
