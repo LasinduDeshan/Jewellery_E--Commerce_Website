@@ -90,7 +90,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, compact = fal
           {/* Badges */}
           <div className="absolute top-2 left-2 flex flex-col gap-1 pointer-events-none">
             {product.stockQuantity !== undefined && product.stockQuantity <= 2 && (
-              <span className="bg-black/90 text-white text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-xs">
+              <span className="bg-black/90 text-white text-[8px] font-bold px-2 py-0.5 rounded-full shadow-xs">
                 Only {product.stockQuantity} Left
               </span>
             )}
@@ -149,7 +149,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, compact = fal
             <h3
               className={`font-bold ${
                 compact ? 'text-sm' : 'text-base sm:text-lg'
-              } text-neutral-900 group-hover:text-black transition-colors line-clamp-1 tracking-tight`}
+              } text-neutral-900 group-hover:text-black transition-colors line-clamp-1 `}
             >
               {product.name}
             </h3>
@@ -185,7 +185,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, compact = fal
           <span
             className={`${
               compact ? 'text-sm' : 'text-base sm:text-lg'
-            } font-bold text-neutral-900 tracking-tight`}
+            } font-bold text-neutral-900 `}
           >
             ${product.price}{' '}
             <span className="text-[10px] font-normal text-neutral-400">AUD</span>
@@ -199,7 +199,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, compact = fal
             compact ? 'gap-1.5 pl-3 pr-1 py-1 text-[11px]' : 'gap-2 pl-4 pr-1.5 py-1.5 text-xs'
           } bg-black hover:bg-neutral-800 text-white rounded-full transition-all group/btn shadow-xs hover:scale-[1.02] cursor-pointer`}
         >
-          <span className="font-semibold tracking-wide">Buy Now</span>
+          <span className="font-semibold">Buy Now</span>
           <div
             className={`${
               compact ? 'w-5 h-5' : 'w-6 h-6'

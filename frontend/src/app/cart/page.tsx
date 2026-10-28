@@ -78,7 +78,7 @@ export default function CartPage() {
       {/* Header */}
       <section className="bg-black text-white py-10 px-4 sm:px-6 lg:px-8 border-b border-neutral-800">
         <div className="max-w-7xl mx-auto">
-          <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400 block mb-1">
+          <span className="text-xs font-semibold text-neutral-400 block mb-1">
             Section 5.3 • Persistent Bag
           </span>
           <h1 className="text-2xl sm:text-4xl font-serif text-white">
@@ -103,7 +103,7 @@ export default function CartPage() {
             </p>
             <Link
               href="/shop"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold tracking-wider uppercase transition-colors shadow-md"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold transition-colors shadow-md"
             >
               <span>Explore Collection</span>
               <ArrowRight className="w-4 h-4" />
@@ -215,7 +215,7 @@ export default function CartPage() {
                 <button
                   onClick={handleOrderViaWhatsApp}
                   disabled={whatsAppLoading}
-                  className="px-5 py-2.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold uppercase tracking-wider flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
+                  className="px-5 py-2.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
                 >
                   <MessageCircle className="w-4 h-4" />
                   <span>{whatsAppLoading ? 'Preparing Cart...' : 'Chat on WhatsApp with Bag Contents'}</span>
@@ -232,7 +232,7 @@ export default function CartPage() {
 
                 {/* Promo Code Input */}
                 <div>
-                  <label className="text-[11px] font-bold text-neutral-700 uppercase tracking-wider block mb-1.5">
+                  <label className="text-[11px] font-bold text-neutral-700 block mb-1.5">
                     Promotional Code
                   </label>
                   {appliedCoupon ? (
@@ -257,7 +257,7 @@ export default function CartPage() {
                         value={promoCodeInput}
                         onChange={(e) => setPromoCodeInput(e.target.value)}
                         placeholder="Try 'CEYLON10'"
-                        className="flex-1 px-3 py-2 rounded-xl border border-neutral-300 text-xs uppercase focus:outline-none focus:border-black"
+                        className="flex-1 px-3 py-2 rounded-xl border border-neutral-300 text-xs focus:outline-none focus:border-black"
                       />
                       <button
                         type="submit"
@@ -322,7 +322,7 @@ export default function CartPage() {
                 {/* Checkout Button */}
                 <button
                   onClick={() => router.push('/checkout')}
-                  className="w-full py-4 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg shadow-black/10 cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold transition-colors shadow-lg shadow-black/10 cursor-pointer flex items-center justify-center gap-2"
                 >
                   <Lock className="w-4 h-4 text-white" />
                   <span>Proceed to Secure Checkout</span>
@@ -330,7 +330,7 @@ export default function CartPage() {
 
                 {/* Accepted Payment Method Icons/Logos (Section 5.3) */}
                 <div className="pt-4 border-t border-neutral-200 text-center space-y-2">
-                  <span className="text-[10px] text-neutral-400 uppercase tracking-widest block font-semibold">
+                  <span className="text-[10px] text-neutral-400 block font-semibold">
                     Accepted International Payment Methods
                   </span>
                   <div className="flex flex-wrap items-center justify-center gap-2 pt-1">

@@ -14,7 +14,7 @@ export const CutsGallery: React.FC<CutsGalleryProps> = ({ selectedCut, onSelectC
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-neutral-50 border-y border-neutral-200">
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-neutral-500 text-xs font-semibold tracking-widest uppercase">
+          <span className="text-neutral-500 text-xs font-semibold">
             Artisanal Precision Faceting
           </span>
           <h2 className="text-3xl sm:text-4xl font-cormorant text-neutral-900 mt-2 font-normal">
@@ -69,7 +69,7 @@ export const CutsGallery: React.FC<CutsGalleryProps> = ({ selectedCut, onSelectC
                 <div className="mt-6 pt-4 border-t border-neutral-100">
                   <button
                     onClick={() => onSelectCut(cut.name)}
-                    className={`w-full py-2 px-3 rounded-md text-xs font-semibold tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
+                    className={`w-full py-2 px-3 rounded-md text-xs font-semibold   transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
                       isSelected
                         ? 'bg-black text-white shadow-sm'
                         : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-900'

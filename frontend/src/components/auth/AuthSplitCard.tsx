@@ -252,7 +252,7 @@ export const AuthSplitCard: React.FC<AuthSplitCardProps> = ({
     : '/img/42dfed5d099824d9117bce82a38a99d3.jpg';
 
   const cardDescription = isRecovery
-    ? 'Aura Ceylon Client Security. Verified end-to-end encryption protecting your bespoke commissions and vault orders.'
+    ? 'Zeyloraa Client Security. Verified end-to-end encryption protecting your bespoke commissions and vault orders.'
     : isSignup
     ? 'Create your private client account for bespoke commissions, VIP vault previews, and insured worldwide delivery.'
     : 'Natural, ethically sourced Ceylon sapphires and bespoke fine jewellery handcrafted from Sri Lankan mines.';
@@ -277,7 +277,7 @@ export const AuthSplitCard: React.FC<AuthSplitCardProps> = ({
         <img
           key={cardImage}
           src={cardImage}
-          alt="Aura Ceylon High Jewellery"
+          alt="Zeyloraa High Jewellery"
           className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-105 animate-in fade-in duration-300 ${
             isSignup ? 'object-[50%_35%]' : 'object-top'
           }`}
@@ -328,7 +328,7 @@ export const AuthSplitCard: React.FC<AuthSplitCardProps> = ({
         <div className={isSignup ? 'space-y-3' : 'space-y-4'}>
           {/* Header Titles */}
           <div className="space-y-1 pr-6">
-            <h2 className="text-xl sm:text-2xl font-normal text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-normal text-white">
               {mode === 'forgot'
                 ? 'Reset your password'
                 : mode === 'reset'
@@ -367,7 +367,7 @@ export const AuthSplitCard: React.FC<AuthSplitCardProps> = ({
               <div className="flex items-center gap-2">
                 <KeyRound className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                 <span>
-                  Verification Code: <strong className="font-mono text-amber-300 tracking-wider">{demoOtpHint}</strong>
+                  Verification Code: <strong className="font-mono text-amber-300">{demoOtpHint}</strong>
                 </span>
               </div>
               <button
@@ -570,7 +570,7 @@ export const AuthSplitCard: React.FC<AuthSplitCardProps> = ({
                     value={resetOtp}
                     onChange={(e) => setResetOtp(e.target.value.replace(/\D/g, ''))}
                     placeholder="123456"
-                    className="w-full px-3 py-2.5 rounded-xl bg-[#18181b] border border-neutral-800 text-white text-sm font-mono tracking-widest text-center placeholder-neutral-600 focus:outline-none focus:border-neutral-400 transition-colors"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#18181b] border border-neutral-800 text-white text-sm font-mono text-center placeholder-neutral-600 focus:outline-none focus:border-neutral-400 transition-colors"
                   />
                 </div>
 
@@ -688,7 +688,7 @@ export const AuthSplitCard: React.FC<AuthSplitCardProps> = ({
               {/* Hairline "OR" Divider */}
               <div className="relative flex items-center justify-center my-1.5">
                 <div className="w-full border-t border-neutral-800" />
-                <span className="absolute bg-[#111113] px-2.5 text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
+                <span className="absolute bg-[#111113] px-2.5 text-[10px] font-mono text-neutral-500">
                   OR
                 </span>
               </div>
@@ -807,7 +807,7 @@ export const AuthSplitCard: React.FC<AuthSplitCardProps> = ({
         {/* Bottom Copyright Text (only displayed in login mode to keep signup and recovery modes sleek and compact) */}
         {!isSignup && !isRecovery && (
           <div className="text-center pt-2.5 text-[10px] text-neutral-500 font-light border-t border-white/5 mt-2">
-            Aura Ceylon • Designed for Ceylon Sapphire Connoisseurs • All rights reserved.
+            Zeyloraa • Designed for Ceylon Sapphire Connoisseurs • All rights reserved.
           </div>
         )}
       </div>

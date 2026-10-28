@@ -146,20 +146,6 @@ export const getAnalyticsOverview = async (req: Request, res: Response): Promise
       });
     }
 
-    // New WhatsApp leads awaiting contact
-    const pendingLeads = await Lead.find({ status: 'New' }).sort({ createdAt: -1 });
-    for (const l of pendingLeads) {
-      const created = l.createdAt ? new Date(l.createdAt) : new Date();
-      notifications.push({
-        id: `notif-lead-${l._id}`,
-        title: `WhatsApp Concierge Lead`,
-        message: `${l.customerName} started cart inquiry #${l.ticketId} via WhatsApp.`,
-        time: created.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        timestamp: created.getTime(),
-        type: 'lead',
-        link: '/admin/leads',
-      });
-    }
 
     // Customer reviews awaiting moderation approval
     const pendingReviews = await Review.find({ isApproved: false }).populate('user', 'name email').sort({ createdAt: -1 });

@@ -23,7 +23,7 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
         <div className="flex items-center justify-between p-6 border-b border-neutral-200">
           <div className="flex items-center gap-2.5">
             <Ruler className="w-5 h-5 text-neutral-900" />
-            <h3 className="text-2xl font-cormorant text-neutral-900 font-normal tracking-tight">
+            <h3 className="text-2xl font-cormorant text-neutral-900 font-normal">
               Jewellery Sizing Guide
             </h3>
           </div>
@@ -38,7 +38,7 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
         <div className="p-6 space-y-8">
           {/* Ring Sizing Chart */}
           <div>
-            <h4 className="text-xs font-semibold tracking-wider text-neutral-900 uppercase mb-3">
+            <h4 className="text-xs font-semibold text-neutral-900 mb-3">
               Standard Ring Size Chart (US / UK / Diameter)
             </h4>
             <div className="overflow-x-auto">
@@ -66,7 +66,7 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
 
           {/* Necklace Length Guide */}
           <div>
-            <h4 className="text-xs font-semibold tracking-wider text-neutral-900 uppercase mb-3">
+            <h4 className="text-xs font-semibold text-neutral-900 mb-3">
               Necklace & Chain Length Reference
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-neutral-600">
@@ -97,7 +97,7 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
         <div className="p-4 bg-neutral-50 border-t border-neutral-200 text-right">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 bg-black hover:bg-neutral-800 text-white text-[11px] font-semibold uppercase tracking-widest transition-colors"
+            className="px-6 py-2.5 bg-black hover:bg-neutral-800 text-white text-[11px] font-semibold transition-colors"
           >
             Got It
           </button>

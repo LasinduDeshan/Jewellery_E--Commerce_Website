@@ -299,7 +299,7 @@ export default function AdminCustomRequestsPage() {
                 {/* Direct WhatsApp Action Button */}
                 <a
                   href={`https://wa.me/${selectedRequest.whatsappNumber?.replace(/\D/g, '') || selectedRequest.phoneNumber?.replace(/\D/g, '')}?text=${encodeURIComponent(
-                    `Hello ${selectedRequest.fullName}, this is Aura Ceylon concierge regarding your bespoke quote request #${selectedRequest.ticketId}.`
+                    `Hello ${selectedRequest.fullName}, this is Zeyloraa concierge regarding your bespoke quote request #${selectedRequest.ticketId}.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"

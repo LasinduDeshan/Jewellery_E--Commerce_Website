@@ -1,119 +1,300 @@
 'use client';
 
-import React, { useState } from 'react';
-import { SAPPHIRE_VARIETIES, SapphireVariety } from '../../data/customizationData';
-import { Check, Sparkles, MapPin, Eye } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import React from 'react';
+import {
+  Autoplay,
+  EffectCoverflow,
+  Navigation,
+  Pagination,
+} from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/css';
+import 'swiper/css/effect-cards';
 
-interface SapphireGalleryProps {
-  selectedSapphire: string;
-  onSelectSapphire: (sapphireName: string) => void;
+import { cn } from '@/lib/utils';
+
+export interface SapphireGalleryProps {
+  selectedSapphire?: string;
+  onSelectSapphire?: (sapphireName: string) => void;
+  onStartCustomizing?: () => void;
+  onOpenWhatsApp?: () => void;
+  images?: { src: string; alt: string; title?: string; rarity?: string; description?: string }[];
 }
 
-export const SapphireGallery: React.FC<SapphireGalleryProps> = ({
-  selectedSapphire,
-  onSelectSapphire,
+const DEFAULT_IMAGES = [
+  {
+    src: '/img/colorless-white-sapphires-scaled-Photoroom.png',
+    alt: 'Colorless White Ceylon Sapphire',
+    title: 'Colorless White Sapphire',
+    rarity: 'Pure Diamond Brilliance',
+    description: 'Pure crystalline optical fire with remarkable diamond-like brilliance.',
+  },
+  {
+    src: '/img/natural-pink-sapphires-Photoroom.png',
+    alt: 'Natural Pink Ceylon Sapphire',
+    title: 'Natural Pink Sapphire',
+    rarity: 'Very Rare Pastel Hue',
+    description: 'Soft romantic blush ethically unearthed from Ratnapura alluvial beds.',
+  },
+  {
+    src: '/img/NSC-B4335-cushion-blue-sapphire-Small-300x300-Photoroom.png',
+    alt: 'Cushion Cut Royal Blue Ceylon Sapphire',
+    title: 'Royal Blue Sapphire',
+    rarity: 'Signature Ceylon',
+    description: 'Signature velvety deep blue globally revered for imperial saturation.',
+  },
+  {
+    src: '/img/NSC-Y2448-radiant-cut-vivid-yellow-sapphire-Small-300x300-Photoroom.png',
+    alt: 'Radiant Cut Vivid Yellow Ceylon Sapphire',
+    title: 'Vivid Yellow Sapphire',
+    rarity: 'Canary Luster',
+    description: 'Warm golden canary fire symbolizing prosperity and solar radiance.',
+  },
+  {
+    src: '/img/1-naturaluntreatedrubyU2639-Photoroom.png',
+    alt: 'Natural Untreated Ceylon Ruby',
+    title: 'Imperial Ceylon Ruby',
+    rarity: 'Untreated Pigeon Blood',
+    description: 'Rare untreated natural corundum with deep pigeon-blood depth.',
+  },
+  {
+    src: '/img/1-padparadschasapphirePA2051-300x300-Photoroom.png',
+    alt: 'Rare Padparadscha Ceylon Sapphire',
+    title: 'Padparadscha Sapphire',
+    rarity: 'Ultra Rare Lotus Bloom',
+    description: 'Legendary lotus flower hue blending sunrise pink with sunset orange.',
+  },
+];
+
+const Carousel_003 = ({
+  images,
+  className,
+  showPagination = false,
+  showNavigation = false,
+  loop = true,
+  autoplay = true,
+  spaceBetween = 0,
+}: {
+  images: { src: string; alt: string; title?: string; rarity?: string; description?: string }[];
+  className?: string;
+  showPagination?: boolean;
+  showNavigation?: boolean;
+  loop?: boolean;
+  autoplay?: boolean;
+  spaceBetween?: number;
 }) => {
-  const [activeModalGem, setActiveModalGem] = useState<SapphireVariety | null>(null);
+  const css = `
+  .Carousal_003 {
+    width: 100%;
+    height: 420px;
+    padding-bottom: 50px !important;
+  }
+  
+  .Carousal_003 .swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 290px;
+    height: 360px;
+  }
+
+  .swiper-pagination-bullet {
+    background-color: rgba(255, 255, 255, 0.35) !important;
+    opacity: 1 !important;
+    transition: all 0.3s ease;
+  }
+
+  .swiper-pagination-bullet-active {
+    background-color: #ffffff !important;
+    width: 22px !important;
+    border-radius: 9999px !important;
+  }
+`;
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="text-center max-w-3xl mx-auto mb-16">
-        <span className="text-neutral-500 text-xs font-semibold tracking-widest uppercase">
-          Natural Ceylon Palette
+    <motion.div
+      initial={{ opacity: 0, translateY: 20 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      transition={{
+        duration: 0.3,
+        delay: 0.5,
+      }}
+      className={cn('relative w-full max-w-4xl px-5', className)}
+    >
+      <style>{css}</style>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="w-full"
+      >
+        <Swiper
+          spaceBetween={spaceBetween}
+          autoplay={
+            autoplay
+              ? {
+                  delay: 2500,
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: true,
+                }
+              : false
+          }
+          effect="coverflow"
+          grabCursor={true}
+          slidesPerView="auto"
+          centeredSlides={true}
+          loop={loop}
+          coverflowEffect={{
+            rotate: 40,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+          }}
+          pagination={
+            showPagination
+              ? {
+                  clickable: true,
+                }
+              : false
+          }
+          navigation={
+            showNavigation
+              ? {
+                  nextEl: '.swiper-button-next',
+                  prevEl: '.swiper-button-prev',
+                }
+              : false
+          }
+          className="Carousal_003"
+          modules={[EffectCoverflow, Autoplay, Pagination, Navigation]}
+        >
+          {images.map((image, index) => (
+            <SwiperSlide
+              key={index}
+              className="rounded-3xl overflow-hidden"
+            >
+              <div className="w-full h-full rounded-3xl bg-white shadow-2xl flex flex-col items-center justify-between p-6 relative select-none border border-neutral-100">
+                {/* Gemstone Cutout Image Container - centered and uniform height */}
+                <div className="w-full h-44 flex items-center justify-center p-2 shrink-0">
+                  <img
+                    className="max-h-36 max-w-[210px] w-auto h-auto object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.18)] hover:scale-110 transition-transform duration-500 ease-out"
+                    src={image.src}
+                    alt={image.alt}
+                  />
+                </div>
+
+                {/* Bottom Title & Small Description - pinned uniformly to the bottom */}
+                <div className="w-full text-center pt-3 border-t border-neutral-100 space-y-1 mt-auto shrink-0">
+                  <p className="font-cormorant text-base sm:text-lg font-medium text-neutral-900 truncate">
+                    {image.title || image.alt}
+                  </p>
+                  <p className="text-[11px] text-neutral-500 font-light line-clamp-2 leading-relaxed px-1">
+                    {image.description || 'Natural Ceylon gemstone hand-selected by master lapidaries.'}
+                  </p>
+                </div>
+              </div>
+            </SwiperSlide>
+          ))}
+          {showNavigation && (
+            <div>
+              <div className="swiper-button-next after:hidden">
+                <ChevronRightIcon className="h-6 w-6 text-white" />
+              </div>
+              <div className="swiper-button-prev after:hidden">
+                <ChevronLeftIcon className="h-6 w-6 text-white" />
+              </div>
+            </div>
+          )}
+        </Swiper>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+export const Skiper49 = ({
+  images = DEFAULT_IMAGES,
+  className,
+}: {
+  images?: { src: string; alt: string; title?: string; rarity?: string; description?: string }[];
+  className?: string;
+}) => {
+  return (
+    <div className={cn('flex flex-col items-center justify-center overflow-hidden bg-black text-white py-16 sm:py-24 relative w-full select-none', className)}>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-white/[0.02] rounded-full blur-[140px] pointer-events-none" />
+
+      {/* Topic on top of the card grid */}
+      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center mb-8 sm:mb-12 space-y-2">
+        <span className="text-xs font-medium text-neutral-400">
+          Rare Ceylon Corundum
         </span>
-        <h2 className="text-3xl sm:text-4xl font-cormorant text-neutral-900 mt-2 font-normal">
-          Available Sapphire Varieties
+        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-cormorant font-normal text-white">
+          Bespoke Sapphire Showcase
         </h2>
-        <p className="mt-4 text-neutral-600 text-sm sm:text-base leading-relaxed font-light">
-          Sri Lanka is world-renowned as the "Gem Island", producing unheated and naturally brilliant corundum in a breathtaking spectrum. Select your preferred color tone to incorporate it into your custom piece.
+        <p className="text-xs sm:text-sm text-neutral-400 font-light max-w-lg mx-auto leading-relaxed">
+          Explore our signature Ceylon sapphire cuts, hue variations, and bespoke heirloom designs.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {SAPPHIRE_VARIETIES.map((variety) => {
-          const isSelected = selectedSapphire === variety.name;
+      {/* Card Grid Carousel */}
+      <div className="relative z-10 w-full flex justify-center">
+        <Carousel_003 className="" images={images} showPagination loop autoplay />
+      </div>
 
-          return (
-            <div
-              key={variety.id}
-              className={`group relative rounded-2xl overflow-hidden border transition-all duration-300 bg-white flex flex-col justify-between ${
-                isSelected
-                  ? 'border-black ring-2 ring-black/20 shadow-xl'
-                  : 'border-neutral-200 hover:border-black hover:shadow-lg'
-              }`}
-            >
-              {/* Image Container */}
-              <div className="relative aspect-4/3 w-full overflow-hidden bg-neutral-100">
-                <img
-                  src={variety.image}
-                  alt={variety.name}
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                />
-                
-                {/* Rarity Tag */}
-                <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/85 backdrop-blur text-[10px] tracking-wider uppercase font-bold text-white">
-                  {variety.badge}
-                </div>
+      {/* Small Description below the cards */}
+      <div className="relative z-10 max-w-xl mx-auto px-4 sm:px-6 text-center mt-6 sm:mt-8">
+        <p className="text-xs sm:text-sm text-neutral-400 font-light leading-relaxed">
+          Each natural Ceylon sapphire is ethically unearthed from the alluvial soils of Ratnapura and hand-selected for exceptional color saturation, crystalline purity, and optical brilliance.
+        </p>
+      </div>
+    </div>
+  );
+};
 
-                {/* Color preview pill */}
-                <div
-                  className="absolute bottom-3 right-3 w-4 h-4 rounded-full border-2 border-white shadow-xs"
-                  style={{ backgroundColor: variety.accentColor }}
-                  title={variety.colorName}
-                />
-              </div>
+export const SapphireGallery: React.FC<SapphireGalleryProps> = ({
+  images: propImages,
+}) => {
+  const images = propImages || DEFAULT_IMAGES;
 
-              {/* Content */}
-              <div className="p-5 flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between text-xs text-neutral-500 mb-1">
-                    <span className="flex items-center gap-1 font-medium">
-                      <MapPin className="w-3 h-3 text-neutral-600" />
-                      {variety.origin}
-                    </span>
-                    <span className="text-neutral-900 font-semibold">{variety.rarity}</span>
-                  </div>
+  return (
+    <section
+      id="sapphire-varieties-section"
+      className="flex flex-col items-center justify-center overflow-hidden bg-black text-white py-16 sm:py-24 relative w-full select-none"
+    >
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-white/[0.02] rounded-full blur-[140px] pointer-events-none" />
 
-                  <h3 className="text-lg font-cormorant font-medium text-neutral-900 mt-1">
-                    {variety.name}
-                  </h3>
-                  <p className="text-xs text-neutral-500 font-light mt-0.5 mb-2.5">
-                    {variety.colorName}
-                  </p>
+      {/* Topic on top of the card grid */}
+      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center mb-8 sm:mb-12 space-y-2">
+        <span className="text-xs font-medium text-neutral-400">
+          Rare Ceylon Corundum
+        </span>
+        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-cormorant font-normal text-white">
+          Bespoke Sapphire Showcase
+        </h2>
+        <p className="text-xs sm:text-sm text-neutral-400 font-light max-w-lg mx-auto leading-relaxed">
+          Explore our signature Ceylon sapphire cuts, hue variations, and bespoke heirloom designs.
+        </p>
+      </div>
 
-                  <p className="text-xs text-neutral-600 line-clamp-3 leading-relaxed font-light">
-                    {variety.description}
-                  </p>
-                </div>
+      {/* Card Grid Carousel */}
+      <div className="relative z-10 w-full flex justify-center">
+        <Carousel_003 className="" images={images} showPagination loop autoplay />
+      </div>
 
-                {/* Action button */}
-                <div className="mt-5 pt-3 border-t border-neutral-100">
-                  <button
-                    onClick={() => onSelectSapphire(variety.name)}
-                    className={`w-full py-2.5 px-4 rounded-full text-xs font-bold tracking-widest uppercase transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
-                      isSelected
-                        ? 'bg-black text-white shadow-xs'
-                        : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-900'
-                    }`}
-                  >
-                    {isSelected ? (
-                      <>
-                        <Check className="w-3.5 h-3.5" />
-                        <span>Selected for Design</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-3.5 h-3.5 text-neutral-600" />
-                        <span>Select This Sapphire</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+      {/* Small Description below the cards */}
+      <div className="relative z-10 max-w-xl mx-auto px-4 sm:px-6 text-center mt-6 sm:mt-8">
+        <p className="text-xs sm:text-sm text-neutral-400 font-light leading-relaxed">
+          Each natural Ceylon sapphire is ethically unearthed from the alluvial soils of Ratnapura and hand-selected for exceptional color saturation, crystalline purity, and optical brilliance.
+        </p>
       </div>
     </section>
   );
 };
+
+export { Carousel_003 };
+export default SapphireGallery;

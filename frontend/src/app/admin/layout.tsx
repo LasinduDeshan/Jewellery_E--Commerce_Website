@@ -34,7 +34,7 @@ export default function AdminLayout({
     if (pathname === '/admin') {
       return {
         title: 'Welcome back!',
-        subtitle: "Here's what's happening with Aura Ceylon today.",
+        subtitle: "Here's what's happening with Zeyloraa today.",
       };
     }
     if (pathname.startsWith('/admin/products')) {
@@ -81,7 +81,7 @@ export default function AdminLayout({
     }
     return {
       title: 'Management Suite',
-      subtitle: 'Aura Ceylon Atelier Operations',
+      subtitle: 'Zeyloraa Atelier Operations',
     };
   };
 

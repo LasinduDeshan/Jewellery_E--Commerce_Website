@@ -22,6 +22,7 @@ export interface IUser extends Document {
   role: 'admin' | 'customer';
   phoneNumber?: string;
   avatar?: string;
+  bio?: string;
   preferredCurrency: 'AUD' | 'USD';
   savedAddresses: ISavedAddress[];
   wishlist: mongoose.Types.ObjectId[];
@@ -54,6 +55,7 @@ const UserSchema = new Schema<IUser>(
     role: { type: String, enum: ['admin', 'customer'], default: 'customer' },
     phoneNumber: { type: String, trim: true },
     avatar: { type: String },
+    bio: { type: String, trim: true },
     preferredCurrency: { type: String, enum: ['AUD', 'USD'], default: 'AUD' },
     savedAddresses: [SavedAddressSchema],
     wishlist: [{ type: Schema.Types.ObjectId, ref: 'Product' }],

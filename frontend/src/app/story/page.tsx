@@ -48,7 +48,7 @@ export default function OurStoryPage() {
         <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-white/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-4xl mx-auto text-center relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-neutral-900 border border-neutral-700 text-neutral-300 text-xs tracking-widest uppercase mb-2">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-neutral-900 border border-neutral-700 text-neutral-300 text-xs mb-2">
             <Sparkles className="w-3.5 h-3.5 text-neutral-400" />
             <span>Section 5.7 • CMS Storytelling</span>
           </div>
@@ -62,7 +62,7 @@ export default function OurStoryPage() {
               'A multi-generational lineage of Sri Lankan master lapidaries bringing unheated, ethically mined Ceylon Sapphires directly to discerning Australian collectors.'}
           </p>
 
-          <div className="pt-4 flex items-center justify-center gap-2 text-xs text-neutral-400 font-semibold uppercase tracking-wider">
+          <div className="pt-4 flex items-center justify-center gap-2 text-xs text-neutral-400 font-semibold">
             <MapPin className="w-4 h-4" />
             <span>Ratnapura & Elahera, Sri Lanka ➔ Australia</span>
           </div>
@@ -80,7 +80,7 @@ export default function OurStoryPage() {
           >
             {/* Text side */}
             <div className={`lg:col-span-6 space-y-4 ${idx % 2 === 1 ? 'lg:order-2' : ''}`}>
-              <span className="text-xs font-bold uppercase tracking-widest text-neutral-500 block">
+              <span className="text-xs font-bold text-neutral-500 block">
                 {sec.subtitle}
               </span>
               <h2 className="text-2xl sm:text-3xl font-serif text-neutral-900 font-medium">
@@ -121,7 +121,7 @@ export default function OurStoryPage() {
         {/* Heritage Trust Badges */}
         <section className="bg-white rounded-3xl border border-neutral-200 p-8 sm:p-12 shadow-xs">
           <div className="text-center max-w-xl mx-auto mb-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-neutral-500 block mb-1">
+            <span className="text-xs font-bold text-neutral-500 block mb-1">
               Guaranteed Provenance
             </span>
             <h3 className="text-2xl font-serif text-neutral-900">
@@ -175,13 +175,13 @@ export default function OurStoryPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/shop"
-              className="px-6 py-3.5 bg-black text-white rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-neutral-800 transition-colors shadow-md"
+              className="px-6 py-3.5 bg-black text-white rounded-xl text-xs font-semibold hover:bg-neutral-800 transition-colors shadow-md"
             >
               Browse Ready-to-Wear Collection
             </Link>
             <Link
               href="/customize"
-              className="px-6 py-3.5 border border-neutral-300 text-neutral-800 rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-neutral-100 transition-colors"
+              className="px-6 py-3.5 border border-neutral-300 text-neutral-800 rounded-xl text-xs font-semibold hover:bg-neutral-100 transition-colors"
             >
               Custom Sapphire Studio
             </Link>

@@ -228,7 +228,7 @@ export default function AdminOrdersFulfilmentPage() {
       row = `"958402941","${selectedOrder.shippingAddress.fullName}","${selectedOrder.shippingAddress.phoneNumber}","${selectedOrder.shippingAddress.street}","${selectedOrder.shippingAddress.apartment || ''}","${selectedOrder.shippingAddress.city}","${selectedOrder.shippingAddress.state}","${selectedOrder.shippingAddress.postalCode}","AU","${selectedOrder.totalPrice}","AUD","Ceylon Natural Sapphire Jewellery HS711319","0.35","1"`;
     } else {
       headers = 'SenderCompany,RecipientName,RecipientPhone,Address1,Address2,City,StateCode,PostalCode,CountryCode,CommodityDescription,CustomsValue,CustomsCurrency,TotalWeight';
-      row = `"Aura Ceylon Jewels","${selectedOrder.shippingAddress.fullName}","${selectedOrder.shippingAddress.phoneNumber}","${selectedOrder.shippingAddress.street}","${selectedOrder.shippingAddress.apartment || ''}","${selectedOrder.shippingAddress.city}","${selectedOrder.shippingAddress.state}","${selectedOrder.shippingAddress.postalCode}","AU","Handcrafted Precious Metal Sapphire Jewellery HS711319","${selectedOrder.totalPrice}","AUD","0.35"`;
+      row = `"Zeyloraa","${selectedOrder.shippingAddress.fullName}","${selectedOrder.shippingAddress.phoneNumber}","${selectedOrder.shippingAddress.street}","${selectedOrder.shippingAddress.apartment || ''}","${selectedOrder.shippingAddress.city}","${selectedOrder.shippingAddress.state}","${selectedOrder.shippingAddress.postalCode}","AU","Handcrafted Precious Metal Sapphire Jewellery HS711319","${selectedOrder.totalPrice}","AUD","0.35"`;
     }
 
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers, row].join('\n');
@@ -737,7 +737,7 @@ export default function AdminOrdersFulfilmentPage() {
                   <span className="text-[10px] font-bold text-neutral-500 block mb-1">
                     From (Shipper):
                   </span>
-                  <div className="font-bold text-neutral-900">Aura Ceylon Jewels Atelier</div>
+                  <div className="font-bold text-neutral-900">Zeyloraa Atelier</div>
                   <div>14 Dharmapala Mawatha, Colombo 00700</div>
                   <div>SRI LANKA</div>
                   <div className="text-[11px] mt-1 font-mono">Tel: +94 77 123 4567</div>

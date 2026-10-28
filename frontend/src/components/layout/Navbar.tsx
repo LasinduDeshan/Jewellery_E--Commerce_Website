@@ -286,17 +286,24 @@ export const Navbar: React.FC = () => {
       <header
         ref={headerRef}
         className={`${
-          hasDarkHero ? 'fixed top-0 left-0 right-0 z-50' : 'sticky top-0 z-40'
-        } transition-all duration-300 ${
-          isTransparent
-            ? 'bg-transparent border-b border-transparent shadow-none'
-            : 'bg-white border-b border-neutral-200 shadow-md'
-        }`}
-        style={{ backgroundColor: isTransparent ? 'transparent' : '#ffffff' }}
-        onMouseLeave={closeDropdownWithDelay}
+          hasDarkHero ? 'fixed top-3 sm:top-4 left-0 right-0' : 'sticky top-3 sm:top-4'
+        } z-40 px-3 sm:px-6 lg:px-8 pointer-events-none transition-all duration-300`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-[72px]">
+        <div
+          className={`max-w-7xl mx-auto rounded-2xl sm:rounded-full pointer-events-auto transition-all duration-300 relative ${
+            isTransparent
+              ? 'bg-black/40 backdrop-blur-xl  text-white shadow-2xl'
+              : 'bg-white/95 backdrop-blur-xl  text-neutral-900 shadow-xl'
+          }`}
+          style={{
+            backgroundColor: isTransparent
+              ? 'rgba(0, 0, 0, 0.45)'
+              : 'rgba(255, 255, 255, 0.96)',
+          }}
+          onMouseLeave={closeDropdownWithDelay}
+        >
+          <div className="px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-[64px] sm:h-[70px]">
             {/* -------------------------------------------------------- */}
             {/* 1. BRAND LOGO                                            */}
             {/* -------------------------------------------------------- */}
@@ -305,29 +312,14 @@ export const Navbar: React.FC = () => {
               onClick={closeAll}
               className="flex items-center space-x-2.5 shrink-0 group py-2"
             >
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all group-hover:scale-105 ${
-                  isTransparent
-                    ? 'bg-white/10 text-white border border-white/25 backdrop-blur-sm shadow-xs'
-                    : 'bg-black text-white shadow-xs'
-                }`}
-              >
-                <Gem className="w-4 h-4" />
-              </div>
+              
               <div className="flex flex-col">
                 <span
-                  className={`font-bold text-base leading-none transition-colors ${
+                  className={` text-lg leading-none transition-colors ${
                     isTransparent ? 'text-white' : 'text-black'
                   }`}
                 >
-                  AURA
-                  <span
-                    className={`font-normal transition-colors ${
-                      isTransparent ? 'text-neutral-300' : 'text-neutral-600'
-                    }`}
-                  >
-                    .CEYLON
-                  </span>
+                  Zeyloraa
                 </span>
                 <span
                   className={`text-[9px] font-medium mt-0.5 transition-colors ${
@@ -537,10 +529,10 @@ export const Navbar: React.FC = () => {
                     onClick={() => toggleDropdown('user')}
                     className={`p-1.5 sm:px-2.5 sm:py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
                       activeDropdown === 'user'
-                        ? 'bg-neutral-200 text-black border border-neutral-300'
+                        ? 'bg-neutral-200 text-black '
                         : isTransparent
-                        ? 'bg-white/10 hover:bg-white/20 border border-white/30 text-white backdrop-blur-sm'
-                        : 'bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 text-neutral-900'
+                        ? 'bg-white/10 hover:bg-white/20  text-white backdrop-blur-sm'
+                        : 'bg-neutral-100 hover:bg-neutral-200  text-neutral-900'
                     }`}
                   >
                     <div
@@ -569,10 +561,10 @@ export const Navbar: React.FC = () => {
                     onClick={() => openAuthModal('login')}
                     className={`p-2 sm:px-3.5 sm:py-2 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
                       isTransparent
-                        ? 'bg-white/10 hover:bg-white/25 text-white border border-white/30 backdrop-blur-sm'
+                        ? 'bg-white/10 hover:bg-white/25 text-white  backdrop-blur-sm'
                         : 'bg-black hover:bg-neutral-800 text-white'
                     }`}
-                    title="Sign In to Aura Ceylon"
+                    title="Sign In to Zeyloraa"
                   >
                     <User className="w-3.5 h-3.5" />
                     <span className="hidden sm:inline">Sign In</span>
@@ -602,7 +594,7 @@ export const Navbar: React.FC = () => {
         {/* ============================================================ */}
         {activeDropdown === 'collections' && (
           <div
-            className="hidden lg:block absolute left-0 right-0 top-[72px] bg-white border-b border-neutral-200 shadow-2xl z-50 animate-in fade-in duration-150"
+            className="hidden lg:block absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-3xl border border-neutral-200 shadow-2xl z-50 overflow-hidden before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 animate-in fade-in duration-150"
             style={{ backgroundColor: '#ffffff' }}
             onMouseEnter={cancelCloseTimeout}
             onMouseLeave={closeDropdownWithDelay}
@@ -640,7 +632,7 @@ export const Navbar: React.FC = () => {
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
                           {cat.itemCountBadge && (
-                            <span className="absolute top-1.5 left-1.5 bg-black/85 backdrop-blur text-white text-[8px] font-bold uppercase px-1.5 py-0.5 rounded-full">
+                            <span className="absolute top-1.5 left-1.5 bg-black/85 backdrop-blur text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">
                               {cat.itemCountBadge}
                             </span>
                           )}
@@ -733,7 +725,7 @@ export const Navbar: React.FC = () => {
         {/* ============================================================ */}
         {activeDropdown === 'women' && (
           <div
-            className="hidden lg:block absolute left-0 right-0 top-[72px] bg-white border-b border-neutral-200 shadow-2xl z-50 animate-in fade-in duration-150"
+            className="hidden lg:block absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-3xl border border-neutral-200 shadow-2xl z-50 overflow-hidden before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 animate-in fade-in duration-150"
             style={{ backgroundColor: '#ffffff' }}
             onMouseEnter={cancelCloseTimeout}
             onMouseLeave={closeDropdownWithDelay}
@@ -768,7 +760,7 @@ export const Navbar: React.FC = () => {
                         alt={item.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <span className="absolute top-2 left-2 bg-black/80 backdrop-blur text-white text-[8px] font-bold uppercase px-2 py-0.5 rounded-full">
+                      <span className="absolute top-2 left-2 bg-black/80 backdrop-blur text-white text-[8px] font-bold px-2 py-0.5 rounded-full">
                         {item.badge}
                       </span>
                     </div>
@@ -792,7 +784,7 @@ export const Navbar: React.FC = () => {
         {/* ============================================================ */}
         {activeDropdown === 'men' && (
           <div
-            className="hidden lg:block absolute left-0 right-0 top-[72px] bg-white border-b border-neutral-200 shadow-2xl z-50 animate-in fade-in duration-150"
+            className="hidden lg:block absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-3xl border border-neutral-200 shadow-2xl z-50 overflow-hidden before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 animate-in fade-in duration-150"
             style={{ backgroundColor: '#ffffff' }}
             onMouseEnter={cancelCloseTimeout}
             onMouseLeave={closeDropdownWithDelay}
@@ -829,7 +821,7 @@ export const Navbar: React.FC = () => {
                             alt={item.name}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
-                          <span className="absolute top-2 left-2 bg-black/80 backdrop-blur text-white text-[8px] font-bold uppercase px-2 py-0.5 rounded-full">
+                          <span className="absolute top-2 left-2 bg-black/80 backdrop-blur text-white text-[8px] font-bold px-2 py-0.5 rounded-full">
                             {item.badge}
                           </span>
                         </div>
@@ -849,7 +841,7 @@ export const Navbar: React.FC = () => {
                 {/* Right Callout: Bespoke Men's Signet */}
                 <div className="col-span-4 bg-neutral-900 text-white rounded-2xl p-6 border border-neutral-800 flex flex-col justify-between">
                   <div>
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-2">
+                    <span className="text-[9px] font-bold text-neutral-400 block mb-2">
                       Custom Atelier
                     </span>
                     <h4 className="text-sm font-bold text-white mb-2">
@@ -879,7 +871,7 @@ export const Navbar: React.FC = () => {
         {/* ============================================================ */}
         {activeDropdown === 'user' && (
           <div
-            className="hidden lg:block absolute right-4 sm:right-6 lg:right-8 top-[72px] w-64 bg-white rounded-2xl shadow-2xl border border-neutral-200 py-2.5 z-50 animate-in fade-in duration-150"
+            className="hidden lg:block absolute right-2 sm:right-4 top-[calc(100%+8px)] w-64 bg-white rounded-2xl shadow-2xl border border-neutral-200 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 py-2.5 z-50 animate-in fade-in duration-150"
             style={{ backgroundColor: '#ffffff' }}
             onMouseEnter={cancelCloseTimeout}
             onMouseLeave={closeDropdownWithDelay}
@@ -953,7 +945,7 @@ export const Navbar: React.FC = () => {
             ) : (
               <>
                 <div className="px-4 py-2.5 border-b border-neutral-100">
-                  <p className="font-bold text-xs text-neutral-900">Aura Ceylon Portal</p>
+                  <p className="font-bold text-xs text-neutral-900">Zeyloraa Portal</p>
                   <p className="text-[10px] text-neutral-500">Access saved designs & track orders</p>
                 </div>
 
@@ -1002,6 +994,7 @@ export const Navbar: React.FC = () => {
             )}
           </div>
         )}
+        </div>
       </header>
 
       {/* ============================================================ */}
@@ -1011,7 +1004,7 @@ export const Navbar: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-start justify-center pt-20 px-4">
           <div className="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-neutral-200 space-y-4 animate-in fade-in duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
-              <span className="text-xs font-bold text-neutral-400">
+              <span className="text-xs font-normal text-neutral-400">
                 Search Jewellery Catalogue
               </span>
               <button
@@ -1086,7 +1079,7 @@ export const Navbar: React.FC = () => {
                     <Gem className="w-3.5 h-3.5" />
                   </div>
                   <span className="font-bold text-sm text-black">
-                    AURA<span className="text-neutral-500 font-normal">.CEYLON</span>
+                    Zeyloraa
                   </span>
                 </Link>
                 <button

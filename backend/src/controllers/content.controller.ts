@@ -4,7 +4,7 @@ import { Content } from '../models/Content.js';
 const SEED_CONTENT = {
   'our-story': {
     slug: 'our-story',
-    pageTitle: 'Our Heritage • Aura Ceylon Jewels',
+    pageTitle: 'Our Heritage • Zeyloraa',
     heroHeadline: 'From Ratnapura Riverbeds to Australian Elegance',
     heroSubheadline:
       'A multi-generational lineage of Sri Lankan master lapidaries bringing unheated, ethically mined Ceylon Sapphires directly to discerning Australian collectors.',
@@ -34,7 +34,7 @@ const SEED_CONTENT = {
         title: 'The Direct Sri Lanka → Australia Route',
         subtitle: 'Fine Jewellery Devoid of Middlemen & Artificial Markups',
         body:
-          'Traditional luxury jewellery passes through up to five intermediaries — miners, rough brokers, export cartels, international wholesalers, and luxury department stores — each inflating the price. Aura Ceylon bridges this divide: our pieces travel directly from our Colombo workshop to your doorstep in Australia via secure express courier with independent National Gem & Jewellery Authority (NGJA) appraisal certificates.',
+          'Traditional luxury jewellery passes through up to five intermediaries — miners, rough brokers, export cartels, international wholesalers, and luxury department stores — each inflating the price. Zeyloraa bridges this divide: our pieces travel directly from our Colombo workshop to your doorstep in Australia via secure express courier with independent National Gem & Jewellery Authority (NGJA) appraisal certificates.',
         imageUrl:
           'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=800&q=80',
       },

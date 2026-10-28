@@ -31,7 +31,7 @@ export const WhatsAppConciergeCTA: React.FC<WhatsAppConciergeCTAProps> = ({
         title="Direct WhatsApp Concierge"
       >
         <MessageCircle className="w-6 h-6 animate-pulse" />
-        <span className="hidden sm:inline-block text-xs font-semibold tracking-wider uppercase pr-1">
+        <span className="hidden sm:inline-block text-xs font-semibold pr-1">
           WhatsApp Concierge
         </span>
       </a>

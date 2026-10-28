@@ -95,7 +95,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             </div>
             <div className="flex flex-col">
               <span className="font-bold text-sm text-white leading-none">
-                Aura<span className="font-normal text-neutral-400">.Ceylon</span>
+                Zeyloraa
               </span>
               <span className="text-xs text-neutral-400 font-medium mt-0.5">
                 Admin Panel

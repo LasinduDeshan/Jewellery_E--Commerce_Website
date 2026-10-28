@@ -11,7 +11,18 @@ import { ArtisanalProcess } from '../../components/customize/ArtisanalProcess';
 import { CustomizationForm } from '../../components/customize/CustomizationForm';
 import { SizeGuideModal } from '../../components/customize/SizeGuideModal';
 import { SubmissionSuccessModal } from '../../components/customize/SubmissionSuccessModal';
-import { WhatsAppConciergeCTA } from '../../components/customize/WhatsAppConciergeCTA';
+
+interface SubmissionSuccessData {
+  ticketId: string;
+  customerName: string;
+  email: string;
+  jewellerySummary: {
+    type: string;
+    metal: string;
+    sapphire: string;
+    cut: string;
+  };
+}
 
 export default function CustomizePage() {
   // State for selections across all interactive sections
@@ -75,7 +86,7 @@ export default function CustomizePage() {
     scrollToForm();
   };
 
-  const handleFormSuccess = (data: any) => {
+  const handleFormSuccess = (data: SubmissionSuccessData) => {
     setSuccessModalData({
       isOpen: true,
       ticketId: data.ticketId,
@@ -90,15 +101,14 @@ export default function CustomizePage() {
       <Navbar />
 
       {/* 8.1.1 Hero & Expectations */}
-      <CustomizeHero
-        onStartCustomizing={scrollToForm}
-        onOpenWhatsApp={openDirectWhatsApp}
-      />
+      <CustomizeHero />
 
       {/* 8.1.2 Sapphire Varieties Gallery */}
       <SapphireGallery
         selectedSapphire={selectedSapphire}
         onSelectSapphire={handleSelectSapphireAndScroll}
+        onStartCustomizing={scrollToForm}
+        onOpenWhatsApp={openDirectWhatsApp}
       />
 
       {/* 8.1.3 Sapphire Cuts Gallery */}
@@ -144,14 +154,6 @@ export default function CustomizePage() {
         customerName={successModalData.customerName}
         email={successModalData.email}
         jewellerySummary={successModalData.jewellerySummary}
-      />
-
-      {/* 8.3 Floating Direct WhatsApp Concierge CTA */}
-      <WhatsAppConciergeCTA
-        selectedJewelleryType={selectedJewelleryType}
-        selectedMetal={selectedMetal}
-        selectedSapphire={selectedSapphire}
-        selectedCut={selectedCut}
       />
 
       <Footer />
