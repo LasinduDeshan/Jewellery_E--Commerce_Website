@@ -221,10 +221,10 @@ export default function ShopCataloguePage() {
       {/* Hero Header */}
       <section className="bg-black text-white py-12 px-4 sm:px-6 lg:px-8 border-b border-neutral-800">
         <div className="max-w-7xl mx-auto text-center">
-          <span className="text-neutral-400 text-xs font-semibold tracking-widest uppercase block mb-2">
+          <span className="text-neutral-400 text-xs font-semibold block mb-2">
             Section 5.1 • Certified Fine Jewellery
           </span>
-          <h1 className="text-3xl sm:text-5xl font-normal tracking-tight text-white">
+          <h1 className="text-3xl sm:text-5xl font-normal text-white">
             Natural Ceylon Sapphire Collection
           </h1>
           <p className="mt-3 text-sm text-neutral-400 max-w-2xl mx-auto font-light leading-relaxed">
@@ -263,7 +263,7 @@ export default function ShopCataloguePage() {
             <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
               <div className="flex items-center gap-2">
                 <SlidersHorizontal className="w-4 h-4 text-black" />
-                <h3 className="text-xs font-bold uppercase tracking-wider text-black">
+                <h3 className="text-xs font-bold text-black">
                   Filter Collection
                 </h3>
               </div>
@@ -279,7 +279,7 @@ export default function ShopCataloguePage() {
 
             {/* Category Filter */}
             <div>
-              <label className="text-xs font-semibold text-neutral-800 uppercase tracking-wider block mb-2.5">
+              <label className="text-xs font-semibold text-neutral-800 block mb-2.5">
                 Category
               </label>
               <div className="space-y-1 text-xs">
@@ -309,7 +309,7 @@ export default function ShopCataloguePage() {
 
             {/* Metal Filter */}
             <div>
-              <label className="text-xs font-semibold text-neutral-800 uppercase tracking-wider block mb-2.5">
+              <label className="text-xs font-semibold text-neutral-800 block mb-2.5">
                 Precious Metal
               </label>
               <div className="grid grid-cols-2 gap-2 text-xs">
@@ -340,7 +340,7 @@ export default function ShopCataloguePage() {
 
             {/* Gemstone Variety */}
             <div>
-              <label className="text-xs font-semibold text-neutral-800 uppercase tracking-wider block mb-2.5">
+              <label className="text-xs font-semibold text-neutral-800 block mb-2.5">
                 Gemstone Variety
               </label>
               <div className="space-y-1 text-xs">
@@ -371,7 +371,7 @@ export default function ShopCataloguePage() {
 
             {/* Gender / Style Tag (Section 5.1 & 5.8) */}
             <div>
-              <label className="text-xs font-semibold text-neutral-800 uppercase tracking-wider block mb-2.5">
+              <label className="text-xs font-semibold text-neutral-800 block mb-2.5">
                 Style / Gender
               </label>
               <div className="grid grid-cols-3 gap-1.5 text-[11px]">
@@ -503,7 +503,7 @@ export default function ShopCataloguePage() {
 
             {/* Mobile Category */}
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider block mb-2 text-black">Category</span>
+              <span className="text-xs font-bold block mb-2 text-black">Category</span>
               <div className="space-y-1 text-xs">
                 {['all', 'rings', 'necklaces', 'engagement-promise-rings', 'bracelets', 'earrings'].map((cat) => (
                   <button
@@ -524,7 +524,7 @@ export default function ShopCataloguePage() {
 
             {/* Mobile Metal */}
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider block mb-2 text-black">Precious Metal</span>
+              <span className="text-xs font-bold block mb-2 text-black">Precious Metal</span>
               <div className="flex gap-2 text-xs">
                 <button
                   onClick={() => setSelectedMetal('silver')}

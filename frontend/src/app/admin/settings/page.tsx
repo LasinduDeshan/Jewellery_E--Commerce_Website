@@ -51,7 +51,7 @@ interface AdminSettingsState {
 }
 
 const DEFAULT_SETTINGS: AdminSettingsState = {
-  storeName: 'Aura Ceylon Jewels',
+  storeName: 'Zeyloraa',
   atelierAddress: '14 Dharmapala Mawatha, Colombo 00700, Sri Lanka',
   supportEmail: 'concierge@auraceylon.com',
   supportPhone: '+94 77 123 4567',
@@ -71,7 +71,7 @@ const DEFAULT_SETTINGS: AdminSettingsState = {
   freeShippingThresholdAUD: 500,
 
   whatsappConciergeNumber: '+94 77 123 4567',
-  whatsappDefaultMessage: 'Hello Aura Ceylon, I would like to inquire about bespoke sapphire jewellery.',
+  whatsappDefaultMessage: 'Hello Zeyloraa, I would like to inquire about bespoke sapphire jewellery.',
   enableCartWhatsappChat: true,
   enableFloatingWhatsapp: true,
 

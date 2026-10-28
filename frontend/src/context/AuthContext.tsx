@@ -23,6 +23,8 @@ export interface UserProfile {
   email: string;
   role: 'admin' | 'customer';
   phoneNumber?: string;
+  avatar?: string;
+  bio?: string;
   preferredCurrency?: 'AUD' | 'USD';
   savedAddresses?: SavedAddress[];
   wishlist?: any[];

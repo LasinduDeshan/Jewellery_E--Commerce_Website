@@ -49,7 +49,7 @@ export const SubmissionSuccessModal: React.FC<SubmissionSuccessModalProps> = ({
           <CheckCircle2 className="w-9 h-9" />
         </div>
 
-        <span className="text-xs font-semibold tracking-widest uppercase text-neutral-500">
+        <span className="text-xs font-semibold text-neutral-500">
           Request Confirmed
         </span>
         <h3 className="text-3xl font-cormorant text-neutral-900 mt-1 font-normal">
@@ -63,7 +63,7 @@ export const SubmissionSuccessModal: React.FC<SubmissionSuccessModalProps> = ({
         {/* Ticket ID Box */}
         <div className="my-6 p-4 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-between">
           <div className="text-left">
-            <span className="text-[11px] text-neutral-500 uppercase tracking-wider block">
+            <span className="text-[11px] text-neutral-500 block">
               Your Reference Ticket ID
             </span>
             <span className="text-base font-mono font-bold text-neutral-900">
@@ -102,7 +102,7 @@ export const SubmissionSuccessModal: React.FC<SubmissionSuccessModalProps> = ({
             href={`https://wa.me/94771234567?text=${whatsappMessage}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full py-3 px-4 rounded-md bg-neutral-900 hover:bg-black text-white text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 shadow transition-colors"
+            className="w-full py-3 px-4 rounded-md bg-neutral-900 hover:bg-black text-white text-xs font-semibold flex items-center justify-center gap-2 shadow transition-colors"
           >
             <MessageCircle className="w-4 h-4" />
             <span>Chat Directly on WhatsApp with Reference #{ticketId}</span>
@@ -110,7 +110,7 @@ export const SubmissionSuccessModal: React.FC<SubmissionSuccessModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-full py-2.5 px-4 rounded-md bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-semibold uppercase tracking-wider transition-colors"
+            className="w-full py-2.5 px-4 rounded-md bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-semibold transition-colors"
           >
             Close & Return to Studio
           </button>

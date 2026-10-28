@@ -169,7 +169,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
   return (
     <section id="customization-form-section" className="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
       <div className="text-center mb-14">
-        <span className="text-neutral-500 text-xs font-semibold tracking-widest uppercase">
+        <span className="text-neutral-500 text-xs font-semibold">
           Step 6 • Request a Quote
         </span>
         <h2 className="text-3xl sm:text-4xl font-cormorant text-black mt-2 font-normal">
@@ -190,7 +190,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
 
         {/* 1. Jewellery Type */}
         <div>
-          <label className="block text-sm font-semibold tracking-wider text-neutral-900 uppercase mb-3">
+          <label className="block text-sm font-semibold text-neutral-900 mb-3">
             1. Select Jewellery Type <span className="text-neutral-900">*</span>
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -217,7 +217,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
 
         {/* 2. Metal Preference */}
         <div>
-          <label className="block text-sm font-semibold tracking-wider text-neutral-900 uppercase mb-3">
+          <label className="block text-sm font-semibold text-neutral-900 mb-3">
             2. Precious Metal Preference <span className="text-neutral-900">*</span>
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -248,7 +248,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
         {/* 3. Gemstone & Cut Dropdowns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-semibold tracking-wider text-neutral-900 uppercase mb-2">
+            <label className="block text-sm font-semibold text-neutral-900 mb-2">
               3. Sapphire Color / Type <span className="text-neutral-900">*</span>
             </label>
             <select
@@ -265,7 +265,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold tracking-wider text-neutral-900 uppercase mb-2">
+            <label className="block text-sm font-semibold text-neutral-900 mb-2">
               4. Cut & Shape <span className="text-neutral-900">*</span>
             </label>
             <select
@@ -286,7 +286,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-sm font-semibold tracking-wider text-neutral-900 uppercase">
+              <label className="text-sm font-semibold text-neutral-900">
                 5. Sizing
               </label>
               <button
@@ -308,7 +308,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold tracking-wider text-neutral-900 uppercase mb-2">
+            <label className="block text-sm font-semibold text-neutral-900 mb-2">
               6. Budget Range (Optional)
             </label>
             <select
@@ -325,7 +325,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold tracking-wider text-neutral-900 uppercase mb-2">
+            <label className="block text-sm font-semibold text-neutral-900 mb-2">
               7. Occasion (Optional)
             </label>
             <select
@@ -344,7 +344,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
 
         {/* 8. Reference Image Upload */}
         <div>
-          <label className="block text-sm font-semibold tracking-wider text-neutral-900 uppercase mb-2">
+          <label className="block text-sm font-semibold text-neutral-900 mb-2">
             8. Inspiration & Reference Images (Optional)
           </label>
           <div className="p-6 border-2 border-dashed border-neutral-300 hover:border-black rounded-xl bg-neutral-50 text-center transition-colors">
@@ -385,7 +385,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
 
         {/* 9. Special Instructions */}
         <div>
-          <label className="block text-sm font-semibold tracking-wider text-neutral-900 uppercase mb-2">
+          <label className="block text-sm font-semibold text-neutral-900 mb-2">
             9. Special Instructions or Engraving Text (Optional)
           </label>
           <textarea
@@ -405,7 +405,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase text-neutral-700 mb-1">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1">
                 Full Name <span className="text-neutral-900">*</span>
               </label>
               <input
@@ -419,7 +419,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase text-neutral-700 mb-1">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1">
                 Email Address <span className="text-neutral-900">*</span>
               </label>
               <input
@@ -433,7 +433,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase text-neutral-700 mb-1">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1">
                 Phone / WhatsApp Number <span className="text-neutral-900">*</span>
               </label>
               <PhoneInput
@@ -445,7 +445,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase text-neutral-700 mb-1">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1">
                 Country / Region <span className="text-neutral-900">*</span>
               </label>
               <input
@@ -460,7 +460,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
           </div>
 
           <div className="mt-4">
-            <label className="block text-xs font-semibold uppercase text-neutral-700 mb-2">
+            <label className="block text-xs font-semibold text-neutral-700 mb-2">
               Preferred Contact Channel
             </label>
             <div className="flex flex-wrap gap-4 text-xs font-medium text-neutral-700">
@@ -507,7 +507,7 @@ export const CustomizationForm: React.FC<CustomizationFormProps> = ({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-auto px-8 py-3.5 bg-black hover:bg-neutral-800 text-white rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            className="w-full sm:w-auto px-8 py-3.5 bg-black hover:bg-neutral-800 text-white rounded-full text-xs font-bold transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
           >
             {isSubmitting ? (
               <span>Submitting Request...</span>

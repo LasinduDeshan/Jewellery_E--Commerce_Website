@@ -177,7 +177,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Pre-fills cart contents into WhatsApp message & auto-logs lead in backend admin desk
   const generateWhatsAppCartLink = async (customerName?: string, customerPhone?: string): Promise<string> => {
     const lines = [
-      `💎 *Aura Ceylon Jewels — Order Consultation*`,
+      `💎 *Zeyloraa — Order Consultation*`,
       `Hello! I would like to confirm an order directly with your concierge:`,
       ``,
       ...cart.map(

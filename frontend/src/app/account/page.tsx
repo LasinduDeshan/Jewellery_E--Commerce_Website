@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '../../components/layout/Navbar';
-import { Footer } from '../../components/layout/Footer';
 import { useAuth, SavedAddress } from '../../context/AuthContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { PhoneInput } from '../../components/ui/PhoneInput';
@@ -30,6 +29,8 @@ import {
   KeyRound,
   AlertCircle,
   X,
+  Camera,
+  Upload,
 } from 'lucide-react';
 
 interface OrderItem {
@@ -61,66 +62,30 @@ interface OrderItem {
   }>;
 }
 
-const mockOrdersData: OrderItem[] = [
+const avatarPresets = [
   {
-    _id: 'ord_1',
-    orderNumber: 'AJ-2026-8492',
-    createdAt: new Date(Date.now() - 3600000 * 72).toISOString(),
-    status: 'Shipped',
-    isNgjaCleared: true,
-    trackingNumber: 'DHL-AU-98302941',
-    courierPartner: 'DHL Express',
-    trackingUrl: 'https://www.dhl.com/en/express/tracking.html?AWB=DHL-AU-98302941',
-    totalPrice: 2450,
-    currency: 'AUD',
-    orderItems: [
-      {
-        title: 'Ceylon Cornflower Blue Sapphire Ring in 18K Rose Gold',
-        quantity: 1,
-        price: 2450,
-        image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=400&q=80',
-        metal: '18K Rose Gold',
-        gemstone: 'Natural Ceylon Sapphire (2.05ct)',
-        size: 'US 6.5 (AU M)',
-      },
-    ],
-    timeline: [
-      {
-        status: 'Processing',
-        title: 'Order Placed & Confirmed',
-        description: 'Payment verified in AUD and atelier dispatch ticket created.',
-        isCompleted: true,
-        timestamp: '2026-10-04T10:00:00Z',
-      },
-      {
-        status: 'Gem Setting & Inspection',
-        title: 'Artisanal Setting & QC',
-        description: 'Microscopic claw setting and high-polish bench finish completed in Colombo.',
-        isCompleted: true,
-        timestamp: '2026-10-05T14:30:00Z',
-      },
-      {
-        status: 'Pending NGJA Export Clearance',
-        title: 'Sri Lanka NGJA Appraisal Clearance',
-        description: 'National Gem & Jewellery Authority export appraisal & seal verified.',
-        isCompleted: true,
-        timestamp: '2026-10-06T11:15:00Z',
-      },
-      {
-        status: 'Shipped',
-        title: 'Dispatched via DHL Express Worldwide',
-        description: 'Flight en route from Colombo (CMB) to Sydney International (SYD).',
-        isCompleted: true,
-        timestamp: '2026-10-07T08:00:00Z',
-      },
-      {
-        status: 'Delivered',
-        title: 'Delivered to Sydney Address',
-        description: 'Estimated delivery: October 10, 2026 (Signature required).',
-        isCompleted: false,
-        timestamp: '',
-      },
-    ],
+    id: 'sapphire',
+    name: 'Sapphire Muse',
+    gem: 'Ceylon Royal Blue',
+    url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 'emerald',
+    name: 'Emerald Noble',
+    gem: 'Colombian Green',
+    url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 'diamond',
+    name: 'Diamond Atelier',
+    gem: 'D-Flawless Brilliant',
+    url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 'ruby',
+    name: 'Ruby Sovereign',
+    gem: 'Burmese Pigeon Blood',
+    url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80',
   },
 ];
 
@@ -130,9 +95,21 @@ export default function AccountPage() {
   const { wishlist, removeFromWishlist } = useWishlist();
 
   const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'wishlist' | 'addresses' | 'custom_quotes' | 'security'>('overview');
-  const [orders, setOrders] = useState<OrderItem[]>(mockOrdersData);
+  const [orders, setOrders] = useState<OrderItem[]>([]);
   const [customQuotes, setCustomQuotes] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
+
+  // Profile Edit and Avatar States
+  const [isEditingAvatar, setIsEditingAvatar] = useState(false);
+  const [isEditingPersonal, setIsEditingPersonal] = useState(false);
+  const [avatarUrlInput, setAvatarUrlInput] = useState('');
+  const [personalForm, setPersonalForm] = useState({
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    bio: '',
+  });
+  const [profileSuccessMsg, setProfileSuccessMsg] = useState('');
 
   // Address Modal State
   const [addressModalOpen, setAddressModalOpen] = useState(false);
@@ -173,7 +150,7 @@ export default function AccountPage() {
       });
       if (orderRes.ok) {
         const oData = await orderRes.json();
-        if (oData.success && oData.data.length > 0) {
+        if (oData.success && Array.isArray(oData.data)) {
           setOrders(oData.data);
         }
       }
@@ -185,12 +162,12 @@ export default function AccountPage() {
       if (quoteRes.ok) {
         const qData = await quoteRes.json();
         if (qData.success && Array.isArray(qData.data)) {
-          // If customer, filter by their email or show recent
+          // If customer, filter by their email only
           const userEmail = user?.email?.toLowerCase();
           const matched = userEmail
             ? qData.data.filter((q: any) => q.email?.toLowerCase() === userEmail)
-            : qData.data;
-          setCustomQuotes(matched.length > 0 ? matched : qData.data);
+            : [];
+          setCustomQuotes(matched);
         }
       }
     } catch (e) {
@@ -208,8 +185,81 @@ export default function AccountPage() {
         name: user.name || '',
         phoneNumber: user.phoneNumber || '',
       }));
+      const nameParts = (user.name || '').trim().split(' ');
+      setPersonalForm({
+        firstName: nameParts[0] || '',
+        lastName: nameParts.slice(1).join(' ') || '',
+        phoneNumber: user.phoneNumber || '',
+        bio: user.bio || '',
+      });
     }
   }, [fetchAccountData, user]);
+
+  const handleSavePersonal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const fullName = `${personalForm.firstName.trim()} ${personalForm.lastName.trim()}`.trim();
+    if (token) {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        await fetch(`${apiUrl}/auth/profile`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: fullName,
+            phoneNumber: personalForm.phoneNumber,
+            bio: personalForm.bio,
+          }),
+        });
+      } catch (err) {
+        console.warn('Updated profile locally');
+      }
+    }
+    updateUser({
+      name: fullName,
+      phoneNumber: personalForm.phoneNumber,
+      bio: personalForm.bio,
+    });
+    setIsEditingPersonal(false);
+    setProfileSuccessMsg('Personal information updated successfully!');
+    setTimeout(() => setProfileSuccessMsg(''), 3000);
+  };
+
+  const handleSaveAvatar = async (avatarUrl: string) => {
+    if (token) {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        await fetch(`${apiUrl}/auth/profile`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ avatar: avatarUrl }),
+        });
+      } catch (err) {
+        console.warn('Avatar updated locally');
+      }
+    }
+    updateUser({ avatar: avatarUrl });
+    setIsEditingAvatar(false);
+    setProfileSuccessMsg(avatarUrl ? 'Avatar updated successfully!' : 'Avatar reset to monogram');
+    setTimeout(() => setProfileSuccessMsg(''), 3000);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        handleSaveAvatar(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleLogout = () => {
     logout();
@@ -323,119 +373,74 @@ export default function AccountPage() {
     setTimeout(() => setSecurityMessage(''), 3000);
   };
 
-  const savedAddressesList = user?.savedAddresses && user.savedAddresses.length > 0
-    ? user.savedAddresses
-    : [
-        {
-          _id: 'addr_default_syd',
-          label: 'Sydney Residence',
-          fullName: user?.name || 'Lady Genevieve',
-          street: '42 Collins Avenue',
-          apartment: 'Level 12, Suite 4',
-          city: 'Sydney',
-          state: 'NSW',
-          postalCode: '2000',
-          country: 'Australia',
-          phoneNumber: user?.phoneNumber || '+61 412 345 678',
-          isDefault: true,
-        },
-      ];
+  const savedAddressesList = user?.savedAddresses || [];
 
   return (
-    <main className="min-h-screen flex flex-col bg-white">
+    <main className="min-h-screen flex flex-col bg-[#fbfbfb]">
       <Navbar />
 
-      {/* Account Hero Bar */}
-      <section className="bg-black text-white py-10 px-4 sm:px-6 lg:px-8 border-b border-neutral-800 relative overflow-hidden">
-        <div className="absolute top-0 right-1/4 w-72 h-72 bg-white/5 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-black text-white font-serif text-2xl font-bold flex items-center justify-center shadow-lg border-2 border-neutral-700">
-              {user?.name ? user.name.charAt(0).toUpperCase() : 'G'}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-serif text-white font-medium">
-                  Welcome back, {user?.name || 'Lady Genevieve'}
-                </h1>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-200 border border-neutral-700 font-semibold tracking-wider uppercase">
-                  Atelier Client
-                </span>
-              </div>
-              <p className="text-xs text-neutral-400 mt-1">
-                {user?.email || 'genevieve@ceylonjewels.com'} • Preferred Currency: AUD ($)
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-semibold uppercase tracking-wider flex items-center gap-2 transition-colors border border-neutral-700 cursor-pointer"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            <span>Sign Out</span>
-          </button>
-        </div>
-      </section>
+      {/* Page Title matching reference */}
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-1">
+       
+      </div>
 
       {/* Account Workspace Grid */}
       <div className="max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Navigation Sidebar */}
-        <aside className="lg:col-span-3 space-y-2">
-          <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-3 space-y-1">
+        <aside className="lg:col-span-3 space-y-3">
+          <div className="bg-white rounded-2xl border border-neutral-200/90 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-3 space-y-1">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`w-full p-3 rounded-xl text-left text-xs font-semibold uppercase tracking-wider flex items-center gap-3 transition-colors cursor-pointer ${
+              className={`w-full p-3 rounded-xl text-left text-sm font-medium flex items-center gap-3 transition-all cursor-pointer ${
                 activeTab === 'overview'
-                  ? 'bg-black text-white font-bold'
-                  : 'text-neutral-700 hover:bg-neutral-100'
+                  ? 'bg-black text-white font-semibold shadow-xs'
+                  : 'text-neutral-700 hover:bg-neutral-100/80'
               }`}
             >
               <User className={`w-4 h-4 ${activeTab === 'overview' ? 'text-white' : 'text-neutral-500'}`} />
-              <span>Overview</span>
+              <span>My Profile</span>
             </button>
 
             <button
               onClick={() => setActiveTab('orders')}
-              className={`w-full p-3 rounded-xl text-left text-xs font-semibold uppercase tracking-wider flex items-center justify-between transition-colors cursor-pointer ${
+              className={`w-full p-3 rounded-xl text-left text-sm font-medium flex items-center justify-between transition-all cursor-pointer ${
                 activeTab === 'orders'
-                  ? 'bg-black text-white font-bold'
-                  : 'text-neutral-700 hover:bg-neutral-100'
+                  ? 'bg-black text-white font-semibold shadow-xs'
+                  : 'text-neutral-700 hover:bg-neutral-100/80'
               }`}
             >
               <div className="flex items-center gap-3">
                 <Package className={`w-4 h-4 ${activeTab === 'orders' ? 'text-white' : 'text-neutral-500'}`} />
                 <span>Orders & Tracking</span>
               </div>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${activeTab === 'orders' ? 'bg-neutral-800 text-white' : 'bg-neutral-100 text-neutral-700'}`}>
+              <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold ${activeTab === 'orders' ? 'bg-neutral-800 text-white' : 'bg-neutral-100 text-neutral-700'}`}>
                 {orders.length}
               </span>
             </button>
 
             <button
               onClick={() => setActiveTab('wishlist')}
-              className={`w-full p-3 rounded-xl text-left text-xs font-semibold uppercase tracking-wider flex items-center justify-between transition-colors cursor-pointer ${
+              className={`w-full p-3 rounded-xl text-left text-sm font-medium flex items-center justify-between transition-all cursor-pointer ${
                 activeTab === 'wishlist'
-                  ? 'bg-black text-white font-bold'
-                  : 'text-neutral-700 hover:bg-neutral-100'
+                  ? 'bg-black text-white font-semibold shadow-xs'
+                  : 'text-neutral-700 hover:bg-neutral-100/80'
               }`}
             >
               <div className="flex items-center gap-3">
                 <Heart className={`w-4 h-4 ${activeTab === 'wishlist' ? 'text-white' : 'text-neutral-500'}`} />
                 <span>My Wishlist</span>
               </div>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${activeTab === 'wishlist' ? 'bg-neutral-800 text-white' : 'bg-neutral-100 text-neutral-700'}`}>
+              <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold ${activeTab === 'wishlist' ? 'bg-neutral-800 text-white' : 'bg-neutral-100 text-neutral-700'}`}>
                 {wishlist.length}
               </span>
             </button>
 
             <button
               onClick={() => setActiveTab('addresses')}
-              className={`w-full p-3 rounded-xl text-left text-xs font-semibold uppercase tracking-wider flex items-center gap-3 transition-colors cursor-pointer ${
+              className={`w-full p-3 rounded-xl text-left text-sm font-medium flex items-center gap-3 transition-all cursor-pointer ${
                 activeTab === 'addresses'
-                  ? 'bg-black text-white font-bold'
-                  : 'text-neutral-700 hover:bg-neutral-100'
+                  ? 'bg-black text-white font-semibold shadow-xs'
+                  : 'text-neutral-700 hover:bg-neutral-100/80'
               }`}
             >
               <MapPin className={`w-4 h-4 ${activeTab === 'addresses' ? 'text-white' : 'text-neutral-500'}`} />
@@ -444,18 +449,18 @@ export default function AccountPage() {
 
             <button
               onClick={() => setActiveTab('custom_quotes')}
-              className={`w-full p-3 rounded-xl text-left text-xs font-semibold uppercase tracking-wider flex items-center justify-between transition-colors cursor-pointer ${
+              className={`w-full p-3 rounded-xl text-left text-sm font-medium flex items-center justify-between transition-all cursor-pointer ${
                 activeTab === 'custom_quotes'
-                  ? 'bg-black text-white font-bold'
-                  : 'text-neutral-700 hover:bg-neutral-100'
+                  ? 'bg-black text-white font-semibold shadow-xs'
+                  : 'text-neutral-700 hover:bg-neutral-100/80'
               }`}
             >
               <div className="flex items-center gap-3">
-                <Sparkles className={`w-4 h-4 ${activeTab === 'custom_quotes' ? 'text-white' : 'text-neutral-500'}`} />
+                <Gem className={`w-4 h-4 ${activeTab === 'custom_quotes' ? 'text-white' : 'text-neutral-500'}`} />
                 <span>Custom Quotes</span>
               </div>
               {customQuotes.length > 0 && (
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${activeTab === 'custom_quotes' ? 'bg-neutral-800 text-white' : 'bg-neutral-100 text-neutral-800'}`}>
+                <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold ${activeTab === 'custom_quotes' ? 'bg-neutral-800 text-white' : 'bg-neutral-100 text-neutral-800'}`}>
                   {customQuotes.length}
                 </span>
               )}
@@ -463,19 +468,30 @@ export default function AccountPage() {
 
             <button
               onClick={() => setActiveTab('security')}
-              className={`w-full p-3 rounded-xl text-left text-xs font-semibold uppercase tracking-wider flex items-center gap-3 transition-colors cursor-pointer ${
+              className={`w-full p-3 rounded-xl text-left text-sm font-medium flex items-center gap-3 transition-all cursor-pointer ${
                 activeTab === 'security'
-                  ? 'bg-black text-white font-bold'
-                  : 'text-neutral-700 hover:bg-neutral-100'
+                  ? 'bg-black text-white font-semibold shadow-xs'
+                  : 'text-neutral-700 hover:bg-neutral-100/80'
               }`}
             >
               <KeyRound className={`w-4 h-4 ${activeTab === 'security' ? 'text-white' : 'text-neutral-500'}`} />
-              <span>Profile & Security</span>
+              <span>Security</span>
             </button>
+
+            {/* Red Sign Out / Delete Account link matching reference */}
+            <div className="pt-2 border-t border-neutral-100 mt-2">
+              <button
+                onClick={handleLogout}
+                className="w-full p-3 rounded-xl text-left text-sm font-medium text-red-500 hover:text-red-600 hover:bg-red-50/70 flex items-center gap-3 transition-colors cursor-pointer"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Sign Out</span>
+              </button>
+            </div>
           </div>
 
           {/* Concierge Help Box */}
-          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-5 text-xs text-neutral-800 space-y-3">
+          <div className="bg-white border border-neutral-200/90 rounded-2xl p-5 text-xs text-neutral-800 space-y-3 shadow-xs">
             <div className="flex items-center gap-2 font-semibold text-neutral-900">
               <MessageCircle className="w-4 h-4 text-neutral-700" />
               <span>Dedicated Concierge</span>
@@ -497,60 +513,384 @@ export default function AccountPage() {
 
         {/* Right Main Content Tabs */}
         <div className="lg:col-span-9">
-          {/* ================= TAB 1: OVERVIEW ================= */}
+          {/* ================= TAB 1: MY PROFILE (Matching Screenshot + Theme) ================= */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              {/* Stat Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-white p-5 rounded-2xl border border-neutral-200 shadow-sm flex items-center justify-between">
-                  <div>
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
-                      Active Orders
-                    </span>
-                    <h3 className="text-2xl font-serif text-neutral-900 font-bold mt-1">
-                      {orders.length}
-                    </h3>
+              {/* Header Title */}
+              <div className="flex items-center justify-between pb-2 border-b border-neutral-200/70">
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-serif text-neutral-900 font-semibold">
+                    My Profile
+                  </h2>
+                  <p className="text-xs text-neutral-500 mt-0.5">
+                    Manage your personal client identity, avatar, and atelier delivery coordinates.
+                  </p>
+                </div>
+              </div>
+
+              {/* Success Notification */}
+              {profileSuccessMsg && (
+                <div className="p-3 bg-black text-white rounded-xl text-xs flex items-center gap-2 shadow-sm animate-in fade-in duration-150">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>{profileSuccessMsg}</span>
+                </div>
+              )}
+
+              {/* ================= CARD 1: AVATAR & CLIENT IDENTITY ================= */}
+              <div className="bg-white rounded-2xl border border-neutral-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] p-6 sm:p-7 space-y-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-5">
+                    {/* Avatar Circle with image or luxury monogram */}
+                    <div
+                      className="relative group cursor-pointer shrink-0"
+                      onClick={() => setIsEditingAvatar(!isEditingAvatar)}
+                      title="Click to change avatar image"
+                    >
+                      <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-black border-2 border-neutral-800 shadow-md flex items-center justify-center">
+                        {user?.avatar ? (
+                          <img src={user.avatar} alt={user?.name || 'Client Avatar'} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-white font-serif text-2xl font-semibold">
+                            {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                          </span>
+                        )}
+                      </div>
+                      {/* Hover overlay with Camera icon */}
+                      <div className="absolute inset-0 rounded-full bg-black/50 text-white flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Camera className="w-4 h-4" />
+                        <span className="text-[9px] font-semibold mt-0.5">Change</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-lg sm:text-xl font-serif font-semibold text-neutral-900">
+                          {user?.name || 'Client'}
+                        </h3>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-neutral-100 text-neutral-800 border border-neutral-200">
+                          {user?.role === 'admin' ? 'Atelier Director' : 'VIP Private Client'}
+                        </span>
+                      </div>
+                      {user?.bio && (
+                        <p className="text-xs text-neutral-600 font-medium">
+                          {user.bio}
+                        </p>
+                      )}
+                      <p className="text-xs text-neutral-400">
+                        {savedAddressesList[0]?.city
+                          ? `${savedAddressesList[0].city}${savedAddressesList[0].country ? `, ${savedAddressesList[0].country}` : ''}`
+                          : 'Location not set'}
+                      </p>
+                    </div>
                   </div>
-                  <div className="w-12 h-12 rounded-xl bg-neutral-100 text-neutral-900 flex items-center justify-center">
-                    <Package className="w-6 h-6" />
-                  </div>
+
+                  {/* Edit Button */}
+                  <button
+                    onClick={() => setIsEditingAvatar(!isEditingAvatar)}
+                    className="px-3.5 py-1.5 rounded-full border border-neutral-200 hover:border-neutral-900 bg-white hover:bg-neutral-50 text-neutral-700 hover:text-black text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                  >
+                    <Edit2 className="w-3 h-3" />
+                    <span>{isEditingAvatar ? 'Close' : 'Edit'}</span>
+                  </button>
                 </div>
 
-                <div className="bg-white p-5 rounded-2xl border border-neutral-200 shadow-sm flex items-center justify-between">
-                  <div>
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
-                      Saved in Wishlist
-                    </span>
-                    <h3 className="text-2xl font-serif text-neutral-900 font-bold mt-1">
-                      {wishlist.length}
-                    </h3>
+                {/* Expandable Image Section ("create image section") */}
+                {isEditingAvatar && (
+                  <div className="mt-4 pt-5 border-t border-neutral-100 space-y-4 animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-semibold text-neutral-700 flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-neutral-800" />
+                        <span>Curated Atelier Avatars & Custom Upload</span>
+                      </h4>
+                      {user?.avatar && (
+                        <button
+                          onClick={() => handleSaveAvatar('')}
+                          className="text-[11px] text-neutral-500 hover:text-red-600 transition-colors cursor-pointer"
+                        >
+                          Reset to Monogram
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Preset Luxury Avatars */}
+                    <div>
+                      <label className="text-[11px] text-neutral-400 block mb-2 font-medium">Choose from Atelier Portraits:</label>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {avatarPresets.map((preset) => (
+                          <div
+                            key={preset.id}
+                            onClick={() => handleSaveAvatar(preset.url)}
+                            className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center gap-3 ${
+                              user?.avatar === preset.url
+                                ? 'border-black bg-neutral-50 ring-1 ring-black'
+                                : 'border-neutral-200 hover:border-neutral-400 bg-white'
+                            }`}
+                          >
+                            <img src={preset.url} alt={preset.name} className="w-10 h-10 rounded-full object-cover border border-neutral-200 shrink-0" />
+                            <div className="min-w-0">
+                              <span className="text-xs font-semibold text-neutral-900 block truncate">{preset.name}</span>
+                              <span className="text-[10px] text-neutral-400 block truncate">{preset.gem}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Custom Image Upload or Direct URL */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                      <div>
+                        <label className="text-[11px] text-neutral-400 block mb-1 font-medium">Upload Image from Device:</label>
+                        <label className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-neutral-300 hover:border-black bg-neutral-50 hover:bg-neutral-100 text-xs font-medium text-neutral-700 cursor-pointer transition-colors">
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Select Local Photo</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleFileUpload}
+                          />
+                        </label>
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] text-neutral-400 block mb-1 font-medium">Or Paste Direct Image URL:</label>
+                        <div className="flex gap-2">
+                          <input
+                            type="url"
+                            placeholder="https://..."
+                            value={avatarUrlInput}
+                            onChange={(e) => setAvatarUrlInput(e.target.value)}
+                            className="flex-1 px-3 py-2 rounded-xl border border-neutral-200 text-xs text-neutral-900 focus:outline-none focus:border-black"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (avatarUrlInput.trim()) {
+                                handleSaveAvatar(avatarUrlInput.trim());
+                                setAvatarUrlInput('');
+                              }
+                            }}
+                            className="px-3.5 py-2 rounded-xl bg-black text-white text-xs font-semibold hover:bg-neutral-800 transition-colors cursor-pointer"
+                          >
+                            Apply
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="w-12 h-12 rounded-xl bg-neutral-100 text-neutral-900 flex items-center justify-center">
-                    <Heart className="w-6 h-6" />
-                  </div>
+                )}
+              </div>
+
+              {/* ================= CARD 2: PERSONAL INFORMATION ================= */}
+              <div className="bg-white rounded-2xl border border-neutral-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] p-6 sm:p-7 space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
+                  <h3 className="text-base font-serif font-semibold text-neutral-900">Personal Information</h3>
+                  <button
+                    onClick={() => setIsEditingPersonal(!isEditingPersonal)}
+                    className="px-3.5 py-1.5 rounded-full border border-neutral-200 hover:border-neutral-900 bg-white hover:bg-neutral-50 text-neutral-700 hover:text-black text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                  >
+                    <Edit2 className="w-3 h-3" />
+                    <span>{isEditingPersonal ? 'Cancel' : 'Edit'}</span>
+                  </button>
                 </div>
 
-                <div className="bg-white p-5 rounded-2xl border border-neutral-200 shadow-sm flex items-center justify-between">
-                  <div>
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
-                      Custom Quotes
-                    </span>
-                    <h3 className="text-2xl font-serif text-neutral-900 font-bold mt-1">
-                      {customQuotes.length}
-                    </h3>
+                {isEditingPersonal ? (
+                  <form onSubmit={handleSavePersonal} className="space-y-4 animate-in fade-in duration-200">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-medium text-neutral-500 block mb-1">First Name</label>
+                        <input
+                          type="text"
+                          required
+                          value={personalForm.firstName}
+                          onChange={(e) => setPersonalForm({ ...personalForm, firstName: e.target.value })}
+                          className="w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs text-neutral-900 focus:outline-none focus:border-black"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-neutral-500 block mb-1">Last Name</label>
+                        <input
+                          type="text"
+                          value={personalForm.lastName}
+                          onChange={(e) => setPersonalForm({ ...personalForm, lastName: e.target.value })}
+                          className="w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs text-neutral-900 focus:outline-none focus:border-black"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-medium text-neutral-500 block mb-1">Email address (Verified)</label>
+                        <input
+                          type="email"
+                          disabled
+                          value={user?.email || ''}
+                          className="w-full px-3.5 py-2 rounded-xl border border-neutral-200 bg-neutral-100 text-neutral-500 text-xs cursor-not-allowed"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-neutral-500 block mb-1">Phone Number</label>
+                        <input
+                          type="tel"
+                          value={personalForm.phoneNumber}
+                          onChange={(e) => setPersonalForm({ ...personalForm, phoneNumber: e.target.value })}
+                          placeholder="Enter phone number"
+                          className="w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs text-neutral-900 focus:outline-none focus:border-black"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-medium text-neutral-500 block mb-1">Bio / Atelier Preferences</label>
+                      <textarea
+                        rows={2}
+                        value={personalForm.bio}
+                        onChange={(e) => setPersonalForm({ ...personalForm, bio: e.target.value })}
+                        placeholder="Client preferences, bespoke ring size notes, gem interests..."
+                        className="w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs text-neutral-900 focus:outline-none focus:border-black"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-end gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setIsEditingPersonal(false)}
+                        className="px-4 py-2 rounded-xl text-xs font-medium text-neutral-600 hover:text-black hover:bg-neutral-100 transition-colors cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-5 py-2 rounded-xl bg-black text-white text-xs font-semibold hover:bg-neutral-800 transition-colors cursor-pointer shadow-xs"
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-8 text-xs">
+                    <div>
+                      <span className="text-[11px] font-medium text-neutral-400 block mb-1">First Name</span>
+                      <span className="text-sm font-semibold text-neutral-900 block">
+                        {user?.name ? user.name.split(' ')[0] : '—'}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="text-[11px] font-medium text-neutral-400 block mb-1">Last Name</span>
+                      <span className="text-sm font-semibold text-neutral-900 block">
+                        {user?.name && user.name.split(' ').length > 1 ? user.name.split(' ').slice(1).join(' ') : '—'}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="text-[11px] font-medium text-neutral-400 block mb-1">Email address</span>
+                      <span className="text-sm font-semibold text-neutral-900 block">
+                        {user?.email || '—'}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="text-[11px] font-medium text-neutral-400 block mb-1">Phone</span>
+                      <span className="text-sm font-semibold text-neutral-900 block">
+                        {user?.phoneNumber || '—'}
+                      </span>
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <span className="text-[11px] font-medium text-neutral-400 block mb-1">Bio</span>
+                      <span className="text-sm font-semibold text-neutral-900 block">
+                        {user?.bio || '—'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="w-12 h-12 rounded-xl bg-neutral-100 text-neutral-900 flex items-center justify-center">
-                    <Sparkles className="w-6 h-6" />
+                )}
+              </div>
+
+              {/* ================= CARD 3: ADDRESS ================= */}
+              <div className="bg-white rounded-2xl border border-neutral-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] p-6 sm:p-7 space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
+                  <h3 className="text-base font-serif font-semibold text-neutral-900">Address</h3>
+                  <button
+                    onClick={() => {
+                      const defaultAddr = savedAddressesList[0];
+                      if (defaultAddr) {
+                        setAddressForm({
+                          label: defaultAddr.label || 'Home',
+                          fullName: defaultAddr.fullName || user?.name || '',
+                          street: defaultAddr.street || '',
+                          apartment: defaultAddr.apartment || '',
+                          city: defaultAddr.city || '',
+                          state: defaultAddr.state || 'NSW',
+                          postalCode: defaultAddr.postalCode || '',
+                          country: defaultAddr.country || 'Australia',
+                          phoneNumber: defaultAddr.phoneNumber || user?.phoneNumber || '',
+                          isDefault: true,
+                        });
+                        setEditingAddressId(defaultAddr._id);
+                      } else {
+                        setAddressForm({
+                          label: 'Home',
+                          fullName: user?.name || '',
+                          street: '',
+                          apartment: '',
+                          city: '',
+                          state: 'NSW',
+                          postalCode: '',
+                          country: 'Australia',
+                          phoneNumber: user?.phoneNumber || '',
+                          isDefault: true,
+                        });
+                        setEditingAddressId(null);
+                      }
+                      setAddressModalOpen(true);
+                    }}
+                    className="px-3.5 py-1.5 rounded-full border border-neutral-200 hover:border-neutral-900 bg-white hover:bg-neutral-50 text-neutral-700 hover:text-black text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                  >
+                    <Edit2 className="w-3 h-3" />
+                    <span>{savedAddressesList.length > 0 ? 'Edit' : 'Add'}</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-8 text-xs">
+                  <div>
+                    <span className="text-[11px] font-medium text-neutral-400 block mb-1">Country</span>
+                    <span className="text-sm font-semibold text-neutral-900 block">
+                      {savedAddressesList[0]?.country || '—'}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-[11px] font-medium text-neutral-400 block mb-1">City/State</span>
+                    <span className="text-sm font-semibold text-neutral-900 block">
+                      {savedAddressesList[0]?.city
+                        ? `${savedAddressesList[0].city}${savedAddressesList[0].state ? `, ${savedAddressesList[0].state}` : ''}`
+                        : '—'}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-[11px] font-medium text-neutral-400 block mb-1">Postal Code</span>
+                    <span className="text-sm font-semibold text-neutral-900 block">
+                      {savedAddressesList[0]?.postalCode || '—'}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-[11px] font-medium text-neutral-400 block mb-1">TAX ID / Client Reference</span>
+                    <span className="text-sm font-semibold text-neutral-900 block font-mono">
+                      {user?.id ? `CLI-${user.id.slice(-8).toUpperCase()}` : '—'}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              {/* Recent Order Quick View */}
+              {/* Recent Order Quick View (Preserving existing details) */}
               {orders.length > 0 && (
-                <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-6 sm:p-8 space-y-6">
+                <div className="bg-white rounded-2xl border border-neutral-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] p-6 sm:p-7 space-y-6">
                   <div className="flex items-center justify-between pb-4 border-b border-neutral-200">
                     <div>
-                      <span className="text-xs font-semibold tracking-wider uppercase text-neutral-500">
+                      <span className="text-xs font-semibold text-neutral-500">
                         Latest Shipment Tracking
                       </span>
                       <h3 className="text-xl font-serif text-neutral-900 mt-0.5">
@@ -559,7 +899,7 @@ export default function AccountPage() {
                     </div>
                     <button
                       onClick={() => setActiveTab('orders')}
-                      className="text-xs font-bold text-neutral-900 hover:text-neutral-600 flex items-center gap-1"
+                      className="text-xs font-bold text-neutral-900 hover:text-neutral-600 flex items-center gap-1 cursor-pointer"
                     >
                       <span>Full Timeline</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -609,7 +949,7 @@ export default function AccountPage() {
                           href={orders[0].trackingUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 py-1.5 bg-black hover:bg-neutral-800 text-white rounded text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-colors"
+                          className="px-3 py-1.5 bg-black hover:bg-neutral-800 text-white rounded text-xs font-semibold flex items-center gap-1.5 transition-colors"
                         >
                           <span>Live Courier Tracking</span>
                           <ExternalLink className="w-3 h-3" />
@@ -677,7 +1017,7 @@ export default function AccountPage() {
 
                       {/* 5-Stage Visual Progress Tracker (Section 5.4) */}
                       <div className="pt-4 border-t border-neutral-200">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900 mb-4 flex items-center gap-1.5">
+                        <h4 className="text-xs font-bold text-neutral-900 mb-4 flex items-center gap-1.5">
                           <Clock className="w-4 h-4 text-neutral-700" />
                           <span>Fulfillment & Export Journey</span>
                         </h4>
@@ -725,7 +1065,7 @@ export default function AccountPage() {
                               href={order.trackingUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-md font-semibold uppercase tracking-wider text-xs flex items-center gap-1.5 transition-colors"
+                              className="px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-md font-semibold text-xs flex items-center gap-1.5 transition-colors"
                             >
                               <span>Track on {order.courierPartner}</span>
                               <ExternalLink className="w-3 h-3" />
@@ -763,7 +1103,7 @@ export default function AccountPage() {
                   <p className="font-medium text-neutral-700">Your wishlist is currently empty.</p>
                   <Link
                     href="/customize"
-                    className="inline-block px-4 py-2 bg-black text-white rounded-md text-xs font-semibold uppercase tracking-wider"
+                    className="inline-block px-4 py-2 bg-black text-white rounded-md text-xs font-semibold"
                   >
                     Explore Sapphire Studio
                   </Link>
@@ -788,7 +1128,7 @@ export default function AccountPage() {
 
                       <div className="p-4 flex-1 flex flex-col justify-between">
                         <div>
-                          <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500">
+                          <span className="text-[10px] font-bold text-neutral-500">
                             {item.categoryName || 'Fine Jewellery'}
                           </span>
                           <h4 className="text-sm font-semibold text-neutral-900 mt-0.5 line-clamp-1">
@@ -805,7 +1145,7 @@ export default function AccountPage() {
                           </span>
                           <Link
                             href="/customize#customization-form-section"
-                            className="px-3 py-1.5 bg-black hover:bg-neutral-800 text-white rounded text-xs font-semibold uppercase tracking-wider transition-colors"
+                            className="px-3 py-1.5 bg-black hover:bg-neutral-800 text-white rounded text-xs font-semibold transition-colors"
                           >
                             Request Quote
                           </Link>
@@ -847,56 +1187,64 @@ export default function AccountPage() {
                     });
                     setAddressModalOpen(true);
                   }}
-                  className="px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-md text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-md text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Address</span>
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {savedAddressesList.map((addr) => (
-                  <div
-                    key={addr._id}
-                    className={`p-5 rounded-2xl border transition-all ${
-                      addr.isDefault
-                        ? 'border-black bg-neutral-50 ring-1 ring-neutral-400 shadow-sm'
-                        : 'border-neutral-200 bg-neutral-50/50'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold uppercase tracking-wider text-neutral-900">
-                        {addr.label}
-                      </span>
-                      {addr.isDefault && (
-                        <span className="text-[10px] bg-black text-white px-2 py-0.5 rounded-full font-bold">
-                          Default
+              {savedAddressesList.length === 0 ? (
+                <div className="p-12 text-center text-neutral-500 text-xs space-y-3 bg-neutral-50/50 rounded-2xl border border-neutral-200">
+                  <MapPin className="w-8 h-8 text-neutral-300 mx-auto" />
+                  <p className="font-medium text-neutral-700">No saved shipping addresses yet.</p>
+                  <p className="text-neutral-400 text-[11px]">Add an address for seamless checkout and white-glove courier dispatch.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {savedAddressesList.map((addr) => (
+                    <div
+                      key={addr._id}
+                      className={`p-5 rounded-2xl border transition-all ${
+                        addr.isDefault
+                          ? 'border-black bg-neutral-50 ring-1 ring-neutral-400 shadow-sm'
+                          : 'border-neutral-200 bg-neutral-50/50'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-bold text-neutral-900">
+                          {addr.label}
                         </span>
-                      )}
-                    </div>
+                        {addr.isDefault && (
+                          <span className="text-[10px] bg-black text-white px-2 py-0.5 rounded-full font-bold">
+                            Default
+                          </span>
+                        )}
+                      </div>
 
-                    <h5 className="text-sm font-semibold text-neutral-900">{addr.fullName}</h5>
-                    <p className="text-xs text-neutral-600 mt-1 leading-relaxed">
-                      {addr.street} {addr.apartment ? `, ${addr.apartment}` : ''}
-                      <br />
-                      {addr.city}, {addr.state} {addr.postalCode}
-                      <br />
-                      {addr.country}
-                    </p>
-                    <p className="text-xs text-neutral-500 mt-2 font-mono">{addr.phoneNumber}</p>
+                      <h5 className="text-sm font-semibold text-neutral-900">{addr.fullName}</h5>
+                      <p className="text-xs text-neutral-600 mt-1 leading-relaxed">
+                        {addr.street} {addr.apartment ? `, ${addr.apartment}` : ''}
+                        <br />
+                        {addr.city}, {addr.state} {addr.postalCode}
+                        <br />
+                        {addr.country}
+                      </p>
+                      <p className="text-xs text-neutral-500 mt-2 font-mono">{addr.phoneNumber}</p>
 
-                    <div className="mt-4 pt-3 border-t border-neutral-200 flex items-center justify-end gap-3 text-xs">
-                      <button
-                        onClick={() => handleDeleteAddress(addr._id)}
-                        className="text-neutral-400 hover:text-red-600 transition-colors flex items-center gap-1"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        <span>Delete</span>
-                      </button>
+                      <div className="mt-4 pt-3 border-t border-neutral-200 flex items-center justify-end gap-3 text-xs">
+                        <button
+                          onClick={() => handleDeleteAddress(addr._id)}
+                          className="text-neutral-400 hover:text-red-600 transition-colors flex items-center gap-1"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Delete</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -914,7 +1262,7 @@ export default function AccountPage() {
                 </div>
                 <Link
                   href="/customize"
-                  className="px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-md text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-colors"
+                  className="px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-md text-xs font-semibold flex items-center gap-1.5 transition-colors"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>New Custom Design</span>
@@ -982,7 +1330,7 @@ export default function AccountPage() {
                           )}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 py-1.5 bg-black hover:bg-neutral-800 text-white rounded text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-colors"
+                          className="px-3 py-1.5 bg-black hover:bg-neutral-800 text-white rounded text-xs font-semibold flex items-center gap-1.5 transition-colors"
                         >
                           <MessageCircle className="w-3.5 h-3.5" />
                           <span>Discuss on WhatsApp</span>
@@ -1016,7 +1364,7 @@ export default function AccountPage() {
 
               <form onSubmit={handleUpdateSecurity} className="space-y-4 max-w-lg">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1">
                     Full Name
                   </label>
                   <input
@@ -1028,19 +1376,19 @@ export default function AccountPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1">
                     Email Address (Read Only)
                   </label>
                   <input
                     type="email"
                     disabled
-                    value={user?.email || 'genevieve@ceylonjewels.com'}
+                    value={user?.email || ''}
                     className="w-full px-4 py-2.5 rounded-lg border border-neutral-200 bg-neutral-100 text-neutral-500 text-xs cursor-not-allowed"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1">
                     Phone / WhatsApp Number
                   </label>
                   <PhoneInput
@@ -1052,7 +1400,7 @@ export default function AccountPage() {
 
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-black hover:bg-neutral-800 text-white rounded-md text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                  className="px-6 py-2.5 bg-black hover:bg-neutral-800 text-white rounded-md text-xs font-semibold transition-colors cursor-pointer"
                 >
                   Save Profile Changes
                 </button>
@@ -1081,7 +1429,7 @@ export default function AccountPage() {
             <form onSubmit={handleSaveAddress} className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold uppercase text-neutral-700 mb-1">Address Label</label>
+                  <label className="block font-semibold text-neutral-700 mb-1">Address Label</label>
                   <input
                     type="text"
                     required
@@ -1093,7 +1441,7 @@ export default function AccountPage() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold uppercase text-neutral-700 mb-1">Recipient Name</label>
+                  <label className="block font-semibold text-neutral-700 mb-1">Recipient Name</label>
                   <input
                     type="text"
                     required
@@ -1106,7 +1454,7 @@ export default function AccountPage() {
               </div>
 
               <div>
-                <label className="block font-semibold uppercase text-neutral-700 mb-1">Street Address</label>
+                <label className="block font-semibold text-neutral-700 mb-1">Street Address</label>
                 <input
                   type="text"
                   required
@@ -1118,7 +1466,7 @@ export default function AccountPage() {
               </div>
 
               <div>
-                <label className="block font-semibold uppercase text-neutral-700 mb-1">Apartment / Suite (Optional)</label>
+                <label className="block font-semibold text-neutral-700 mb-1">Apartment / Suite (Optional)</label>
                 <input
                   type="text"
                   placeholder="Apartment, suite, unit, etc."
@@ -1130,7 +1478,7 @@ export default function AccountPage() {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block font-semibold uppercase text-neutral-700 mb-1">City / Suburb</label>
+                  <label className="block font-semibold text-neutral-700 mb-1">City / Suburb</label>
                   <input
                     type="text"
                     required
@@ -1142,7 +1490,7 @@ export default function AccountPage() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold uppercase text-neutral-700 mb-1">State / Territory</label>
+                  <label className="block font-semibold text-neutral-700 mb-1">State / Territory</label>
                   <select
                     value={addressForm.state}
                     onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })}
@@ -1161,7 +1509,7 @@ export default function AccountPage() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold uppercase text-neutral-700 mb-1">Postcode</label>
+                  <label className="block font-semibold text-neutral-700 mb-1">Postcode</label>
                   <input
                     type="text"
                     required
@@ -1175,7 +1523,7 @@ export default function AccountPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold uppercase text-neutral-700 mb-1">Country</label>
+                  <label className="block font-semibold text-neutral-700 mb-1">Country</label>
                   <input
                     type="text"
                     required
@@ -1186,7 +1534,7 @@ export default function AccountPage() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold uppercase text-neutral-700 mb-1">Contact Phone</label>
+                  <label className="block font-semibold text-neutral-700 mb-1">Contact Phone</label>
                   <PhoneInput
                     value={addressForm.phoneNumber}
                     onChange={(val) => setAddressForm({ ...addressForm, phoneNumber: val })}
@@ -1206,7 +1554,7 @@ export default function AccountPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-black hover:bg-neutral-800 text-white rounded-md font-semibold uppercase tracking-wider cursor-pointer"
+                  className="px-5 py-2 bg-black hover:bg-neutral-800 text-white rounded-md font-semibold cursor-pointer"
                 >
                   Save Address
                 </button>
@@ -1215,8 +1563,6 @@ export default function AccountPage() {
           </div>
         </div>
       )}
-
-      <Footer />
     </main>
   );
 }

@@ -130,7 +130,7 @@ export default function ProductDetailPage({
         <div className="flex-1 flex items-center justify-center py-32">
           <div className="text-center">
             <div className="w-10 h-10 border-3 border-black border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-xs text-neutral-500 font-medium tracking-wide">
+            <p className="text-xs text-neutral-500 font-medium">
               Retrieving handcrafted gemstone specifications...
             </p>
           </div>
@@ -153,7 +153,7 @@ export default function ProductDetailPage({
             </p>
             <Link
               href="/shop"
-              className="px-6 py-3 bg-black text-white rounded-lg text-xs font-semibold uppercase tracking-wider hover:bg-neutral-800 transition-colors"
+              className="px-6 py-3 bg-black text-white rounded-lg text-xs font-semibold hover:bg-neutral-800 transition-colors"
             >
               Browse Active Collection
             </Link>
@@ -205,7 +205,7 @@ export default function ProductDetailPage({
 
   const handleWhatsAppInquiry = () => {
     const text = encodeURIComponent(
-      `💎 *Aura Ceylon Jewellery Inquiry*\n` +
+      `💎 *Zeyloraa Jewellery Inquiry*\n` +
       `Hello! I am inquiring about the:\n` +
       `*${product.name}* ($${product.price} AUD)\n` +
       `• Gemstone: ${product.gemstone?.type} (${product.gemstone?.carat} ct)\n` +
@@ -361,7 +361,7 @@ export default function ProductDetailPage({
 
               {/* Stock Urgency Tag (Section 5.2) */}
               {product.stockQuantity <= 2 && (
-                <div className="absolute top-4 left-4 bg-black/90 backdrop-blur text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 border border-neutral-700">
+                <div className="absolute top-4 left-4 bg-black/90 backdrop-blur text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 border border-neutral-700">
                   <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
                   <span>Only {product.stockQuantity} piece{product.stockQuantity > 1 ? 's' : ''} handcrafted — In Stock</span>
                 </div>
@@ -407,7 +407,7 @@ export default function ProductDetailPage({
             <div>
               {/* Category & Rating */}
               <div className="flex items-center justify-between text-xs text-neutral-500 mb-2">
-                <span className="uppercase tracking-widest font-semibold text-neutral-600">
+                <span className="font-semibold text-neutral-600">
                   {product.gemstone?.origin || 'Ratnapura, Sri Lanka'}
                 </span>
                 <div className="flex items-center gap-1 text-black">
@@ -438,24 +438,24 @@ export default function ProductDetailPage({
 
             {/* Gemstone Specifications Matrix (Section 5.2) */}
             <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs space-y-2.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-black block border-b border-neutral-200 pb-1.5">
+              <span className="text-[11px] font-bold text-black block border-b border-neutral-200 pb-1.5">
                 Gemological Specifications
               </span>
               <div className="grid grid-cols-2 gap-y-2 text-neutral-700">
                 <div>
-                  <span className="text-neutral-400 block text-[10px] uppercase">Primary Gemstone</span>
+                  <span className="text-neutral-400 block text-[10px]">Primary Gemstone</span>
                   <span className="font-semibold text-black">{product.gemstone?.type}</span>
                 </div>
                 <div>
-                  <span className="text-neutral-400 block text-[10px] uppercase">Carat Weight</span>
+                  <span className="text-neutral-400 block text-[10px]">Carat Weight</span>
                   <span className="font-semibold text-black">{product.gemstone?.carat} Carats</span>
                 </div>
                 <div>
-                  <span className="text-neutral-400 block text-[10px] uppercase">Precious Metal</span>
+                  <span className="text-neutral-400 block text-[10px]">Precious Metal</span>
                   <span className="font-semibold text-black">{product.metal?.purity}</span>
                 </div>
                 <div>
-                  <span className="text-neutral-400 block text-[10px] uppercase">Faceting Cut</span>
+                  <span className="text-neutral-400 block text-[10px]">Faceting Cut</span>
                   <span className="font-semibold text-black">{product.gemstone?.cut || 'Brilliant Cut'}</span>
                 </div>
               </div>
@@ -465,7 +465,7 @@ export default function ProductDetailPage({
             {product.dimensions?.ringSizes?.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-bold text-black uppercase tracking-wider">
+                  <label className="text-xs font-bold text-black">
                     Select Ring Size (US Sizing)
                   </label>
                   <Link href="/customize" className="text-[11px] text-neutral-600 hover:text-black hover:underline">
@@ -492,7 +492,7 @@ export default function ProductDetailPage({
 
             {product.dimensions?.chainLengths?.length > 0 && (
               <div>
-                <label className="text-xs font-bold text-black uppercase tracking-wider block mb-2">
+                <label className="text-xs font-bold text-black block mb-2">
                   Select Chain Length
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -515,7 +515,7 @@ export default function ProductDetailPage({
 
             {/* Quantity Selector */}
             <div className="flex items-center gap-4">
-              <span className="text-xs font-bold uppercase tracking-wider text-black">Quantity</span>
+              <span className="text-xs font-bold text-black">Quantity</span>
               <div className="flex items-center border border-neutral-300 rounded-xl bg-white overflow-hidden text-xs">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -538,7 +538,7 @@ export default function ProductDetailPage({
               <div className="flex gap-3">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 py-3.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md"
+                  className="flex-1 py-3.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   <span>Add to Shopping Bag</span>
@@ -559,7 +559,7 @@ export default function ProductDetailPage({
 
               <button
                 onClick={handleBuyNow}
-                className="w-full py-3.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-md cursor-pointer border border-black"
+                className="w-full py-3.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold transition-colors shadow-md cursor-pointer border border-black"
               >
                 Proceed to Checkout (${product.price * quantity} AUD)
               </button>
@@ -567,7 +567,7 @@ export default function ProductDetailPage({
               {/* 5.3: "Prefer to order via WhatsApp?" Direct Concierge */}
               <button
                 onClick={handleWhatsAppInquiry}
-                className="w-full py-3 rounded-xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 text-black text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                className="w-full py-3 rounded-xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 text-black text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4 text-black" />
                 <span>Prefer to order via WhatsApp? (Talk to Gemologist)</span>
@@ -596,7 +596,7 @@ export default function ProductDetailPage({
             {/* Description & Care Accordion */}
             <div className="pt-2 space-y-3">
               <div className="p-4 rounded-xl bg-white border border-neutral-200">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-black mb-2">
+                <h4 className="text-xs font-bold text-black mb-2">
                   Atelier Story & Details
                 </h4>
                 <p className="text-xs text-neutral-600 leading-relaxed font-light">
@@ -605,7 +605,7 @@ export default function ProductDetailPage({
               </div>
 
               <div className="p-4 rounded-xl bg-white border border-neutral-200">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-black mb-2">
+                <h4 className="text-xs font-bold text-black mb-2">
                   Care & Preservation Guide
                 </h4>
                 <p className="text-xs text-neutral-600 leading-relaxed font-light">
@@ -620,7 +620,7 @@ export default function ProductDetailPage({
         <section className="mt-16 pt-12 border-t border-neutral-200">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-neutral-600">
+              <span className="text-xs font-bold text-neutral-600">
                 Customer Testimonials & Proof
               </span>
               <h3 className="text-2xl text-black font-semibold mt-1">
@@ -630,7 +630,7 @@ export default function ProductDetailPage({
 
             <button
               onClick={() => setReviewModalOpen(true)}
-              className="px-4 py-2.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer flex items-center gap-1.5"
+              className="px-4 py-2.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
             >
               <Camera className="w-3.5 h-3.5 text-white" />
               <span>Write a Review & Add Photo</span>
@@ -695,7 +695,7 @@ export default function ProductDetailPage({
           <section className="mt-16 pt-12 border-t border-neutral-200">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-neutral-600">
+                <span className="text-xs font-bold text-neutral-600">
                   Curated Pairings
                 </span>
                 <h3 className="text-2xl text-black font-semibold mt-1">
@@ -726,7 +726,7 @@ export default function ProductDetailPage({
                     />
                   </div>
                   <div className="p-4">
-                    <span className="text-[10px] text-neutral-600 font-bold uppercase tracking-wider block mb-1">
+                    <span className="text-[10px] text-neutral-600 font-bold block mb-1">
                       {rel.gemstone?.type}
                     </span>
                     <h5 className="text-neutral-900 text-sm font-medium line-clamp-1 group-hover:text-neutral-600">

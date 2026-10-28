@@ -101,7 +101,7 @@ export const getProfile = asyncHandler(async (req: AuthRequest, res: Response) =
 });
 
 export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const { name, phoneNumber, preferredCurrency } = req.body;
+  const { name, phoneNumber, preferredCurrency, avatar, bio } = req.body;
 
   const user = await User.findByIdAndUpdate(
     req.user?.userId,
@@ -109,6 +109,8 @@ export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response
       ...(name && { name }),
       ...(phoneNumber !== undefined && { phoneNumber }),
       ...(preferredCurrency && { preferredCurrency }),
+      ...(avatar !== undefined && { avatar }),
+      ...(bio !== undefined && { bio }),
     },
     { new: true }
   ).select('-password');

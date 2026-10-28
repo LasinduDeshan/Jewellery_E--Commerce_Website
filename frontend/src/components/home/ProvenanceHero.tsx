@@ -14,27 +14,39 @@ import {
 const VIDEOS = [
   {
     id: 'video-1',
-    src: '/videos/gemini_generated_video_4935ac88.mp4',
+    src: '/videos/1024.mp4',
     poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=2000&q=85',
     tag: 'Haute Joaillerie',
     headline: 'Imperial Ceylon Corundum',
-    description: 'Ethically hand-mined from the alluvial riverbeds of Ratnapura, crafted into luminous bespoke heirlooms.'
+    description: 'Ethically hand-mined from the alluvial riverbeds of Ratnapura, crafted into luminous bespoke heirlooms.',
+    leftLabel: 'Gemstone Provenance',
+    leftText: 'Direct from hereditary gem pits in Sri Lanka with certified origin traceability.',
+    rightLabel: 'Artisanal Atelier',
+    rightText: 'Handcrafted by master goldsmiths in solid 925 sterling silver and 18K gold.'
   },
   {
     id: 'video-2',
-    src: '/videos/gemini_generated_video_608aefbd.mp4',
+    src: '/videos/1024.mp4',
     poster: 'https://images.unsplash.com/photo-1531995811006-35cb42e1a022?auto=format&fit=crop&w=2000&q=85',
     tag: 'Generational Guild',
     headline: 'Hereditary Lapidary Artistry',
-    description: 'Master artisans hand-cutting each optical facet to maximize internal brilliance and fire in precious metals.'
+    description: 'Master artisans hand-cutting each optical facet to maximize internal brilliance and fire in precious metals.',
+    leftLabel: 'Optical Precision',
+    leftText: 'Facets cut along the optical c-axis to unlock intense sapphire fire and depth.',
+    rightLabel: 'Bespoke Commissions',
+    rightText: 'Custom 3D CAD modeling and private consultations for unique heirloom rings.'
   },
   {
     id: 'video-3',
-    src: '/videos/gemini_generated_video_9db144c2.mp4',
+    src: '/videos/1024.mp4',
     poster: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=2000&q=85',
     tag: 'Fair Luxury',
     headline: 'Certified Earth to Heirloom',
-    description: 'Official NGJA government certified fine jewellery delivered directly from Sri Lankan ateliers with lifelong provenance.'
+    description: 'Official NGJA government certified fine jewellery delivered directly from Sri Lankan ateliers with lifelong provenance.',
+    leftLabel: 'Ethical Sourcing',
+    leftText: 'Artisanal low-impact mining directly empowering local Sri Lankan gem mining families.',
+    rightLabel: 'Government Certified',
+    rightText: 'Official NGJA identification certificate included with every precious Ceylon piece.'
   },
 ];
 
@@ -62,7 +74,7 @@ export function ProvenanceHero() {
       if (!vid) return;
       if (i === activeIdx) {
         vid.currentTime = 0;
-        vid.play().catch(() => {});
+        vid.play().catch(() => { });
       } else {
         vid.pause();
       }
@@ -127,9 +139,8 @@ export function ProvenanceHero() {
           return (
             <div
               key={item.id}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'
-              }`}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                }`}
             >
               <video
                 ref={(el) => {
@@ -142,75 +153,94 @@ export function ProvenanceHero() {
                 playsInline
                 preload="auto"
                 poster={item.poster}
-                className="w-full h-full object-cover object-center brightness-[0.92] contrast-[1.05]"
+                className="w-full h-full object-cover brightness-[0.92] contrast-[1.05]"
               />
             </div>
           );
         })}
 
         {/* Luxury Vignette & Left-Side Shadow for Text Legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/20 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20 pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-transparent pointer-events-none" />
+        {/* Seamless bottom fade into next section */}
+        <div className="absolute bottom-0 inset-x-0 h-44 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-10" />
       </div>
 
-   
 
-      {/* Left-Aligned Small Description & 3 Action Buttons */}
-      <div className="relative z-20 max-w-6xl mx-auto w-full px-4 sm:px-8 pb-12 sm:pb-16 flex flex-col items-start text-left">
-        {/* Small Elegant Description on Left Side */}
-        <div className="max-w-xl mb-6 space-y-2">
+
+      {/* Bottom Area: Left Description, Middle Description & Action Buttons, Right Description */}
+      <div className="relative z-20 max-w-7xl mx-auto w-full px-4 sm:px-8 lg:px-12 pb-10 sm:pb-14">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-end gap-6 lg:gap-8">
           
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal font-cormorant tracking-normal text-white leading-[1.08]">
-            {currentVideo.headline}
-          </h2>
-          <p className="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-lg">
-            {currentVideo.description}
-          </p>
+          {/* Left Small Description */}
+          <div className="hidden lg:flex flex-col items-start text-left max-w-[260px] pb-1 space-y-1">
+            <span className="text-[11px] font-medium text-neutral-400">
+              {currentVideo.leftLabel}
+            </span>
+            <p className="text-xs text-neutral-300 font-light leading-relaxed">
+              {currentVideo.leftText}
+            </p>
+          </div>
+
+          {/* Middle: Description & 3 Action Buttons */}
+          <div className="flex flex-col items-center text-center max-w-xl mx-auto space-y-5">
+            <p className="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-lg">
+              {currentVideo.description}
+            </p>
+
+            {/* 3 Buttons */}
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+              {/* Button 1: Explore Collection */}
+              <button
+                onClick={scrollToShop}
+                className="px-7 py-3.5 rounded-full bg-white hover:bg-neutral-200 text-black font-semibold text-xs transition-all duration-300 shadow-2xl shadow-black/80 flex items-center gap-2 cursor-pointer group hover:scale-[1.02]"
+              >
+                <span>Explore Collection</span>
+                <ArrowDown className="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform" />
+              </button>
+
+              {/* Button 2: Design Bespoke Piece */}
+              <Link
+                href="/customize"
+                className="px-7 py-3.5 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/30 hover:border-white/60 font-semibold text-xs transition-all backdrop-blur-md flex items-center gap-2 shadow-2xl hover:scale-[1.02]"
+              >
+                <span>Design Bespoke Piece</span>
+              </Link>
+
+             
+            </div>
+          </div>
+
+          {/* Right Small Description */}
+          <div className="hidden lg:flex flex-col items-end text-right max-w-[260px] ml-auto pb-1 space-y-1">
+            <span className="text-[11px] font-medium text-neutral-400">
+              {currentVideo.rightLabel}
+            </span>
+            <p className="text-xs text-neutral-300 font-light leading-relaxed">
+              {currentVideo.rightText}
+            </p>
+          </div>
+
         </div>
 
-        {/* 3 Buttons */}
-        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-          {/* Button 1: Explore Collection */}
-          <button
-            onClick={scrollToShop}
-            className="px-7 py-3.5 rounded-full bg-white hover:bg-neutral-200 text-black font-semibold text-xs tracking-widest uppercase transition-all duration-300 shadow-2xl shadow-black/80 flex items-center gap-2 cursor-pointer group hover:scale-[1.02]"
-          >
-            <Gem className="w-4 h-4 text-black" />
-            <span>Explore Collection</span>
-            <ArrowDown className="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform" />
-          </button>
-
-          {/* Button 2: Design Bespoke Piece */}
-          <Link
-            href="/customize"
-            className="px-7 py-3.5 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/30 hover:border-white/60 font-semibold text-xs tracking-widest uppercase transition-all backdrop-blur-md flex items-center gap-2 shadow-2xl hover:scale-[1.02]"
-          >
-            <Sparkles className="w-4 h-4 text-white" />
-            <span>Design Bespoke Piece</span>
-          </Link>
-
-          {/* Button 3: Our Sourcing Story */}
-          <Link
-            href="/story"
-            className="px-6 py-3.5 rounded-full bg-black/40 hover:bg-black/80 text-white border border-white/20 hover:border-white/40 text-xs font-semibold tracking-widest uppercase transition-all backdrop-blur-md flex items-center gap-2 group shadow-2xl hover:scale-[1.02]"
-          >
-            <span>Our Sourcing Story</span>
-            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-
-        {/* Minimal Video Indicators */}
-        <div className="flex items-center gap-2 mt-6">
-          {VIDEOS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveIdx(i)}
-              aria-label={`Switch to video ${i + 1}`}
-              className={`h-1 transition-all rounded-full cursor-pointer ${
-                i === activeIdx ? 'w-8 bg-white' : 'w-2 bg-white/30 hover:bg-white/60'
-              }`}
-            />
-          ))}
+        {/* Mobile / Tablet View: Left & Right Notes in Subtle 2-Column Row Below Buttons */}
+        <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/10 w-full max-w-md mx-auto mt-6 lg:hidden">
+          <div className="text-left space-y-0.5">
+            <span className="text-[10px] font-medium text-neutral-400 block">
+              {currentVideo.leftLabel}
+            </span>
+            <p className="text-[11px] text-neutral-300 font-light leading-snug">
+              {currentVideo.leftText}
+            </p>
+          </div>
+          <div className="text-right space-y-0.5">
+            <span className="text-[10px] font-medium text-neutral-400 block">
+              {currentVideo.rightLabel}
+            </span>
+            <p className="text-[11px] text-neutral-300 font-light leading-snug">
+              {currentVideo.rightText}
+            </p>
+          </div>
         </div>
       </div>
     </section>

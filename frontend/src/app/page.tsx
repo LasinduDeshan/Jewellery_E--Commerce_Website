@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 import { ProvenanceHero } from '../components/home/ProvenanceHero';
+import { CustomizeJewellerySection } from '../components/home/CustomizeJewellerySection';
 import { EditorialGrid } from '../components/home/EditorialGrid';
 import { ProductCard } from '../components/ui/ProductCard';
 import {
@@ -208,59 +209,11 @@ export default function HomePage() {
       <ProvenanceHero />
 
       {/* ============================================================ */}
-      {/* 2. THE 4 PROVENANCE TRUST PILLARS                            */}
+      {/* 2. BESPOKE CUSTOMIZER STUDIO CALLOUT                         */}
       {/* ============================================================ */}
-      <section className="bg-white border-y border-neutral-200/90 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
-          <div className="flex flex-col items-center text-center p-3">
-            <div className="w-10 h-10 rounded-full bg-neutral-100 text-black flex items-center justify-center mb-3 border border-neutral-200">
-              <MapPin className="w-5 h-5" />
-            </div>
-            <h4 className="text-sm font-semibold text-black">
-              Direct Alluvial Mines
-            </h4>
-            <p className="text-[11px] text-neutral-500 mt-1 leading-relaxed">
-              Ratnapura riverbeds. Ethically unearthed with zero strip mining.
-            </p>
-          </div>
+      <CustomizeJewellerySection />
 
-          <div className="flex flex-col items-center text-center p-3">
-            <div className="w-10 h-10 rounded-full bg-neutral-100 text-black flex items-center justify-center mb-3 border border-neutral-200">
-              <Gem className="w-5 h-5" />
-            </div>
-            <h4 className="text-sm font-semibold text-black">
-              Unheated Corundum
-            </h4>
-            <p className="text-[11px] text-neutral-500 mt-1 leading-relaxed">
-              Rare royal blues, cornflower, and sunset padparadscha sapphires.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center text-center p-3">
-            <div className="w-10 h-10 rounded-full bg-neutral-100 text-black flex items-center justify-center mb-3 border border-neutral-200">
-              <Award className="w-5 h-5" />
-            </div>
-            <h4 className="text-sm font-semibold text-black">
-              NGJA SL Certified
-            </h4>
-            <p className="text-[11px] text-neutral-500 mt-1 leading-relaxed">
-              Official government gemological certificate accompanying every piece.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center text-center p-3">
-            <div className="w-10 h-10 rounded-full bg-neutral-100 text-black flex items-center justify-center mb-3 border border-neutral-200">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <h4 className="text-sm font-semibold text-black">
-              Australian Direct Fair Luxury
-            </h4>
-            <p className="text-[11px] text-neutral-500 mt-1 leading-relaxed">
-              Insured courier delivery. Zero European middleman markups.
-            </p>
-          </div>
-        </div>
-      </section>
+     
 
       {/* ============================================================ */}
       {/* 3. FEATURED READY-TO-WEAR COLLECTION WITH INTERACTIVE TABS  */}
@@ -269,9 +222,9 @@ export default function HomePage() {
         id="featured-collection"
         className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full"
       >
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 ">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6">
           <div>
-            <h2 className="text-4xl sm:text-5xl font-cormorant text-black font-normal tracking-tight leading-tight">
+            <h2 className="text-4xl sm:text-5xl font-cormorant text-black font-normal leading-tight">
               Featured Ceylon Sapphires
             </h2>
             <p className="text-xs sm:text-sm text-neutral-600 font-light mt-1 max-w-xl">
@@ -315,7 +268,7 @@ export default function HomePage() {
         <div className="mt-12 text-center">
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-neutral-300 hover:border-black text-black hover:text-black font-bold text-xs uppercase tracking-widest transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-neutral-300 hover:border-black text-black hover:text-black font-bold text-xs transition-all cursor-pointer"
           >
             <span>Explore All {products.length} Jewellery Pieces</span>
             <ArrowRight className="w-4 h-4" />
@@ -328,117 +281,7 @@ export default function HomePage() {
       {/* ============================================================ */}
       <EditorialGrid />
 
-      {/* ============================================================ */}
-      {/* 5. BESPOKE CUSTOMIZER STUDIO CALLOUT (SECTION 5.5 / 5.2)     */}
-      {/* Full-Width Borderless Triptych & Customization Studio Layout */}
-      {/* ============================================================ */}
-      <section className="w-full bg-white py-16 sm:py-24 border-t border-neutral-200/80 overflow-hidden">
-        {/* Section Heading matching site theme */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-10 sm:mb-14">
-          
-          <h2 className="text-2xl sm:text-6xl font-cormorant text-black font-normal tracking-tight">
-            Customize Your Jewellery
-          </h2>
-          <p className="mt-3 text-xs sm:text-sm text-neutral-500 max-w-xl mx-auto font-light leading-relaxed">
-            Collaborate 1-on-1 with our master Ratnapura lapidaries and goldsmiths to sculpt a bespoke Ceylon sapphire heirloom that belongs solely to you.
-          </p>
-        </div>
 
-        {/* Top Half: Full-Width 3-Photo Triptych (Center Dominant + Left/Right Peek Frames) */}
-        <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8 w-full overflow-hidden">
-          {/* Left Peek Image */}
-          <div className="w-24 sm:w-44 md:w-64 lg:w-80 aspect-[3/4] sm:aspect-[4/5] overflow-hidden shrink-0 bg-neutral-100 rounded-2xl border border-neutral-200/80 shadow-2xs">
-            <img
-              src="/img/a4dbfd433c3bd35c67c18b4894f6321a.jpg"
-              alt="Atelier jewellery study"
-              className="w-full h-full object-cover object-center grayscale contrast-[1.05] hover:grayscale-0 hover:scale-105 transition-all duration-700 ease-out cursor-pointer"
-            />
-          </div>
-
-          {/* Center Dominant Image */}
-          <div className="w-64 sm:w-96 md:w-[480px] lg:w-[560px] aspect-square sm:aspect-[4/5] overflow-hidden shrink-0 bg-neutral-100 rounded-3xl border border-neutral-200 shadow-md">
-            <img
-              src="/img/58b04d6c32e22fba64656208a9442068.jpg"
-              alt="Precious Ceylon heirloom detail"
-              className="w-full h-full object-cover object-center grayscale contrast-[1.05] hover:grayscale-0 hover:scale-105 transition-all duration-700 ease-out cursor-pointer"
-            />
-          </div>
-
-          {/* Right Peek Image */}
-          <div className="w-24 sm:w-44 md:w-64 lg:w-80 aspect-[3/4] sm:aspect-[4/5] overflow-hidden shrink-0 bg-neutral-100 rounded-2xl border border-neutral-200/80 shadow-2xs">
-            <img
-              src="/img/49218f1fb573490eea4bc7f2e7d02113.jpg"
-              alt="Handcrafted bespoke Ceylon jewellery"
-              className="w-full h-full object-cover object-center grayscale contrast-[1.05] hover:grayscale-0 hover:scale-105 transition-all duration-700 ease-out cursor-pointer"
-            />
-          </div>
-        </div>
-
-        {/* 3 Step Interactive Atelier Cards */}
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 sm:mt-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-2xl bg-neutral-50 border border-neutral-200 hover:border-black transition-all text-left group">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 block mb-2">Step 01</span>
-              <h3 className="font-cormorant text-xl font-medium text-black mb-1">Select Raw Sapphire</h3>
-              <p className="text-xs text-neutral-500 font-light leading-relaxed">
-                Choose unheated Royal Blue, rare Padparadscha, Peacock Teal, or Golden Yellow rough from our Ratnapura vaults.
-              </p>
-            </div>
-            <div className="p-6 rounded-2xl bg-neutral-50 border border-neutral-200 hover:border-black transition-all text-left group">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 block mb-2">Step 02</span>
-              <h3 className="font-cormorant text-xl font-medium text-black mb-1">Choose Cut & Precious Metal</h3>
-              <p className="text-xs text-neutral-500 font-light leading-relaxed">
-                Opt for cushion, oval, emerald, or pear faceting set in solid 925 sterling silver or 18K solid gold / rose vermeil.
-              </p>
-            </div>
-            <div className="p-6 rounded-2xl bg-neutral-50 border border-neutral-200 hover:border-black transition-all text-left group">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 block mb-2">Step 03</span>
-              <h3 className="font-cormorant text-xl font-medium text-black mb-1">Receive 3D CAD & Quote</h3>
-              <p className="text-xs text-neutral-500 font-light leading-relaxed">
-                Get a photorealistic 3D rendering and transparent quote within 24–48 hours, with zero purchase obligation.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Half: Centered Quote Mark, Poetic Atelier Statement & CTAs */}
-        <div className="max-w-3xl mx-auto text-center px-4 sm:px-6 mt-12 flex flex-col items-center">
-          {/* 3-Line Italicized Quotation (Matching Reference Style) */}
-          <p className="text-lg sm:text-xl md:text-2xl font-cormorant italic text-neutral-900 leading-relaxed max-w-xl">
-            “In a world of mass production, true bespoke art remains rare.<br className="hidden sm:inline" />
-            However pure and understated you are,<br className="hidden sm:inline" />
-            your one-of-a-kind Ceylon heirloom is irreplaceable.”
-          </p>
-
-          {/* Description Subtext */}
-          <p className="text-xs text-neutral-500 font-light mt-4 max-w-md leading-relaxed">
-            Can't find your dream piece? Select your rare Ceylon sapphire (Royal Blue, Padparadscha, Teal, or Canary), choose 925 Sterling Silver or 18K Rose Gold, and collaborate 1-on-1 with our master lapidaries.
-          </p>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 mt-8 w-full sm:w-auto">
-            <Link
-              href="/customize"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-black hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-widest transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer group"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-white" />
-              <span>Launch Custom Studio</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-
-            <a
-              href="https://wa.me/94771234567"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white hover:bg-neutral-100 text-neutral-900 border border-neutral-300 hover:border-black font-bold text-xs uppercase tracking-widest transition-all shadow-2xs flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <MessageCircle className="w-3.5 h-3.5 text-neutral-800" />
-              <span>WhatsApp Concierge</span>
-            </a>
-          </div>
-
-        </div>
-      </section>
 
       {/* ============================================================ */}
       {/* 5. SOURCING TRANSPARENCY & HERITAGE NARRATIVE PREVIEW        */}
@@ -453,7 +296,7 @@ export default function HomePage() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 text-white">
-              <span className="text-white text-xs font-mono tracking-widest uppercase block mb-1">
+              <span className="text-white text-xs font-mono block mb-1">
                 Galle Fort Atelier • Sri Lanka
               </span>
               <p className="text-lg sm:text-xl font-light italic leading-snug">
@@ -463,7 +306,7 @@ export default function HomePage() {
           </div>
 
           <div className="space-y-6">
-            <span className="text-xs font-bold uppercase tracking-widest text-neutral-500">
+            <span className="text-xs font-bold text-neutral-500">
               The Ethical Chain of Custody
             </span>
 
@@ -516,7 +359,7 @@ export default function HomePage() {
             <div className="pt-2">
               <Link
                 href="/story"
-                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-black hover:text-neutral-600 transition-colors"
+                className="inline-flex items-center gap-2 text-xs font-bold text-black hover:text-neutral-600 transition-colors"
               >
                 <span>Read Full Provenance Documentation</span>
                 <ArrowRight className="w-4 h-4" />

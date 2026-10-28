@@ -187,11 +187,11 @@ export default function CheckoutPage() {
             </div>
 
             <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-neutral-700">
+              <span className="text-xs font-bold text-neutral-700">
                 Payment Authorized • Order #{orderCompleted.orderNumber}
               </span>
               <h1 className="text-2xl sm:text-3xl font-serif text-neutral-900 mt-1 font-medium">
-                Thank You for Entrusting Aura Ceylon
+                Thank You for Entrusting Zeyloraa
               </h1>
               <p className="text-xs text-neutral-500 mt-2 max-w-md mx-auto leading-relaxed">
                 A confirmation receipt has been generated. Your parcel will undergo independent Sri Lankan National Gem & Jewellery Authority (NGJA) inspection prior to courier dispatch.
@@ -202,12 +202,12 @@ export default function CheckoutPage() {
             <div className="p-6 rounded-2xl bg-neutral-50 border border-neutral-200 text-left text-xs space-y-4">
               <div className="flex justify-between border-b border-neutral-200 pb-3">
                 <div>
-                  <span className="text-neutral-400 block text-[10px] uppercase">Recipient</span>
+                  <span className="text-neutral-400 block text-[10px]">Recipient</span>
                   <span className="font-semibold text-neutral-900">{orderCompleted.customer?.fullName}</span>
                   <span className="text-neutral-500 block">{orderCompleted.customer?.email}</span>
                 </div>
                 <div className="text-right">
-                  <span className="text-neutral-400 block text-[10px] uppercase">Destination</span>
+                  <span className="text-neutral-400 block text-[10px]">Destination</span>
                   <span className="font-semibold text-neutral-900">
                     {orderCompleted.shippingAddress?.city}, {orderCompleted.shippingAddress?.state}
                   </span>
@@ -216,7 +216,7 @@ export default function CheckoutPage() {
               </div>
 
               <div className="space-y-2">
-                <span className="text-[10px] font-bold uppercase text-neutral-400 block">Items Purchased</span>
+                <span className="text-[10px] font-bold text-neutral-400 block">Items Purchased</span>
                 {orderCompleted.orderItems?.map((it: any, idx: number) => (
                   <div key={idx} className="flex justify-between text-neutral-700">
                     <span>
@@ -241,7 +241,7 @@ export default function CheckoutPage() {
               </div>
               <Link
                 href="/account"
-                className="font-bold text-neutral-950 hover:underline uppercase text-[11px]"
+                className="font-bold text-neutral-950 hover:underline text-[11px]"
               >
                 Go to Client Portal →
               </Link>
@@ -250,13 +250,13 @@ export default function CheckoutPage() {
             <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/account"
-                className="px-6 py-3 rounded-xl bg-black text-white text-xs font-semibold uppercase tracking-wider hover:bg-neutral-800 transition-colors"
+                className="px-6 py-3 rounded-xl bg-black text-white text-xs font-semibold hover:bg-neutral-800 transition-colors"
               >
                 View Order in My Account
               </Link>
               <Link
                 href="/shop"
-                className="px-6 py-3 rounded-xl border border-neutral-300 text-neutral-700 text-xs font-semibold uppercase tracking-wider hover:bg-neutral-100 transition-colors"
+                className="px-6 py-3 rounded-xl border border-neutral-300 text-neutral-700 text-xs font-semibold hover:bg-neutral-100 transition-colors"
               >
                 Continue Browsing
               </Link>
@@ -550,7 +550,7 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-4 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-4 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold transition-colors shadow-lg cursor-pointer flex items-center justify-center gap-2"
               >
                 <Lock className="w-4 h-4 text-white" />
                 <span>{isSubmitting ? 'Authorizing Payment...' : `Authorize $${total} AUD Payment`}</span>

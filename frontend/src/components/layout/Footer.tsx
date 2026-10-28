@@ -28,7 +28,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="bg-white py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
       {/* Floating Island Card Container */}
-      <div className="max-w-7xl mx-auto bg-[#0d0d0e] text-neutral-300 rounded-[28px] sm:rounded-[36px] p-8 sm:p-12 lg:p-14 border border-neutral-800/80 shadow-2xl">
+      <div className="max-w-7xl mx-auto bg-[#111113] text-neutral-300 rounded-[28px] sm:rounded-[36px] p-8 sm:p-12 lg:p-14 border border-neutral-800/80 shadow-2xl">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-start">
           
           {/* 1. Left Section: Brand Logo, Tagline & Newsletter */}
@@ -39,10 +39,10 @@ export const Footer: React.FC = () => {
                 <Gem className="w-4 h-4" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-base tracking-widest uppercase text-white leading-none">
-                  AURA<span className="text-neutral-500 font-normal">.CEYLON</span>
+                <span className="font-bold text-base text-white leading-none">
+                  Zeyloraa
                 </span>
-                <span className="text-[9px] tracking-widest text-neutral-400 uppercase font-medium mt-0.5">
+                <span className="text-[9px] text-neutral-400 font-medium mt-0.5">
                   Fine Sapphire Atelier
                 </span>
               </div>
@@ -91,7 +91,7 @@ export const Footer: React.FC = () => {
           <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-8 lg:border-l lg:border-neutral-800/80 lg:pl-10">
             {/* Column 1: Jewellery & Atelier */}
             <div className="space-y-4">
-              <span className="text-xs font-semibold tracking-wider text-white uppercase block">
+              <span className="text-xs font-semibold text-white block">
                 Jewellery & Stories
               </span>
               <ul className="space-y-3 text-xs text-neutral-400">
@@ -120,7 +120,7 @@ export const Footer: React.FC = () => {
 
             {/* Column 2: Concierge & Trust */}
             <div className="space-y-4">
-              <span className="text-xs font-semibold tracking-wider text-white uppercase block">
+              <span className="text-xs font-semibold text-white block">
                 Concierge & Trust
               </span>
               <ul className="space-y-3 text-xs text-neutral-400">
@@ -208,7 +208,7 @@ export const Footer: React.FC = () => {
         {/* Bottom Sub-Bar */}
         <div className="border-t border-neutral-800/80 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-500 gap-4">
           <p>
-            &copy; {new Date().getFullYear()} Aura Ceylon Jewels. Ethically Sourced Ceylon Sapphires. All rights reserved.
+            &copy; {new Date().getFullYear()} Zeyloraa. Ethically Sourced Ceylon Sapphires. All rights reserved.
           </p>
           <div className="flex items-center gap-4 text-neutral-400">
             <span>Ratnapura & Colombo, SL</span>

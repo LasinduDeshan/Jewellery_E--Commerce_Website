@@ -83,14 +83,14 @@ interface EditorialGridProps {
 }
 
 export const EditorialGrid: React.FC<EditorialGridProps> = ({
-  title = 'FASHION',
-  galleryLinkText = 'VIEW GALLERY',
+  title = 'Fashion',
+  galleryLinkText = 'View Gallery',
   galleryHref = '/shop',
   captionLines = [
-    'AURA CEYLON HIGH JEWELLERY EDITORIAL.',
-    'ETHICALLY MINED NATURAL SAPPHIRES',
-    'SET IN 925 STERLING SILVER AND GOLD.',
-    'TIMELESS HEIRLOOMS FOR DISCERNING TASTES.',
+    'Zeyloraa Fine Jewellery Editorial',
+    'Rare, unheated sapphires from the historic valleys of Ceylon.',
+    'Handcrafted in solid gold and 925 sterling silver.',
+    'Timeless heirlooms sculpted for modern grace.',
   ],
   images = {},
 }) => {
@@ -113,13 +113,13 @@ export const EditorialGrid: React.FC<EditorialGridProps> = ({
           
           {/* Top Left Title Block */}
           <div className="space-y-2">
-            <h2 className="text-xl sm:text-2xl font-bold tracking-[0.25em] uppercase text-black">
+            <h2 className="text-xl sm:text-2xl font-bold ] text-black">
               {title}
             </h2>
             <div className="w-20 h-[2px] bg-black" />
             <Link
               href={galleryHref}
-              className="inline-flex items-center gap-1.5 text-[10px] font-mono tracking-[0.22em] uppercase text-neutral-500 hover:text-black transition-colors pt-1 group"
+              className="inline-flex items-center gap-1.5 text-[10px] font-mono ] text-neutral-500 hover:text-black transition-colors pt-1 group"
             >
               <span>{galleryLinkText}</span>
               <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -138,18 +138,22 @@ export const EditorialGrid: React.FC<EditorialGridProps> = ({
 
             {/* Subtle Vertical Rotated Tag */}
             <div className="absolute top-4 right-3 pointer-events-none select-none">
-              <span className="text-[9px] font-mono tracking-[0.25em] text-white/90 drop-shadow uppercase [writing-mode:vertical-rl] rotate-180">
+              <span className="text-[9px] font-mono ] text-white/90 drop-shadow [writing-mode:vertical-rl] rotate-180">
                 {mergedImages.card1.tag}
               </span>
             </div>
           </div>
 
           {/* Bottom Left: Editorial Micro-Copy Paragraph */}
-          <div className="pt-4 lg:pt-16 max-w-xs space-y-1">
+          <div className="pt-4 lg:pt-14 max-w-sm space-y-1.5">
             {captionLines.map((line, idx) => (
               <p
                 key={idx}
-                className="text-[10px] sm:text-[11px] font-mono tracking-[0.2em] uppercase text-neutral-600 leading-relaxed"
+                className={
+                  idx === 0
+                    ? 'text-xs font-semibold text-neutral-900  font-sans'
+                    : 'text-xs text-neutral-600 leading-relaxed font-light font-sans '
+                }
               >
                 {line}
               </p>
@@ -174,7 +178,7 @@ export const EditorialGrid: React.FC<EditorialGridProps> = ({
 
             {/* Subtle Vertical Rotated Tag */}
             <div className="absolute top-4 right-3 pointer-events-none select-none">
-              <span className="text-[9px] font-mono tracking-[0.25em] text-neutral-800 drop-shadow-sm uppercase [writing-mode:vertical-rl] rotate-180">
+              <span className="text-[9px] font-mono ] text-neutral-800 drop-shadow-sm [writing-mode:vertical-rl] rotate-180">
                 {mergedImages.card2.tag}
               </span>
             </div>
@@ -195,7 +199,7 @@ export const EditorialGrid: React.FC<EditorialGridProps> = ({
 
               {/* Vertical Rotated Tag */}
               <div className="absolute top-4 right-3 pointer-events-none select-none">
-                <span className="text-[9px] font-mono tracking-[0.25em] text-neutral-700 drop-shadow-sm uppercase [writing-mode:vertical-rl] rotate-180">
+                <span className="text-[9px] font-mono ] text-neutral-700 drop-shadow-sm [writing-mode:vertical-rl] rotate-180">
                   {mergedImages.card3.tag}
                 </span>
               </div>
@@ -216,7 +220,7 @@ export const EditorialGrid: React.FC<EditorialGridProps> = ({
 
               {/* Vertical Rotated Tag */}
               <div className="absolute top-4 right-3 pointer-events-none select-none z-10">
-                <span className="text-[9px] font-mono tracking-[0.25em] text-white/90 drop-shadow uppercase [writing-mode:vertical-rl] rotate-180">
+                <span className="text-[9px] font-mono ] text-white/90 drop-shadow [writing-mode:vertical-rl] rotate-180">
                   {mergedImages.card4.tag}
                 </span>
               </div>

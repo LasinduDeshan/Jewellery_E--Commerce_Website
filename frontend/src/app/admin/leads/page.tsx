@@ -263,7 +263,7 @@ export default function AdminWhatsAppLeadsPage() {
               <a
                 href={`https://wa.me/${selectedLead.phoneNumber.replace(/[^0-9]/g, '')}?text=Hello%20${encodeURIComponent(
                   selectedLead.customerName
-                )},%20thank%20you%20for%20inquiring%20with%20Aura%20Ceylon%20about%20your%20jewellery%20order.`}
+                )},%20thank%20you%20for%20inquiring%20with%20Zeyloraa%20about%20your%20jewellery%20order.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full py-3 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-2xs"
