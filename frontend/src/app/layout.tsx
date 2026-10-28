@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Cormorant_Infant, Tangerine } from "next/font/google";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./globals.css";
 import { AuthProvider } from "../context/AuthContext";
 import { AuthModalProvider } from "../context/AuthModalContext";
@@ -45,16 +46,20 @@ export default function RootLayout({
       className={`${inter.variable} ${cormorant.variable} ${tangerine.variable} ${inter.className} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-neutral-900 font-sans selection:bg-black selection:text-white">
-        <AuthProvider>
-          <AuthModalProvider>
-            <WishlistProvider>
-              <CartProvider>
-                {children}
-                <WhatsAppFloatingButton />
-              </CartProvider>
-            </WishlistProvider>
-          </AuthModalProvider>
-        </AuthProvider>
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
+        >
+          <AuthProvider>
+            <AuthModalProvider>
+              <WishlistProvider>
+                <CartProvider>
+                  {children}
+                  <WhatsAppFloatingButton />
+                </CartProvider>
+              </WishlistProvider>
+            </AuthModalProvider>
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { OAuth2Client } from 'google-auth-library';
 import jwt, { Secret } from 'jsonwebtoken';
 import { User, IUser } from '../models/User.js';
 import { config } from '../config/env.js';
@@ -90,6 +91,97 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     )
   );
 });
+
+const googleClient = new OAuth2Client(config.googleClientId);
+
+export const googleLogin = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { credential } = req.body;
+
+    if (!credential) {
+      throw new ApiError(400, 'Google credential is required');
+    }
+
+    if (!config.googleClientId) {
+      throw new ApiError(500, 'Google authentication is not configured');
+    }
+
+    let payload;
+
+    try {
+      const ticket = await googleClient.verifyIdToken({
+        idToken: credential,
+        audience: config.googleClientId,
+      });
+
+      payload = ticket.getPayload();
+    } catch {
+      throw new ApiError(401, 'Invalid Google credential');
+    }
+
+    if (!payload?.sub || !payload.email || payload.email_verified !== true) {
+      throw new ApiError(401, 'A verified Google email is required');
+    }
+
+    const googleId = payload.sub;
+    const email = payload.email.toLowerCase();
+
+    // Find an existing account by Google ID or verified email.
+    let user = await User.findOne({
+      $or: [{ googleId }, { email }],
+    });
+
+    if (user) {
+      // Keep existing roles, including admin; never promote a customer.
+      if (user.googleId && user.googleId !== googleId) {
+        throw new ApiError(
+          409,
+          'This email is linked to a different Google account'
+        );
+      }
+
+      if (!user.googleId) {
+        user.googleId = googleId;
+      }
+
+      if (!user.avatar && payload.picture) {
+        user.avatar = payload.picture;
+      }
+
+      await user.save();
+    } else {
+      user = await User.create({
+        name: payload.name?.trim() || email.split('@')[0],
+        email,
+        googleId,
+        avatar: payload.picture,
+        role: 'customer',
+        preferredCurrency: 'AUD',
+      });
+    }
+
+    const token = generateToken(user);
+
+    res.status(200).json(
+      ApiResponse.success(
+        {
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            phoneNumber: user.phoneNumber,
+            preferredCurrency: user.preferredCurrency,
+            savedAddresses: user.savedAddresses,
+            avatar: user.avatar,
+          },
+          token,
+        },
+        'Google login successful'
+      )
+    );
+  }
+);
 
 export const getProfile = asyncHandler(async (req: AuthRequest, res: Response) => {
   const user = await User.findById(req.user?.userId).select('-password').populate('wishlist');
@@ -225,4 +317,3 @@ export const resetPassword = asyncHandler(async (req: Request, res: Response) =>
     )
   );
 });
-
