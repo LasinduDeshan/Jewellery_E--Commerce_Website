@@ -292,8 +292,29 @@ export const getProductBySlug = async (slug: string): Promise<any | null> => {
 
 export const getRelatedProducts = async (
   currentIdOrSlug: string,
-  limit: number = 4
+  limit: number = 8
 ): Promise<any[]> => {
+  try {
+    const isObjectId = mongoose.Types.ObjectId.isValid(currentIdOrSlug);
+    const current = await Product.findOne(
+      isObjectId
+        ? { $or: [{ _id: currentIdOrSlug }, { slug: currentIdOrSlug }] }
+        : { slug: currentIdOrSlug }
+    ).lean();
+
+    const query: any = { isActive: true };
+    if (current) {
+      query._id = { $ne: current._id };
+    }
+
+    const dbProducts = await Product.find(query).limit(limit).lean();
+    if (dbProducts && dbProducts.length > 0) {
+      return dbProducts;
+    }
+  } catch (err: any) {
+    console.warn('MongoDB related products query fallback:', err.message);
+  }
+
   const current =
     runtimeProducts.find((p) => p._id === currentIdOrSlug || p.slug === currentIdOrSlug) ||
     runtimeProducts[0];
@@ -302,8 +323,7 @@ export const getRelatedProducts = async (
     .filter(
       (p) =>
         p._id !== current?._id &&
-        p.slug !== current?.slug &&
-        (p.category === current?.category || p.gemstone?.type?.includes('Sapphire'))
+        p.slug !== current?.slug
     )
     .slice(0, limit);
 

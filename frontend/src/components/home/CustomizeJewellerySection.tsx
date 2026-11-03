@@ -13,7 +13,7 @@ export function CustomizeJewellerySection() {
   };
 
   return (
-    <section className="w-full bg-gradient-to-b from-black via-[#0d0d10] to-[#111113] text-white pt-8 sm:pt-14 pb-20 sm:pb-28 border-b border-neutral-800/80 overflow-hidden relative">
+    <section className="w-full bg-black text-white pt-8 sm:pt-14 pb-16 sm:pb-24 overflow-hidden relative">
       {/* Seamless blend overlay into Hero */}
       <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-black via-black/80 to-transparent pointer-events-none z-0" />
 
@@ -98,6 +98,8 @@ export function CustomizeJewellerySection() {
           </button>
         </div>
       </div>
+
+
     </section>
   );
 }

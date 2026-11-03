@@ -41,8 +41,7 @@ const COLLECTION_CATEGORIES: CategoryItem[] = [
     name: 'Necklaces & Pendants',
     description: 'Solitaire cushion drops & lotus motifs',
     href: '/shop?category=necklaces',
-    image:
-      'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=400&q=80',
+    image: '/img/collections/necklace.jpg',
     itemCountBadge: 'Pendants',
   },
   {
@@ -50,8 +49,7 @@ const COLLECTION_CATEGORIES: CategoryItem[] = [
     name: 'Rings',
     description: 'Regal halos, eternity & stacking bands',
     href: '/shop?category=rings',
-    image:
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=400&q=80',
+    image: '/img/collections/rings.jpg',
     itemCountBadge: 'Bestseller',
   },
   {
@@ -59,8 +57,7 @@ const COLLECTION_CATEGORIES: CategoryItem[] = [
     name: 'Engagement & Promise Rings',
     description: 'Heirloom solitaires & bespoke bridal',
     href: '/shop?category=engagement-promise-rings',
-    image:
-      'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=400&q=80',
+    image: '/img/collections/couple.jpg',
     itemCountBadge: 'Bridal',
   },
   {
@@ -68,8 +65,7 @@ const COLLECTION_CATEGORIES: CategoryItem[] = [
     name: 'Bracelets',
     description: 'Sapphire tennis bracelets & bangles',
     href: '/shop?category=bracelets',
-    image:
-      'https://images.unsplash.com/photo-1611591475870-b18cb5bf4d2c?auto=format&fit=crop&w=400&q=80',
+    image: '/img/collections/bracelets.jpg',
     itemCountBadge: 'Tennis',
   },
   {
@@ -77,8 +73,7 @@ const COLLECTION_CATEGORIES: CategoryItem[] = [
     name: 'Earrings',
     description: 'Teardrop solitaires & floral studs',
     href: '/shop?category=earrings',
-    image:
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=400&q=80',
+    image: '/img/collections/earrings.jpg',
     itemCountBadge: 'Solitaire',
   },
 ];
@@ -89,8 +84,7 @@ const WOMEN_CATEGORIES = [
     name: "All Women's Pieces",
     description: 'Complete Ceylon sapphire collection',
     href: '/shop?gender=women',
-    image:
-      'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=400&q=80',
+    image: '/img/women/all-women.jpg',
     badge: 'Curated',
   },
   {
@@ -98,8 +92,7 @@ const WOMEN_CATEGORIES = [
     name: 'Sapphire Halo & Solitaires',
     description: 'Natural Ceylon blue, cornflower & pink',
     href: '/shop?gender=women&category=rings',
-    image:
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=400&q=80',
+    image: '/img/women/ring-women.jpg',
     badge: 'Popular',
   },
   {
@@ -107,8 +100,7 @@ const WOMEN_CATEGORIES = [
     name: 'Pendants & Necklaces',
     description: 'Solid silver & 18K rose gold vermeil',
     href: '/shop?gender=women&category=necklaces',
-    image:
-      'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=400&q=80',
+    image: '/img/women/neck-women.jpg',
     badge: 'Heirloom',
   },
   {
@@ -116,8 +108,7 @@ const WOMEN_CATEGORIES = [
     name: 'Earrings & Drops',
     description: 'Teardrops, studs & diamond halo surrounds',
     href: '/shop?gender=women&category=earrings',
-    image:
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=400&q=80',
+    image: '/img/women/ear-women.jpg',
     badge: 'Timeless',
   },
   {
@@ -125,8 +116,7 @@ const WOMEN_CATEGORIES = [
     name: 'Tennis Bracelets',
     description: 'Certified round brilliant sapphire lines',
     href: '/shop?gender=women&category=bracelets',
-    image:
-      'https://images.unsplash.com/photo-1611591475870-b18cb5bf4d2c?auto=format&fit=crop&w=400&q=80',
+    image: '/img/women/bracelets.jpg',
     badge: 'Classic',
   },
 ];
@@ -137,8 +127,7 @@ const MEN_CATEGORIES = [
     name: "All Men's Pieces",
     description: 'Masculine fine sapphire creations',
     href: '/shop?gender=men',
-    image:
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=400&q=80',
+    image: '/img/men/men-all.jpg',
     badge: 'Modern',
   },
   {
@@ -146,8 +135,7 @@ const MEN_CATEGORIES = [
     name: 'Sapphire Signet Rings',
     description: 'Solid cushion signets & band rings',
     href: '/shop?gender=men&category=rings',
-    image:
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=400&q=80',
+    image: '/img/men/men-ring.jpg',
     badge: 'Bestseller',
   },
   {
@@ -155,8 +143,7 @@ const MEN_CATEGORIES = [
     name: 'Chains & Pendants',
     description: 'Minimalist links with dark sapphire charm',
     href: '/shop?gender=men&category=necklaces',
-    image:
-      'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=400&q=80',
+    image: '/img/men/neckless-men.jpg',
     badge: 'Bold',
   },
   {
@@ -164,13 +151,32 @@ const MEN_CATEGORIES = [
     name: 'Bands & Channel Accents',
     description: 'Heavy silver bands with embedded sapphires',
     href: '/shop?gender=men&category=bracelets',
-    image:
-      'https://images.unsplash.com/photo-1611591475870-b18cb5bf4d2c?auto=format&fit=crop&w=400&q=80',
+    image: '/img/men/bands-men.jpg',
     badge: 'Understated',
   },
 ];
 
 type DropdownKey = 'collections' | 'women' | 'men' | 'user' | null;
+
+interface SpotlightProduct {
+  _id: string;
+  name: string;
+  slug: string;
+  price: number;
+  currency?: string;
+  description: string;
+  image: string;
+}
+
+const DEFAULT_SPOTLIGHT_PRODUCT: SpotlightProduct = {
+  _id: 'default-spotlight',
+  name: 'Royal Blue Ceylon Sapphire Regal Halo Ring',
+  slug: 'royal-blue-ceylon-sapphire-regal-halo-ring',
+  price: 840,
+  currency: 'AUD',
+  description: '1.85ct unheated natural blue sapphire ethically sourced from Ratnapura alluvial riverbeds.',
+  image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80',
+};
 
 export const Navbar: React.FC = () => {
   const router = useRouter();
@@ -209,6 +215,59 @@ export const Navbar: React.FC = () => {
   const [mobileAccordion, setMobileAccordion] = useState<'collections' | 'women' | 'men' | null>(null);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Latest product spotlight in Collections mega-menu
+  const [latestProduct, setLatestProduct] = useState<SpotlightProduct>(DEFAULT_SPOTLIGHT_PRODUCT);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchLatestProduct = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${apiUrl}/products?limit=1&sort=newest`);
+        if (!res.ok) return;
+        const json = await res.json();
+        if (
+          isMounted &&
+          json.success &&
+          json.data &&
+          Array.isArray(json.data.products) &&
+          json.data.products.length > 0
+        ) {
+          const item = json.data.products[0];
+          const rawImg =
+            (Array.isArray(item.images) && item.images[0]?.url) ||
+            DEFAULT_SPOTLIGHT_PRODUCT.image;
+          const backendOrigin = apiUrl.replace(/\/api\/?$/, '');
+          const resolvedImg = rawImg.startsWith('/uploads/')
+            ? `${backendOrigin}${rawImg}`
+            : rawImg;
+
+          setLatestProduct({
+            _id: item._id,
+            name: item.name || DEFAULT_SPOTLIGHT_PRODUCT.name,
+            slug: item.slug || item._id,
+            price: typeof item.price === 'number' ? item.price : DEFAULT_SPOTLIGHT_PRODUCT.price,
+            currency: item.currency || 'AUD',
+            description:
+              item.description ||
+              (item.gemstone?.type
+                ? `${item.gemstone.carat ? item.gemstone.carat + 'ct ' : ''}${item.gemstone.type} heirloom design.`
+                : DEFAULT_SPOTLIGHT_PRODUCT.description),
+            image: resolvedImg,
+          });
+        }
+      } catch {
+        // Retain fallback
+      }
+    };
+
+    fetchLatestProduct();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
 
   const menuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const headerRef = useRef<HTMLElement>(null);
@@ -286,7 +345,7 @@ export const Navbar: React.FC = () => {
       <header
         ref={headerRef}
         className={`${
-          hasDarkHero ? 'fixed top-3 sm:top-4 left-0 right-0' : 'sticky top-3 sm:top-4'
+          hasDarkHero ? 'fixed top-3 sm:top-4 left-0 right-0' : 'sticky top-3 sm:top-4 mb-2 sm:mb-3'
         } z-40 px-3 sm:px-6 lg:px-8 pointer-events-none transition-all duration-300`}
       >
         <div
@@ -470,7 +529,7 @@ export const Navbar: React.FC = () => {
 
               {/* Persistent Wishlist Icon */}
               <Link
-                href="/account"
+                href="/account?tab=wishlist"
                 onClick={closeAll}
                 className={`relative p-2 rounded-full transition-colors ${
                   isTransparent
@@ -681,31 +740,41 @@ export const Navbar: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Right Spotlight Featured Card */}
+                {/* Right Spotlight Featured Card (Latest Product) */}
                 <div className="col-span-4 bg-neutral-950 text-white rounded-2xl p-5 border border-neutral-800 shadow-xl flex flex-col justify-between">
-                  <div className="relative aspect-16/10 rounded-xl overflow-hidden mb-4 border border-white/10">
-                    <img
-                      src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80"
-                      alt="Signature Ceylon Sapphire Ring"
-                      className="w-full h-full object-cover"
-                    />
-                    <span className="absolute top-2.5 left-2.5 bg-white text-black text-[9px] font-bold px-2 py-0.5 rounded-full">
-                      SIGNATURE CEYLON HALO
-                    </span>
-                  </div>
+                  <Link
+                    href={`/product/${latestProduct.slug}`}
+                    onClick={closeAll}
+                    className="group block"
+                  >
+                    <div className="relative aspect-16/10 rounded-xl overflow-hidden mb-4 border border-white/10 bg-neutral-900">
+                      <img
+                        src={latestProduct.image}
+                        alt={latestProduct.name}
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src =
+                            DEFAULT_SPOTLIGHT_PRODUCT.image;
+                        }}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+
+                    <h5 className="font-bold text-sm text-white mb-1 group-hover:text-neutral-200 transition-colors line-clamp-1">
+                      {latestProduct.name}
+                    </h5>
+                  </Link>
 
                   <div>
-                    <h5 className="font-bold text-sm text-white mb-1">
-                      Royal Blue Ceylon Sapphire Regal Halo Ring
-                    </h5>
-                    <p className="text-xs text-neutral-300 leading-relaxed font-light mb-4">
-                      1.85ct unheated natural blue sapphire ethically sourced from Ratnapura alluvial riverbeds.
+                    <p className="text-xs text-neutral-300 leading-relaxed font-light mb-4 line-clamp-2">
+                      {latestProduct.description}
                     </p>
 
                     <div className="flex items-center justify-between pt-2 border-t border-white/10">
-                      <span className="font-bold text-sm text-white">$840 AUD</span>
+                      <span className="font-bold text-sm text-white">
+                        ${latestProduct.price} {latestProduct.currency || 'AUD'}
+                      </span>
                       <Link
-                        href="/product/royal-blue-ceylon-sapphire-regal-halo-ring"
+                        href={`/product/${latestProduct.slug}`}
                         onClick={closeAll}
                         className="inline-flex items-center gap-1.5 text-xs font-bold text-white hover:text-neutral-300 transition-colors"
                       >
@@ -733,7 +802,7 @@ export const Navbar: React.FC = () => {
             <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
               <div className="flex items-center justify-between border-b border-neutral-100 pb-3 mb-6">
                 <div>
-                  <h3 className="text-sm font-bold text-black">Women's Fine Sapphire Jewellery</h3>
+                  <h3 className="text-sm font-bold text-black">Women&apos;s Fine Sapphire Jewellery</h3>
                   <p className="text-[11px] text-neutral-400">Handcrafted heirloom designs tailored for feminine grace</p>
                 </div>
                 <Link
@@ -741,7 +810,7 @@ export const Navbar: React.FC = () => {
                   onClick={closeAll}
                   className="text-xs font-bold text-black hover:text-neutral-600 flex items-center gap-1 transition-colors"
                 >
-                  <span>Explore All Women's Pieces</span>
+                  <span>Explore All Women&apos;s Pieces</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -794,7 +863,7 @@ export const Navbar: React.FC = () => {
                 <div className="col-span-8 space-y-6">
                   <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
                     <div>
-                      <h3 className="text-sm font-bold text-black">Men's Ceylon Sapphire Jewellery</h3>
+                      <h3 className="text-sm font-bold text-black">Men&apos;s Ceylon Sapphire Jewellery</h3>
                       <p className="text-[11px] text-neutral-400">Architectural signets, robust chains & subtle sapphire accents</p>
                     </div>
                     <Link
@@ -802,7 +871,7 @@ export const Navbar: React.FC = () => {
                       onClick={closeAll}
                       className="text-xs font-bold text-black hover:text-neutral-600 flex items-center gap-1 transition-colors"
                     >
-                      <span>Explore All Men's Pieces</span>
+                      <span>Explore All Men&apos;s Pieces</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
@@ -845,7 +914,7 @@ export const Navbar: React.FC = () => {
                       Custom Atelier
                     </span>
                     <h4 className="text-sm font-bold text-white mb-2">
-                      Custom Men's Signet or Cufflinks
+                      Custom Men&apos;s Signet or Cufflinks
                     </h4>
                     <p className="text-xs text-neutral-300 leading-relaxed font-light mb-4">
                       Select an unheated Ceylon star sapphire or royal blue cushion from our Ratnapura vaults. We cast directly in heavy sterling silver or 18K gold.
@@ -857,7 +926,7 @@ export const Navbar: React.FC = () => {
                     onClick={closeAll}
                     className="inline-flex items-center justify-between px-4 py-2.5 rounded-xl bg-white text-black text-xs font-bold hover:bg-neutral-200 transition-colors"
                   >
-                    <span>Design Custom Men's Piece</span>
+                    <span>Design Custom Men&apos;s Piece</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
@@ -894,7 +963,7 @@ export const Navbar: React.FC = () => {
                   </Link>
 
                   <Link
-                    href="/account"
+                    href="/account?tab=orders"
                     onClick={closeAll}
                     className="flex items-center gap-2.5 px-4 py-2 hover:bg-neutral-50 text-xs text-neutral-800 font-medium transition-colors"
                   >
@@ -903,7 +972,7 @@ export const Navbar: React.FC = () => {
                   </Link>
 
                   <Link
-                    href="/account"
+                    href="/account?tab=wishlist"
                     onClick={closeAll}
                     className="flex items-center justify-between px-4 py-2 hover:bg-neutral-50 text-xs text-neutral-800 font-medium transition-colors"
                   >
@@ -974,7 +1043,7 @@ export const Navbar: React.FC = () => {
 
                 <div className="border-t border-neutral-100 pt-1 pb-1">
                   <Link
-                    href="/account"
+                    href="/account?tab=orders"
                     onClick={closeAll}
                     className="flex items-center gap-2.5 px-4 py-2 hover:bg-neutral-50 text-xs text-neutral-700 font-medium transition-colors"
                   >
@@ -1167,7 +1236,7 @@ export const Navbar: React.FC = () => {
                     }
                     className="w-full flex items-center justify-between py-2.5 text-xs font-bold text-black text-left cursor-pointer"
                   >
-                    <span>Women's Collection</span>
+                    <span>Women&apos;s Collection</span>
                     <ChevronDown
                       className={`w-4 h-4 text-neutral-400 transition-transform ${
                         mobileAccordion === 'women' ? 'rotate-180 text-black' : ''
@@ -1212,7 +1281,7 @@ export const Navbar: React.FC = () => {
                     }
                     className="w-full flex items-center justify-between py-2.5 text-xs font-bold text-black text-left cursor-pointer"
                   >
-                    <span>Men's Collection</span>
+                    <span>Men&apos;s Collection</span>
                     <ChevronDown
                       className={`w-4 h-4 text-neutral-400 transition-transform ${
                         mobileAccordion === 'men' ? 'rotate-180 text-black' : ''
@@ -1266,16 +1335,35 @@ export const Navbar: React.FC = () => {
                 </Link>
 
                 <Link
-                  href="/account"
+                  href="/account?tab=orders"
                   onClick={closeAll}
-                  className="block py-2.5 text-xs font-medium text-neutral-600 border-b border-neutral-100 flex items-center justify-between hover:text-black"
+                  className="block py-2.5 text-xs font-medium text-neutral-600 border-b border-neutral-100 hover:text-black"
                 >
-                  <span>My Account & Orders</span>
+                  Orders & Tracking
+                </Link>
+
+                <Link
+                  href="/account?tab=wishlist"
+                  onClick={closeAll}
+                  className="py-2.5 text-xs font-medium text-neutral-600 border-b border-neutral-100 flex items-center justify-between hover:text-black"
+                >
+                  <div className="flex items-center gap-2">
+                    <Heart className="w-3.5 h-3.5" />
+                    <span>My Wishlist</span>
+                  </div>
                   {wishlistCount > 0 && (
                     <span className="text-[10px] bg-black text-white px-2 py-0.5 rounded-full font-bold">
                       {wishlistCount} Saved
                     </span>
                   )}
+                </Link>
+
+                <Link
+                  href="/account"
+                  onClick={closeAll}
+                  className="block py-2.5 text-xs font-medium text-neutral-600 border-b border-neutral-100 hover:text-black"
+                >
+                  Client Portal & Profile
                 </Link>
               </div>
             </div>

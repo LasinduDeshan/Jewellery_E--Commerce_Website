@@ -7,6 +7,9 @@ import { Footer } from '../components/layout/Footer';
 import { ProvenanceHero } from '../components/home/ProvenanceHero';
 import { CustomizeJewellerySection } from '../components/home/CustomizeJewellerySection';
 import { EditorialGrid } from '../components/home/EditorialGrid';
+import { CustomizeWeddingRingSection } from '../components/home/CustomizeWeddingRingSection';
+import { LatestReviewsSection } from '../components/home/LatestReviewsSection';
+import { TrustedByPatronsSection } from '../components/home/TrustedByPatronsSection';
 import { ProductCard } from '../components/ui/ProductCard';
 import {
   Sparkles,
@@ -281,93 +284,25 @@ export default function HomePage() {
       {/* ============================================================ */}
       <EditorialGrid />
 
-
+      {/* ============================================================ */}
+      {/* 5. VERIFIED PATRON REVIEWS & TESTIMONIALS (LIVE BACKEND)     */}
+      {/* ============================================================ */}
+      {/* ============================================================ */}
+      {/* 5. CUSTOMIZE WEDDING RING SECTION                           */}
+      {/* ============================================================ */}
+      <CustomizeWeddingRingSection />
 
       {/* ============================================================ */}
-      {/* 5. SOURCING TRANSPARENCY & HERITAGE NARRATIVE PREVIEW        */}
+      {/* 6. VERIFIED PATRON REVIEWS & TESTIMONIALS (LIVE BACKEND)     */}
       {/* ============================================================ */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="relative rounded-3xl overflow-hidden aspect-4/3 border border-neutral-200 shadow-md">
-            <img
-              src="https://images.unsplash.com/photo-1531995811006-35cb42e1a022?auto=format&fit=crop&w=1200&q=80"
-              alt="Hereditary Sri Lankan Gem Cutter"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            <div className="absolute bottom-6 left-6 right-6 text-white">
-              <span className="text-white text-xs font-mono block mb-1">
-                Galle Fort Atelier • Sri Lanka
-              </span>
-              <p className="text-lg sm:text-xl font-light italic leading-snug">
-                "We do not cut gems merely for weight. We cut to unlock the sapphire's soul and let natural light dance inside."
-              </p>
-            </div>
-          </div>
+      <LatestReviewsSection />
 
-          <div className="space-y-6">
-            <span className="text-xs font-bold text-neutral-500">
-              The Ethical Chain of Custody
-            </span>
+     
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-cormorant text-black font-normal leading-tight">
-              Why Sri Lankan Sapphires Are Revered Worldwide
-            </h2>
-
-            <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed">
-              From Marco Polo’s ancient chronicles to the modern royal crowns of Europe, Sri Lanka (formerly Ceylon) has produced the clearest, most naturally vibrant corundum in geological history.
-            </p>
-
-            <div className="space-y-4 pt-2">
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-neutral-100 text-black flex items-center justify-center shrink-0 mt-0.5 border border-neutral-200">
-                  <Check className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-black">Zero Strip Mining</h4>
-                  <p className="text-[11px] text-neutral-500">
-                    Artisanal gravel pitting preserves local ecosystems, paddy fields, and waterways.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-neutral-100 text-black flex items-center justify-center shrink-0 mt-0.5 border border-neutral-200">
-                  <Check className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-black">Living Wages for Craftsmen</h4>
-                  <p className="text-[11px] text-neutral-500">
-                    Direct commissions ensure hereditary lapidaries and goldsmiths prosper fairly.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-neutral-100 text-black flex items-center justify-center shrink-0 mt-0.5 border border-neutral-200">
-                  <Check className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-black">Official NGJA SL Export Seals</h4>
-                  <p className="text-[11px] text-neutral-500">
-                    Government gemologists test every stone prior to white-glove export transit to Australia.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-2">
-              <Link
-                href="/story"
-                className="inline-flex items-center gap-2 text-xs font-bold text-black hover:text-neutral-600 transition-colors"
-              >
-                <span>Read Full Provenance Documentation</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ============================================================ */}
+      {/* 7. TRUSTED BY LEADERS & PATRONS COLLAGE                      */}
+      {/* ============================================================ */}
+      <TrustedByPatronsSection />
 
       <Footer />
     </main>

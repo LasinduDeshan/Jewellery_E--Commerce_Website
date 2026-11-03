@@ -190,7 +190,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       `*Estimated Shipping:* ${shippingFee === 0 ? 'FREE Express DHL' : `$${shippingFee} AUD`}`,
       `*Estimated Total:* $${total} AUD`,
       ``,
-      `Please confirm stone availability and payment options for Australia. Thank you!`,
+      `Please confirm stone availability and worldwide payment options. Thank you!`,
     ].filter(Boolean);
 
     const fullMessage = encodeURIComponent(lines.join('\n'));
@@ -203,7 +203,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          customerName: customerName || 'Australian Cart Visitor',
+          customerName: customerName || 'Worldwide Client',
           phoneNumber: customerPhone || 'WhatsApp Direct Lead',
           source: 'Cart WhatsApp Checkout',
           cartItems: cart.map((c) => ({

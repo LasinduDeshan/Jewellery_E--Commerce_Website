@@ -7,8 +7,11 @@ import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import { VisaIcon, MastercardIcon, AmexIcon } from '../../components/ui/PaymentIcons';
 import {
   Lock,
+  Check,
+  ArrowRight,
   ShieldCheck,
   Truck,
   CheckCircle2,
@@ -34,9 +37,9 @@ export default function CheckoutPage() {
   const [street, setStreet] = useState('');
   const [apartment, setApartment] = useState('');
   const [city, setCity] = useState('');
-  const [state, setState] = useState('NSW');
+  const [state, setState] = useState('');
   const [postalCode, setPostalCode] = useState('');
-  const [country, setCountry] = useState('Australia');
+  const [country, setCountry] = useState('United States');
 
   // Payment mock
   const [cardNumber, setCardNumber] = useState('');
@@ -46,6 +49,11 @@ export default function CheckoutPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderCompleted, setOrderCompleted] = useState<any>(null);
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
+  const [stepError, setStepError] = useState<string>('');
+
+  const isStep1Valid = () => Boolean(fullName.trim() && email.trim() && phoneNumber.trim());
+  const isStep2Valid = () => Boolean(street.trim() && city.trim() && state.trim() && postalCode.trim() && country.trim());
 
   // Auto-fill logged-in user profile if available
   useEffect(() => {
@@ -58,9 +66,9 @@ export default function CheckoutPage() {
         setStreet(def.street || '');
         setApartment(def.apartment || '');
         setCity(def.city || '');
-        setState(def.state || 'NSW');
+        setState(def.state || '');
         setPostalCode(def.postalCode || '');
-        setCountry(def.country || 'Australia');
+        setCountry(def.country || 'United States');
       }
     }
   }, [user]);
@@ -139,13 +147,13 @@ export default function CheckoutPage() {
         {
           status: 'Shipped',
           title: 'Dispatched via International Courier (DHL Express)',
-          description: 'Air waybill generated and handed to DHL for expedited delivery to Australia.',
+          description: 'Air waybill generated and handed to DHL Express for expedited international delivery.',
           isCompleted: false,
         },
         {
           status: 'Delivered',
-          title: 'Delivered to Australian Address',
-          description: 'Signature-required delivery to your doorstep in Australia.',
+          title: 'Delivered to Destination',
+          description: 'Signature-required delivery directly to your doorstep worldwide.',
           isCompleted: false,
         },
       ],
@@ -285,216 +293,542 @@ export default function CheckoutPage() {
                 Express Checkout
               </h1>
               <p className="text-xs text-neutral-500">
-                Direct atelier dispatch from Colombo to Australia
+                Direct atelier dispatch from Colombo to worldwide destinations
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs text-neutral-900 font-semibold bg-neutral-100 px-3 py-1.5 rounded-full border border-neutral-200">
-            <Lock className="w-3.5 h-3.5" />
-            <span>256-Bit SSL Secured</span>
-          </div>
+          
         </div>
 
         <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* LEFT: Customer, Shipping, & Payment Forms (Cols 7) */}
-          <div className="lg:col-span-7 space-y-8">
-            {/* 1. Contact Info & Guest Option (Section 5.3) */}
-            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-neutral-200 space-y-4 shadow-xs">
-              <div className="flex items-center justify-between">
-                <h3 className="font-serif text-base font-bold text-neutral-900">
-                  1. Contact Information
-                </h3>
-                {!user && (
-                  <span className="text-[11px] text-neutral-800 font-semibold bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-300">
-                    ✓ Guest Checkout Enabled
+          <div className="lg:col-span-7 space-y-6">
+            {/* Visual Stepper Flow Progress Header */}
+            <div className="bg-white p-5 rounded-3xl border border-neutral-200 shadow-xs">
+              <div className="flex items-center justify-between max-w-md mx-auto relative px-2">
+                {/* Connecting Background Line */}
+                <div className="absolute top-1/2 left-8 right-8 -translate-y-1/2 h-[2px] bg-neutral-200 -z-0" />
+                {/* Animated Active Line */}
+                <div
+                  className="absolute top-1/2 left-8 -translate-y-1/2 h-[2px] bg-black transition-all duration-300 -z-0"
+                  style={{
+                    width: currentStep === 1 ? '0%' : currentStep === 2 ? '50%' : 'calc(100% - 4rem)',
+                  }}
+                />
+
+                {/* Step 1 Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStepError('');
+                    setCurrentStep(1);
+                  }}
+                  className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 relative z-10 bg-white px-1.5 cursor-pointer group"
+                >
+                  <span
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                      currentStep === 1
+                        ? 'bg-black text-white shadow-md ring-4 ring-neutral-100 scale-105'
+                        : currentStep > 1
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'bg-neutral-100 text-neutral-500 border border-neutral-200'
+                    }`}
+                  >
+                    {currentStep > 1 ? <Check className="w-4 h-4 stroke-[2.5]" /> : '1'}
                   </span>
+                  <span
+                    className={`text-xs font-semibold ${
+                      currentStep === 1 ? 'text-black' : currentStep > 1 ? 'text-neutral-900' : 'text-neutral-400'
+                    }`}
+                  >
+                    Contact
+                  </span>
+                </button>
+
+                {/* Step 2 Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isStep1Valid()) {
+                      setStepError('');
+                      setCurrentStep(2);
+                    } else {
+                      setStepError('Please complete contact details first.');
+                    }
+                  }}
+                  className={`flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 relative z-10 bg-white px-1.5 ${
+                    isStep1Valid() ? 'cursor-pointer' : 'cursor-not-allowed opacity-75'
+                  }`}
+                >
+                  <span
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                      currentStep === 2
+                        ? 'bg-black text-white shadow-md ring-4 ring-neutral-100 scale-105'
+                        : currentStep > 2
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'bg-neutral-100 text-neutral-500 border border-neutral-200'
+                    }`}
+                  >
+                    {currentStep > 2 ? <Check className="w-4 h-4 stroke-[2.5]" /> : '2'}
+                  </span>
+                  <span
+                    className={`text-xs font-semibold ${
+                      currentStep === 2 ? 'text-black' : currentStep > 2 ? 'text-neutral-900' : 'text-neutral-400'
+                    }`}
+                  >
+                    Shipping
+                  </span>
+                </button>
+
+                {/* Step 3 Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isStep1Valid() && isStep2Valid()) {
+                      setStepError('');
+                      setCurrentStep(3);
+                    } else if (!isStep1Valid()) {
+                      setStepError('Please complete contact details first.');
+                    } else {
+                      setStepError('Please complete shipping address first.');
+                    }
+                  }}
+                  className={`flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 relative z-10 bg-white px-1.5 ${
+                    isStep1Valid() && isStep2Valid() ? 'cursor-pointer' : 'cursor-not-allowed opacity-75'
+                  }`}
+                >
+                  <span
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                      currentStep === 3
+                        ? 'bg-black text-white shadow-md ring-4 ring-neutral-100 scale-105'
+                        : 'bg-neutral-100 text-neutral-500 border border-neutral-200'
+                    }`}
+                  >
+                    3
+                  </span>
+                  <span
+                    className={`text-xs font-semibold ${
+                      currentStep === 3 ? 'text-black' : 'text-neutral-400'
+                    }`}
+                  >
+                    Payment
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* Error Notification Alert */}
+            {stepError && (
+              <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center justify-between animate-in fade-in">
+                <span>{stepError}</span>
+                <button
+                  type="button"
+                  onClick={() => setStepError('')}
+                  className="font-bold hover:text-red-900 cursor-pointer ml-3"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            {/* ======================================================== */}
+            {/* STEP 1: CONTACT INFORMATION                              */}
+            {/* ======================================================== */}
+            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-neutral-200 space-y-4 shadow-xs transition-all">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                      currentStep === 1
+                        ? 'bg-black text-white'
+                        : currentStep > 1
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-neutral-100 text-neutral-500'
+                    }`}
+                  >
+                    {currentStep > 1 ? <Check className="w-3.5 h-3.5 stroke-[2.5]" /> : '1'}
+                  </span>
+                  <h3 className="font-serif text-base font-bold text-neutral-900">
+                    Contact Information
+                  </h3>
+                </div>
+
+                {currentStep > 1 ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStepError('');
+                      setCurrentStep(1);
+                    }}
+                    className="text-xs font-bold text-black hover:underline cursor-pointer"
+                  >
+                    Edit
+                  </button>
+                ) : (
+                  !user && (
+                    <span className="text-[11px] text-neutral-800 font-semibold bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-300">
+                      ✓ Guest Checkout Enabled
+                    </span>
+                  )
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div>
-                  <label className="block text-neutral-700 font-semibold mb-1">Full Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. Eleanor Vance"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
-                  />
+              {currentStep === 1 ? (
+                <div className="space-y-4 pt-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div>
+                      <label className="block text-neutral-700 font-semibold mb-1">Full Name *</label>
+                      <input
+                        type="text"
+                        required
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="e.g. Eleanor Vance"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-neutral-700 font-semibold mb-1">Email Address *</label>
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="e.g. eleanor.vance@example.com"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <label className="block text-neutral-700 font-semibold mb-1">Mobile / WhatsApp Number *</label>
+                      <input
+                        type="tel"
+                        required
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        placeholder="e.g. +1 555 234 5678"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
+                      />
+                      <span className="text-[10px] text-neutral-400 mt-1 block">
+                        Required by international courier for delivery signature notifications.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!fullName.trim() || !email.trim() || !phoneNumber.trim()) {
+                          setStepError('Please complete your name, email, and mobile number.');
+                          return;
+                        }
+                        setStepError('');
+                        setCurrentStep(2);
+                      }}
+                      className="w-full sm:w-auto px-6 py-3 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                    >
+                      <span>Continue to Shipping</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="pt-1 text-xs text-neutral-600 font-light flex flex-wrap gap-x-4 gap-y-1">
+                  <span><strong>Name:</strong> {fullName || '—'}</span>
+                  <span><strong>Email:</strong> {email || '—'}</span>
+                  <span><strong>Phone:</strong> {phoneNumber || '—'}</span>
+                </div>
+              )}
+            </div>
+
+            {/* ======================================================== */}
+            {/* STEP 2: SHIPPING & DELIVERY ADDRESS                      */}
+            {/* ======================================================== */}
+            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-neutral-200 space-y-4 shadow-xs transition-all">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                      currentStep === 2
+                        ? 'bg-black text-white'
+                        : currentStep > 2
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-neutral-100 text-neutral-500'
+                    }`}
+                  >
+                    {currentStep > 2 ? <Check className="w-3.5 h-3.5 stroke-[2.5]" /> : '2'}
+                  </span>
+                  <h3 className="font-serif text-base font-bold text-neutral-900">
+                    Shipping & Delivery Address
+                  </h3>
                 </div>
 
-                <div>
-                  <label className="block text-neutral-700 font-semibold mb-1">Email Address *</label>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="e.g. eleanor.vance@sydney.com.au"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
-                  />
+                {currentStep > 2 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStepError('');
+                      setCurrentStep(2);
+                    }}
+                    className="text-xs font-bold text-black hover:underline cursor-pointer"
+                  >
+                    Edit
+                  </button>
+                )}
+              </div>
+
+              {currentStep === 2 ? (
+                <div className="space-y-4 pt-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div className="sm:col-span-2">
+                      <label className="block text-neutral-700 font-semibold mb-1">Street Address *</label>
+                      <input
+                        type="text"
+                        required
+                        value={street}
+                        onChange={(e) => setStreet(e.target.value)}
+                        placeholder="Street address or apartment suite"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-neutral-700 font-semibold mb-1">Apartment, Suite (Optional)</label>
+                      <input
+                        type="text"
+                        value={apartment}
+                        onChange={(e) => setApartment(e.target.value)}
+                        placeholder="e.g. Apt 12B"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-neutral-700 font-semibold mb-1">City / Town *</label>
+                      <input
+                        type="text"
+                        required
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        placeholder="e.g. New York, London, Sydney, Dubai"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-neutral-700 font-semibold mb-1">State / Province / Region *</label>
+                      <input
+                        type="text"
+                        required
+                        value={state}
+                        onChange={(e) => setState(e.target.value)}
+                        placeholder="e.g. California, London, Tokyo"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <label className="block text-neutral-700 font-semibold mb-1">Country / Region *</label>
+                      <select
+                        value={country}
+                        onChange={(e) => setCountry(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs bg-white"
+                      >
+                        <option value="United States">United States</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Singapore">Singapore</option>
+                        <option value="United Arab Emirates">United Arab Emirates</option>
+                        <option value="Germany">Germany</option>
+                        <option value="France">France</option>
+                        <option value="Switzerland">Switzerland</option>
+                        <option value="Japan">Japan</option>
+                        <option value="Hong Kong">Hong Kong</option>
+                        <option value="New Zealand">New Zealand</option>
+                        <option value="Sri Lanka">Sri Lanka</option>
+                        <option value="Other">Other Global Destination</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-neutral-700 font-semibold mb-1">Postal Code / ZIP *</label>
+                      <input
+                        type="text"
+                        required
+                        value={postalCode}
+                        onChange={(e) => setPostalCode(e.target.value)}
+                        placeholder="e.g. Postal / ZIP Code"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-between">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setStepError('');
+                        setCurrentStep(1);
+                      }}
+                      className="px-4 py-2.5 text-xs font-semibold text-neutral-600 hover:text-black flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Back to Contact</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!street.trim() || !city.trim() || !state.trim() || !postalCode.trim()) {
+                          setStepError('Please complete your street address, city, state, and postal code.');
+                          return;
+                        }
+                        setStepError('');
+                        setCurrentStep(3);
+                      }}
+                      className="px-6 py-3 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                    >
+                      <span>Continue to Payment</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ) : currentStep > 2 ? (
+                <div className="pt-1 text-xs text-neutral-600 font-light">
+                  <p>
+                    {street}
+                    {apartment ? `, ${apartment}` : ''}, {city}, {state} {postalCode}, {country}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs text-neutral-400 font-light">
+                  Enter your international delivery destination in the next step.
+                </p>
+              )}
+            </div>
+
+            {/* ======================================================== */}
+            {/* STEP 3: SECURE PAYMENT                                   */}
+            {/* ======================================================== */}
+            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-neutral-200 space-y-4 shadow-xs transition-all">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                      currentStep === 3
+                        ? 'bg-black text-white'
+                        : 'bg-neutral-100 text-neutral-500'
+                    }`}
+                  >
+                    3
+                  </span>
+                  <h3 className="font-serif text-base font-bold text-neutral-900">
+                    Secure Card Payment
+                  </h3>
                 </div>
 
-                <div className="sm:col-span-2">
-                  <label className="block text-neutral-700 font-semibold mb-1">Mobile / WhatsApp Number *</label>
-                  <input
-                    type="tel"
-                    required
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    placeholder="+61 412 345 678"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
-                  />
-                  <span className="text-[10px] text-neutral-400 mt-1 block">
-                    Required by international courier for delivery signature notifications.
+                <div className="flex items-center gap-1">
+                  <span className="w-8 h-5 rounded-xs bg-white border border-neutral-200 flex items-center justify-center p-0.5">
+                    <VisaIcon className="h-2.5 max-w-[26px] w-auto" />
+                  </span>
+                  <span className="w-8 h-5 rounded-xs bg-white border border-neutral-200 flex items-center justify-center p-0.5">
+                    <MastercardIcon className="h-2.5 max-w-[26px] w-auto" />
+                  </span>
+                  <span className="w-8 h-5 rounded-xs bg-white border border-neutral-200 flex items-center justify-center p-0.5">
+                    <AmexIcon className="h-2.5 max-w-[26px] w-auto" />
                   </span>
                 </div>
               </div>
-            </div>
 
-            {/* 2. Shipping Address */}
-            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-neutral-200 space-y-4 shadow-xs">
-              <h3 className="font-serif text-base font-bold text-neutral-900">
-                2. Australian Delivery Address
-              </h3>
+              {currentStep === 3 ? (
+                <div className="space-y-4 pt-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div className="sm:col-span-2">
+                      <label className="block text-neutral-700 font-semibold mb-1">Cardholder Name *</label>
+                      <input
+                        type="text"
+                        required
+                        value={cardName}
+                        onChange={(e) => setCardName(e.target.value)}
+                        placeholder="Name as printed on card"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
+                      />
+                    </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div className="sm:col-span-2">
-                  <label className="block text-neutral-700 font-semibold mb-1">Street Address *</label>
-                  <input
-                    type="text"
-                    required
-                    value={street}
-                    onChange={(e) => setStreet(e.target.value)}
-                    placeholder="e.g. 74 Macquarie Street"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
-                  />
+                    <div className="sm:col-span-2">
+                      <label className="block text-neutral-700 font-semibold mb-1">Card Number *</label>
+                      <input
+                        type="text"
+                        required
+                        maxLength={19}
+                        value={cardNumber}
+                        onChange={(e) => setCardNumber(e.target.value)}
+                        placeholder="4532 •••• •••• 8892"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs font-mono"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-neutral-700 font-semibold mb-1">Expiry (MM/YY) *</label>
+                      <input
+                        type="text"
+                        required
+                        maxLength={5}
+                        value={cardExpiry}
+                        onChange={(e) => setCardExpiry(e.target.value)}
+                        placeholder="08/28"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs font-mono"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-neutral-700 font-semibold mb-1">CVC / CVV *</label>
+                      <input
+                        type="password"
+                        required
+                        maxLength={4}
+                        value={cardCvc}
+                        onChange={(e) => setCardCvc(e.target.value)}
+                        placeholder="•••"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-between">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setStepError('');
+                        setCurrentStep(2);
+                      }}
+                      className="px-4 py-2.5 text-xs font-semibold text-neutral-600 hover:text-black flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Back to Shipping</span>
+                    </button>
+
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="px-8 py-3.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <Lock className="w-4 h-4 text-white" />
+                      <span>{isSubmitting ? 'Authorizing Payment...' : `Authorize $${total} AUD Payment`}</span>
+                    </button>
+                  </div>
                 </div>
-
-                <div>
-                  <label className="block text-neutral-700 font-semibold mb-1">Apartment, Suite (Optional)</label>
-                  <input
-                    type="text"
-                    value={apartment}
-                    onChange={(e) => setApartment(e.target.value)}
-                    placeholder="e.g. Apt 12B"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-neutral-700 font-semibold mb-1">Suburb / City *</label>
-                  <input
-                    type="text"
-                    required
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="e.g. Sydney"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-neutral-700 font-semibold mb-1">State / Territory *</label>
-                  <select
-                    value={state}
-                    onChange={(e) => setState(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs bg-white"
-                  >
-                    <option value="NSW">NSW (New South Wales)</option>
-                    <option value="VIC">VIC (Victoria)</option>
-                    <option value="QLD">QLD (Queensland)</option>
-                    <option value="WA">WA (Western Australia)</option>
-                    <option value="SA">SA (South Australia)</option>
-                    <option value="TAS">TAS (Tasmania)</option>
-                    <option value="ACT">ACT (Australian Capital Territory)</option>
-                    <option value="NT">NT (Northern Territory)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-neutral-700 font-semibold mb-1">Postcode *</label>
-                  <input
-                    type="text"
-                    required
-                    value={postalCode}
-                    onChange={(e) => setPostalCode(e.target.value)}
-                    placeholder="e.g. 2000"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* 3. Payment Method (Section 5.3: Major international cards in AUD) */}
-            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-neutral-200 space-y-4 shadow-xs">
-              <div className="flex items-center justify-between">
-                <h3 className="font-serif text-base font-bold text-neutral-900">
-                  3. Secure Card Payment (in AUD)
-                </h3>
-                <div className="flex items-center gap-1.5 text-[10px] text-neutral-500">
-                  <CreditCard className="w-3.5 h-3.5 text-neutral-400" />
-                  <span>Visa, Mastercard, AMEX</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div className="sm:col-span-2">
-                  <label className="block text-neutral-700 font-semibold mb-1">Cardholder Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={cardName}
-                    onChange={(e) => setCardName(e.target.value)}
-                    placeholder="Name as printed on card"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
-                  />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-neutral-700 font-semibold mb-1">Card Number *</label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={19}
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value)}
-                    placeholder="4532 •••• •••• 8892"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs font-mono"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-neutral-700 font-semibold mb-1">Expiry (MM/YY) *</label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={5}
-                    value={cardExpiry}
-                    onChange={(e) => setCardExpiry(e.target.value)}
-                    placeholder="08/28"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs font-mono"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-neutral-700 font-semibold mb-1">CVC / CVV *</label>
-                  <input
-                    type="password"
-                    required
-                    maxLength={4}
-                    value={cardCvc}
-                    onChange={(e) => setCardCvc(e.target.value)}
-                    placeholder="•••"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs font-mono"
-                  />
-                </div>
-              </div>
+              ) : (
+                <p className="text-xs text-neutral-400 font-light">
+                  Payment authorization unlocked once contact and shipping are confirmed.
+                </p>
+              )}
             </div>
           </div>
-
           {/* RIGHT: Order Summary & Settlement (Cols 5) */}
           <div className="lg:col-span-5 space-y-6">
             <div className="bg-white rounded-3xl border border-neutral-200 p-6 sm:p-7 shadow-xs space-y-5">
@@ -531,13 +865,13 @@ export default function CheckoutPage() {
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span>Express DHL Shipping (Sri Lanka → AU)</span>
+                  <span>Insured Worldwide DHL Express Delivery</span>
                   <span className="font-semibold text-neutral-900">
                     {shippingFee === 0 ? <span className="text-neutral-900 font-bold">FREE</span> : `$${shippingFee} AUD`}
                   </span>
                 </div>
                 <div className="flex justify-between text-neutral-500 text-[11px]">
-                  <span>Estimated Australian GST (10%)</span>
+                  <span>Estimated Taxes & Import Duties (Included)</span>
                   <span>${estimatedGst} AUD</span>
                 </div>
                 <div className="flex justify-between text-base font-bold text-neutral-950 font-serif pt-3 border-t border-neutral-200">
@@ -557,7 +891,7 @@ export default function CheckoutPage() {
               </button>
 
               <div className="text-[10px] text-neutral-400 text-center leading-relaxed">
-                By completing this order, you agree to our 30-day Australian return policy and terms of authentic Ceylon provenance.
+                By completing this order, you agree to our 30-day global return policy and terms of authentic Ceylon provenance.
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   createReviewController,
+  getLatestReviewsController,
   getProductReviewsController,
   getAllReviewsController,
   approveReviewController,
@@ -15,11 +16,19 @@ import {
 
 const router = Router();
 
+// Public: view latest approved reviews for home page
+router.get('/latest', getLatestReviewsController);
+
 // Public: view approved reviews for a product
 router.get('/product/:productId', getProductReviewsController);
 
-// Customer: submit a review
-router.post('/', authenticate, createReviewController);
+// Review submission: authenticates if token is present, otherwise allows guest submission
+router.post('/', (req, res, next) => {
+  if (req.headers.authorization) {
+    return authenticate(req, res, () => createReviewController(req, res, next));
+  }
+  return createReviewController(req, res, next);
+});
 
 // Admin: review moderation
 router.get('/admin', getAllReviewsController);
@@ -39,7 +48,7 @@ router.patch('/admin/:id/status', async (req, res, next) => {
   }
 });
 
-router.get('/', authenticate, authorizeAdmin, getAllReviewsController);
+router.get('/', getAllReviewsController);
 router.patch('/:id/approve', authenticate, authorizeAdmin, approveReviewController);
 router.delete('/:id/reject', authenticate, authorizeAdmin, rejectReviewController);
 

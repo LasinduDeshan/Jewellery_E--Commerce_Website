@@ -160,7 +160,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
         sortOrder: 2,
       },
       {
-        url: 'https://images.unsplash.com/photo-1611591475870-8b1e19d1cbba?auto=format&fit=crop&w=900&q=80',
+        url: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=900&q=80',
         alt: 'Delicate chain and clasp close-up',
         sortOrder: 3,
       },
@@ -348,7 +348,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
     stockQuantity: 1,
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1611591475870-8b1e19d1cbba?auto=format&fit=crop&w=900&q=80',
+        url: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=900&q=80',
         alt: 'Yellow Sapphire Tennis Bracelet Laydown',
         sortOrder: 1,
       },

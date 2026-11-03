@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, use, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '../../../components/layout/Navbar';
@@ -19,15 +19,43 @@ import {
   Award,
   Star,
   CheckCircle2,
+  ChevronLeft,
   ChevronRight,
-  Eye,
   Camera,
-  Share2,
   ArrowRight,
   X,
   Play,
   Check,
 } from 'lucide-react';
+
+interface ProductImage {
+  url: string;
+  alt?: string;
+  sortOrder?: number;
+}
+
+interface ProductData {
+  _id: string;
+  name: string;
+  slug: string;
+  sku?: string;
+  category?: string;
+  gender?: string;
+  price: number;
+  currency?: string;
+  stockQuantity?: number;
+  description?: string;
+  careInstructions?: string;
+  images: ProductImage[];
+  media?: { videoUrl?: string; view360Url?: string };
+  certificate?: { available: boolean; issuer?: string; certificateNumber?: string; url?: string };
+  metal?: { type?: string; purity?: string };
+  gemstone?: { type?: string; carat?: number; cut?: string; origin?: string; treatment?: string };
+  dimensions?: { ringSizes?: string[]; chainLengths?: string[]; description?: string };
+  reviews?: ReviewItem[];
+  reviewCount?: number;
+  rating?: number;
+}
 
 interface ReviewItem {
   _id: string;
@@ -40,6 +68,69 @@ interface ReviewItem {
   createdAt: string;
 }
 
+const DEFAULT_RELATED: ProductData[] = [
+  {
+    _id: 'rel_1',
+    name: 'Padparadscha Lotus Blossom Pendant',
+    slug: 'padparadscha-lotus-blossom-pendant',
+    category: 'necklaces',
+    metal: { purity: '18K Rose Gold Vermeil' },
+    gemstone: { type: 'Natural Ceylon Padparadscha' },
+    price: 1120,
+    rating: 5.0,
+    reviewCount: 14,
+    images: [{ url: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80' }],
+  },
+  {
+    _id: 'rel_2',
+    name: 'Cornflower Blue Sapphire Eternity Promise Ring',
+    slug: 'cornflower-blue-sapphire-eternity-promise-ring',
+    category: 'rings',
+    metal: { purity: '925 Solid Sterling Silver' },
+    gemstone: { type: 'Ceylon Cornflower Blue Sapphires' },
+    price: 590,
+    rating: 4.9,
+    reviewCount: 9,
+    images: [{ url: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=600&q=80' }],
+  },
+  {
+    _id: 'rel_3',
+    name: 'Petal Pink Sapphire Teardrop Earrings',
+    slug: 'petal-pink-sapphire-teardrop-earrings',
+    category: 'earrings',
+    metal: { purity: '18K Rose Gold Vermeil' },
+    gemstone: { type: 'Natural Ceylon Pink Sapphires' },
+    price: 680,
+    rating: 5.0,
+    reviewCount: 12,
+    images: [{ url: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=600&q=80' }],
+  },
+  {
+    _id: 'rel_4',
+    name: 'Ratnapura Golden Yellow Sapphire Tennis Bracelet',
+    slug: 'ratnapura-golden-yellow-sapphire-tennis-bracelet',
+    category: 'bracelets',
+    metal: { purity: '925 Solid Sterling Silver' },
+    gemstone: { type: 'Natural Ceylon Golden Yellow Sapphires' },
+    price: 1350,
+    rating: 5.0,
+    reviewCount: 7,
+    images: [{ url: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=600&q=80' }],
+  },
+  {
+    _id: 'rel_5',
+    name: 'Royal Ceylon Sapphire Signet Ring',
+    slug: 'royal-ceylon-sapphire-signet-ring',
+    category: 'rings',
+    metal: { purity: 'Solid 925 Sterling Silver' },
+    gemstone: { type: 'Ceylon Royal Blue Sapphire' },
+    price: 795,
+    rating: 4.8,
+    reviewCount: 18,
+    images: [{ url: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=600&q=80' }],
+  },
+];
+
 export default function ProductDetailPage({
   params,
 }: {
@@ -49,8 +140,8 @@ export default function ProductDetailPage({
   const slug = resolvedParams.slug;
   const router = useRouter();
 
-  const [product, setProduct] = useState<any>(null);
-  const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
+  const [product, setProduct] = useState<ProductData | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<ProductData[]>([]);
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -78,6 +169,18 @@ export default function ProductDetailPage({
   // Feedback toast
   const [toastMessage, setToastMessage] = useState<string>('');
 
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (carouselRef.current) {
+      const amount = direction === 'left' ? -260 : 260;
+      carouselRef.current.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+  };
+
+  const displayRelated = relatedProducts.length > 0
+    ? relatedProducts
+    : DEFAULT_RELATED.filter((p) => p.slug !== slug);
+
   const { addToCart } = useCart();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
 
@@ -101,7 +204,7 @@ export default function ProductDetailPage({
         }
 
         // 2. Fetch Related Products
-        const relRes = await fetch(`${apiUrl}/products/${slug}/related?limit=3`);
+        const relRes = await fetch(`${apiUrl}/products/${slug}/related?limit=8`);
         const relData = await relRes.json();
         if (relData.success && Array.isArray(relData.data)) {
           setRelatedProducts(relData.data);
@@ -113,7 +216,7 @@ export default function ProductDetailPage({
         if (revData.success && Array.isArray(revData.data)) {
           setReviews(revData.data);
         }
-      } catch (err) {
+      } catch {
         console.warn('Using client product fallback');
       } finally {
         setLoading(false);
@@ -211,7 +314,7 @@ export default function ProductDetailPage({
       `• Gemstone: ${product.gemstone?.type} (${product.gemstone?.carat} ct)\n` +
       `• Metal: ${product.metal?.purity}\n` +
       `${selectedSize ? `• Ring Size: ${selectedSize}\n` : ''}` +
-      `Could you please share a video of this stone in natural sunlight and confirm shipping to Australia?`
+      `Could you please share a video of this stone in natural sunlight and confirm worldwide shipping?`
     );
     window.open(`https://wa.me/94771234567?text=${text}`, '_blank');
   };
@@ -246,7 +349,7 @@ export default function ProductDetailPage({
         setToastMessage('Thank you! Your verified review has been published.');
         setTimeout(() => setToastMessage(''), 3000);
       }
-    } catch (e) {
+    } catch {
       // Local fallback
       const mockRev: ReviewItem = {
         _id: `rev_${Date.now()}`,
@@ -286,7 +389,7 @@ export default function ProductDetailPage({
       )}
 
       {/* Breadcrumb Navigation */}
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-xs text-neutral-500 flex items-center gap-1.5 w-full">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-7 sm:pt-9 pb-3 text-xs text-neutral-500 flex items-center gap-1.5 w-full">
         <Link href="/" className="hover:text-black">
           Home
         </Link>
@@ -300,9 +403,9 @@ export default function ProductDetailPage({
 
       {/* Main Product Section */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex-1 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* LEFT: Multi-Angle Photo & 360°/Video Viewer (Section 5.2) */}
-          <div className="lg:col-span-7 space-y-4">
+          <div className="lg:col-span-5 space-y-4 max-w-lg mx-auto w-full">
             {/* Media Tabs Switcher */}
             <div className="flex items-center gap-2 border-b border-neutral-200 pb-2">
               <button
@@ -331,7 +434,7 @@ export default function ProductDetailPage({
             </div>
 
             {/* Display Screen */}
-            <div className="relative aspect-square sm:aspect-4/3 lg:aspect-square rounded-3xl overflow-hidden bg-neutral-100 border border-neutral-200 shadow-xs">
+            <div className="relative aspect-square max-h-[440px] sm:max-h-[480px] w-full rounded-3xl overflow-hidden bg-neutral-900/5 border border-neutral-200 shadow-xs flex items-center justify-center">
               {activeMediaTab === 'photos' ? (
                 <img
                   src={
@@ -340,7 +443,7 @@ export default function ProductDetailPage({
                     'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=80'
                   }
                   alt={product.images[activeImageIndex]?.alt || product.name}
-                  className="w-full h-full object-cover object-center transition-all duration-300"
+                  className="w-full h-full object-cover transition-all duration-300"
                 />
               ) : (
                 <div className="w-full h-full bg-neutral-950 flex flex-col items-center justify-center p-6 text-center text-white relative">
@@ -360,29 +463,39 @@ export default function ProductDetailPage({
               )}
 
               {/* Stock Urgency Tag (Section 5.2) */}
-              {product.stockQuantity <= 2 && (
+              {product.stockQuantity !== undefined && product.stockQuantity <= 2 && (
                 <div className="absolute top-4 left-4 bg-black/90 backdrop-blur text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 border border-neutral-700">
                   <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
                   <span>Only {product.stockQuantity} piece{product.stockQuantity > 1 ? 's' : ''} handcrafted — In Stock</span>
                 </div>
               )}
 
-              {/* Certificate badge overlay button */}
-              {product.certificate?.available && (
-                <button
-                  onClick={() => setCertModalOpen(true)}
-                  className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-md border border-neutral-300 hover:border-black text-black text-xs font-semibold px-3 py-1.5 rounded-full shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
-                >
-                  <Award className="w-3.5 h-3.5 text-black" />
-                  <span>View Official Gem Certificate</span>
-                </button>
-              )}
+              {/* Save to Wishlist Heart Button inside the image card */}
+              <button
+                type="button"
+                onClick={handleToggleWishlist}
+                className={`absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-md backdrop-blur-md cursor-pointer ${
+                  inWishlist
+                    ? 'bg-white text-red-500 border border-red-200 shadow-lg'
+                    : 'bg-white/90 hover:bg-white text-neutral-700 hover:text-black hover:scale-105 border border-neutral-200/80'
+                }`}
+                title={inWishlist ? 'Remove from Wishlist' : 'Save to Wishlist'}
+                aria-label="Save to Wishlist"
+              >
+                <Heart
+                  className={`w-5 h-5 transition-transform ${
+                    inWishlist ? 'fill-red-500 text-red-500 scale-110' : ''
+                  }`}
+                />
+              </button>
+
+              
             </div>
 
             {/* Thumbnail Strip (Minimum 4-6 multi-angle shots) */}
             {product.images?.length > 1 && (
               <div className="grid grid-cols-5 sm:grid-cols-6 gap-2.5">
-                {product.images.map((img: any, idx: number) => (
+                {product.images.map((img: ProductImage, idx: number) => (
                   <button
                     key={idx}
                     onClick={() => {
@@ -403,15 +516,15 @@ export default function ProductDetailPage({
           </div>
 
           {/* RIGHT: Product Specs, Sizing, Pricing & Actions */}
-          <div className="lg:col-span-5 space-y-6">
+          <div className="lg:col-span-7 space-y-6">
             <div>
               {/* Category & Rating */}
               <div className="flex items-center justify-between text-xs text-neutral-500 mb-2">
                 <span className="font-semibold text-neutral-600">
                   {product.gemstone?.origin || 'Ratnapura, Sri Lanka'}
                 </span>
-                <div className="flex items-center gap-1 text-black">
-                  <Star className="w-3.5 h-3.5 fill-current" />
+                <div className="flex items-center gap-1">
+                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                   <span className="font-bold text-neutral-800">{averageRating}</span>
                   <span className="text-neutral-400">({reviews.length} reviews)</span>
                 </div>
@@ -428,11 +541,11 @@ export default function ProductDetailPage({
                   ${product.price} AUD
                 </span>
                 <span className="text-xs text-black font-semibold bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200">
-                  ✓ Free Insured DHL Express to Australia
+                  ✓ Free Insured DHL Express Worldwide
                 </span>
               </div>
               <p className="text-[11px] text-neutral-500 mt-1">
-                Prices include all Australian import clearance under DDP terms. No customs surprises.
+                Prices include fully insured express courier and customs clearance. No hidden surprises.
               </p>
             </div>
 
@@ -462,7 +575,7 @@ export default function ProductDetailPage({
             </div>
 
             {/* Sizing & Dimension Options (US Ring sizes or Chain length) */}
-            {product.dimensions?.ringSizes?.length > 0 && (
+            {Boolean(product.dimensions?.ringSizes && product.dimensions.ringSizes.length > 0) && (
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-xs font-bold text-black">
@@ -473,7 +586,7 @@ export default function ProductDetailPage({
                   </Link>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {product.dimensions.ringSizes.map((size: string) => (
+                  {product.dimensions?.ringSizes?.map((size: string) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
@@ -490,13 +603,13 @@ export default function ProductDetailPage({
               </div>
             )}
 
-            {product.dimensions?.chainLengths?.length > 0 && (
+            {Boolean(product.dimensions?.chainLengths && product.dimensions.chainLengths.length > 0) && (
               <div>
                 <label className="text-xs font-bold text-black block mb-2">
                   Select Chain Length
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {product.dimensions.chainLengths.map((length: string) => (
+                  {product.dimensions?.chainLengths?.map((length: string) => (
                     <button
                       key={length}
                       onClick={() => setSelectedChainLength(length)}
@@ -535,27 +648,13 @@ export default function ProductDetailPage({
 
             {/* Primary Action Buttons */}
             <div className="space-y-3 pt-2">
-              <div className="flex gap-3">
-                <button
-                  onClick={handleAddToCart}
-                  className="flex-1 py-3.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md"
-                >
-                  <ShoppingBag className="w-4 h-4" />
-                  <span>Add to Shopping Bag</span>
-                </button>
-
-                <button
-                  onClick={handleToggleWishlist}
-                  className={`p-3.5 rounded-xl border transition-colors cursor-pointer ${
-                    inWishlist
-                      ? 'border-black bg-black text-white'
-                      : 'border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-700 hover:text-black'
-                  }`}
-                  title="Save to Wishlist"
-                >
-                  <Heart className={`w-5 h-5 ${inWishlist ? 'fill-current' : ''}`} />
-                </button>
-              </div>
+              <button
+                onClick={handleAddToCart}
+                className="w-full py-3.5 rounded-xl bg-neutral-200 hover:bg-neutral-300 text-neutral-900 border border-neutral-300 text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs"
+              >
+                <ShoppingBag className="w-4 h-4 text-neutral-800" />
+                <span>Add to Shopping Bag</span>
+              </button>
 
               <button
                 onClick={handleBuyNow}
@@ -567,9 +666,9 @@ export default function ProductDetailPage({
               {/* 5.3: "Prefer to order via WhatsApp?" Direct Concierge */}
               <button
                 onClick={handleWhatsAppInquiry}
-                className="w-full py-3 rounded-xl bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 text-black text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                className="w-full py-3 rounded-xl bg-white hover:bg-neutral-50 border border-neutral-300 text-neutral-800 text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer"
               >
-                <MessageCircle className="w-4 h-4 text-black" />
+                <MessageCircle className="w-4 h-4 text-emerald-600" />
                 <span>Prefer to order via WhatsApp? (Talk to Gemologist)</span>
               </button>
             </div>
@@ -646,9 +745,9 @@ export default function ProductDetailPage({
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-1 text-black">
+                    <div className="flex items-center gap-1 ">
                       {[...Array(rev.rating)].map((_, i) => (
-                        <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                        <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                       ))}
                     </div>
                     {rev.verifiedPurchase && (
@@ -660,7 +759,7 @@ export default function ProductDetailPage({
                   </div>
 
                   <h5 className="text-sm font-semibold text-black mb-1.5">
-                    "{rev.title}"
+                    &ldquo;{rev.title}&rdquo;
                   </h5>
                   <p className="text-xs text-neutral-600 leading-relaxed font-light mb-4">
                     {rev.comment}
@@ -690,57 +789,97 @@ export default function ProductDetailPage({
           </div>
         </section>
 
-        {/* RELATED / "YOU MAY ALSO LIKE" SECTION (Section 5.1) */}
-        {relatedProducts.length > 0 && (
-          <section className="mt-16 pt-12 border-t border-neutral-200">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <span className="text-xs font-bold text-neutral-600">
-                  Curated Pairings
-                </span>
-                <h3 className="text-2xl text-black font-semibold mt-1">
-                  You May Also Like
-                </h3>
-              </div>
-              <Link
-                href="/shop"
-                className="text-xs font-bold text-black hover:underline flex items-center gap-1"
-              >
-                <span>View Full Catalogue</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+        {/* RELATED / "YOU MAY ALSO LIKE" SECTION */}
+        <section className="mt-16 pt-12 border-t border-neutral-200">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl sm:text-2xl font-serif text-neutral-900 tracking-tight">
+              You may also like
+            </h3>
+            <Link
+              href="/shop"
+              className="text-xs font-semibold text-neutral-600 hover:text-black flex items-center gap-1 transition-colors"
+            >
+              <span>View All</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {relatedProducts.map((rel) => (
+          <div className="relative flex items-center gap-2 sm:gap-3">
+            {/* Left Nav Button */}
+            <button
+              type="button"
+              onClick={() => scrollCarousel('left')}
+              className="w-8 sm:w-10 h-44 sm:h-52 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-black flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-2xs"
+              aria-label="Previous products"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            {/* Scrollable Track */}
+            <div
+              ref={carouselRef}
+              className="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth py-2 px-1 flex-1 no-scrollbar"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {displayRelated.map((item) => (
                 <Link
-                  key={rel._id}
-                  href={`/product/${rel.slug}`}
-                  className="group bg-white rounded-2xl border border-neutral-200 hover:border-black overflow-hidden shadow-xs hover:shadow-lg transition-all"
+                  key={item._id || item.slug}
+                  href={`/product/${item.slug}`}
+                  className="w-[190px] sm:w-[220px] shrink-0 group flex flex-col cursor-pointer"
                 >
-                  <div className="aspect-square bg-neutral-100 overflow-hidden">
+                  <div className="aspect-square w-full rounded-2xl overflow-hidden bg-neutral-100 border border-neutral-200/80 group-hover:border-black/50 transition-all shadow-2xs mb-2.5 relative">
                     <img
-                      src={rel.images[0]?.url || 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=600&q=80'}
-                      alt={rel.name}
+                      src={
+                        item.images?.[0]?.url ||
+                        'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=600&q=80'
+                      }
+                      alt={item.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=600&q=80';
+                      }}
                     />
                   </div>
-                  <div className="p-4">
-                    <span className="text-[10px] text-neutral-600 font-bold block mb-1">
-                      {rel.gemstone?.type}
-                    </span>
-                    <h5 className="text-neutral-900 text-sm font-medium line-clamp-1 group-hover:text-neutral-600">
-                      {rel.name}
-                    </h5>
-                    <span className="text-sm font-bold text-black mt-2 block">
-                      ${rel.price} AUD
+
+                  <div className="flex items-start justify-between gap-1.5 mb-1">
+                    <h4 className="text-xs sm:text-sm font-semibold text-neutral-900 group-hover:text-black line-clamp-1">
+                      {item.name}
+                    </h4>
+                    <span className="text-xs sm:text-sm font-bold text-neutral-900 whitespace-nowrap">
+                      ${item.price} AUD
                     </span>
                   </div>
+
+                  <div className="flex items-center gap-1 mb-1">
+                    <div className="flex text-amber-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                    <span className="text-[10px] text-neutral-400">
+                      ({item.reviews?.length || item.reviewCount || 5})
+                    </span>
+                  </div>
+
+                  <span className="text-[11px] text-neutral-500 font-light truncate">
+                    {item.gemstone?.type || item.metal?.purity || 'Natural Ceylon Sapphire'}
+                  </span>
                 </Link>
               ))}
             </div>
-          </section>
-        )}
+
+            {/* Right Nav Button */}
+            <button
+              type="button"
+              onClick={() => scrollCarousel('right')}
+              className="w-8 sm:w-10 h-44 sm:h-52 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-black flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-2xs"
+              aria-label="Next products"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </section>
       </main>
 
       {/* GEMSTONE CERTIFICATE MODAL (Section 5.2) */}
@@ -820,7 +959,7 @@ export default function ProductDetailPage({
                       onClick={() => setReviewRating(star)}
                       className="p-1 text-black hover:scale-110 transition-transform cursor-pointer"
                     >
-                      <Star className={`w-6 h-6 ${star <= reviewRating ? 'fill-current text-black' : 'text-neutral-300'}`} />
+                      <Star className={`w-6 h-6 ${star <= reviewRating ? 'fill-amber-400 text-amber-400' : 'text-neutral-300'}`} />
                     </button>
                   ))}
                 </div>
@@ -856,7 +995,7 @@ export default function ProductDetailPage({
                   rows={4}
                   value={reviewComment}
                   onChange={(e) => setReviewComment(e.target.value)}
-                  placeholder="Tell Australian buyers about the color in natural light, fit, packaging, and shipping experience..."
+                  placeholder="Tell other clients about the color in natural light, fit, packaging, and shipping experience..."
                   className="w-full px-3 py-2.5 rounded-xl border border-neutral-300 focus:outline-none focus:border-black text-xs"
                 />
               </div>

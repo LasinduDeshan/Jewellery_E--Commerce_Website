@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
 import { useCart } from '../../context/CartContext';
+import { AcceptedPaymentMethods } from '../../components/ui/PaymentIcons';
 import {
   ShoppingBag,
   Trash2,
@@ -85,7 +86,7 @@ export default function CartPage() {
             Your Fine Jewellery Bag ({cartCount} {cartCount === 1 ? 'item' : 'items'})
           </h1>
           <p className="text-xs text-neutral-400 mt-2">
-            Transparent AUD pricing with Australian customs (DDP) clearance included.
+            Transparent pricing with fully insured express delivery & all customs clearance included.
           </p>
         </div>
       </section>
@@ -113,30 +114,7 @@ export default function CartPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
             {/* Left: Cart Items List */}
             <div className="lg:col-span-8 space-y-6">
-              {/* Free Shipping Progress Indicator (Section 5.3) */}
-              <div className="p-4 rounded-2xl bg-neutral-100/80 border border-neutral-200 text-xs">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="font-semibold text-neutral-900 flex items-center gap-1.5">
-                    <Truck className="w-4 h-4 text-neutral-700" />
-                    <span>
-                      {isFreeShipping
-                        ? '🎉 You have unlocked Free Insured Express DHL Shipping to Australia!'
-                        : `Add $${amountToFreeShipping} AUD more for Free Insured Express DHL Shipping`}
-                    </span>
-                  </span>
-                  <span className="font-bold text-neutral-900">
-                    {Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100))}%
-                  </span>
-                </div>
-                <div className="w-full h-2 rounded-full bg-neutral-200 overflow-hidden">
-                  <div
-                    className="h-full bg-black rounded-full transition-all duration-500"
-                    style={{
-                      width: `${Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100))}%`,
-                    }}
-                  />
-                </div>
-              </div>
+            
 
               {/* Items Card */}
               <div className="bg-white rounded-3xl border border-neutral-200 divide-y divide-neutral-100 shadow-xs overflow-hidden">
@@ -294,7 +272,7 @@ export default function CartPage() {
                   )}
 
                   <div className="flex justify-between">
-                    <span>Shipping (Sri Lanka → Australia)</span>
+                    <span>Worldwide Express Delivery (DHL)</span>
                     <span className="font-semibold text-neutral-900">
                       {shippingFee === 0 ? (
                         <span className="text-neutral-900 font-bold">FREE Express DHL</span>
@@ -307,8 +285,8 @@ export default function CartPage() {
                   {/* 5.3: Australian GST DDP transparency */}
                   <div className="flex justify-between text-neutral-500 text-[11px] pt-1 border-t border-neutral-100">
                     <span className="flex items-center gap-1">
-                      <span>Estimated Australian GST (10%)</span>
-                      <span className="text-[10px] text-neutral-700 font-semibold">(DDP Paid)</span>
+                      <span>Estimated Taxes & Import Duties</span>
+                      <span className="text-[10px] text-neutral-700 font-semibold">(All Included)</span>
                     </span>
                     <span>${estimatedGst} AUD</span>
                   </div>
@@ -333,20 +311,8 @@ export default function CartPage() {
                   <span className="text-[10px] text-neutral-400 block font-semibold">
                     Accepted International Payment Methods
                   </span>
-                  <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
-                    {['Visa', 'Mastercard', 'AMEX', 'Apple Pay', 'Google Pay', 'PayPal'].map((brand) => (
-                      <span
-                        key={brand}
-                        className="px-2.5 py-1 rounded-md bg-neutral-100 border border-neutral-200 text-[10px] font-bold text-neutral-700"
-                      >
-                        {brand}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex items-center justify-center gap-1.5 text-[10px] text-neutral-500 pt-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-neutral-700" />
-                    <span>256-Bit Encrypted Australian Settlement</span>
-                  </div>
+                  <AcceptedPaymentMethods className="pt-1" />
+                 
                 </div>
               </div>
             </div>

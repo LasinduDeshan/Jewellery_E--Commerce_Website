@@ -5,16 +5,17 @@ import Link from 'next/link';
 import {
   Gem,
   ArrowUpRight,
-  Globe,
   MessageCircle,
   Mail,
   ShieldCheck,
-  Check
+  Check,
 } from 'lucide-react';
+import { LegalModal, LegalModalType } from './LegalModal';
 
 export const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [legalModalType, setLegalModalType] = useState<LegalModalType>(null);
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,35 +27,37 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-white py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
-      {/* Floating Island Card Container */}
-      <div className="max-w-7xl mx-auto bg-[#111113] text-neutral-300 rounded-[28px] sm:rounded-[36px] p-8 sm:p-12 lg:p-14 border border-neutral-800/80 shadow-2xl">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-start">
+    <footer className="w-full bg-white py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
+      {/* Floating Island Card with balanced, elegant width */}
+      <div className="w-full max-w-7xl mx-auto bg-[#111113] text-neutral-300 rounded-[28px] sm:rounded-[36px] p-8 sm:p-10 lg:p-12 xl:p-14 border border-neutral-800/80 shadow-2xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
-          {/* 1. Left Section: Brand Logo, Tagline & Newsletter */}
-          <div className="lg:col-span-5 space-y-6">
-            {/* Brand Logo */}
-            <div className="flex items-center space-x-2.5">
+          {/* ========================================================= */}
+          {/* 1. Brand Identity, Site Description & Gazette Subscription*/}
+          {/* ========================================================= */}
+          <div className="lg:col-span-5 space-y-5">
+            {/* Brand Logo & Atelier Label */}
+            <div className="flex items-center space-x-3">
               <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center shadow-xs">
                 <Gem className="w-4 h-4" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-base text-white leading-none">
+                <span className="font-bold text-base text-white leading-none tracking-tight">
                   Zeyloraa
                 </span>
-                <span className="text-[9px] text-neutral-400 font-medium mt-0.5">
+                <span className="text-[10px] text-neutral-400 font-medium tracking-wider uppercase mt-1">
                   Fine Sapphire Atelier
                 </span>
               </div>
             </div>
 
-            {/* Tagline */}
-            <h3 className="font-cormorant text-2xl sm:text-3xl text-white font-normal leading-snug max-w-sm">
-              Ethically mined Ceylon sapphires for timeless modern heirlooms.
-            </h3>
+            {/* Site Description */}
+            <p className="text-xs sm:text-[13px] text-neutral-400 font-light leading-relaxed max-w-sm">
+              Zeyloraa is a fine jewellery atelier dedicated to ethically unearthed Ceylon sapphires and bespoke modern heirlooms. Handcrafted by master Sri Lankan lapidaries and certified by the National Gem and Jewellery Authority.
+            </p>
 
             {/* Newsletter Subscription */}
-            <div className="pt-2 max-w-sm space-y-2.5">
+            <div className="pt-1 max-w-sm space-y-2">
               <span className="text-xs text-neutral-400 block font-normal">
                 Subscribe to our newsletter
               </span>
@@ -65,17 +68,17 @@ export const Footer: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email address"
                   required
-                  className="w-full bg-[#18181b] text-white placeholder-neutral-500 text-xs rounded-full pl-5 pr-12 py-3.5 border border-neutral-800 focus:outline-none focus:border-neutral-600 transition-colors"
+                  className="w-full bg-[#18181b] text-white placeholder-neutral-500 text-xs rounded-full pl-5 pr-12 py-3 border border-neutral-800 focus:outline-none focus:border-neutral-600 transition-colors"
                 />
                 <button
                   type="submit"
                   aria-label="Subscribe"
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#27272a] hover:bg-white hover:text-black text-white flex items-center justify-center transition-all cursor-pointer shadow-sm"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#27272a] hover:bg-white hover:text-black text-white flex items-center justify-center transition-all cursor-pointer shadow-sm"
                 >
                   {subscribed ? (
                     <Check className="w-3.5 h-3.5 text-emerald-400" />
                   ) : (
-                    <ArrowUpRight className="w-4 h-4" />
+                    <ArrowUpRight className="w-3.5 h-3.5" />
                   )}
                 </button>
               </form>
@@ -87,92 +90,108 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* 2. Middle Section: Two Link Columns with Left Divider */}
-          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-8 lg:border-l lg:border-neutral-800/80 lg:pl-10">
-            {/* Column 1: Jewellery & Atelier */}
-            <div className="space-y-4">
-              <span className="text-xs font-semibold text-white block">
-                Jewellery & Stories
-              </span>
-              <ul className="space-y-3 text-xs text-neutral-400">
-                <li>
-                  <Link href="/shop" className="hover:text-white transition-colors">
-                    Ready-to-Wear Collection
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/customize" className="hover:text-white transition-colors">
-                    Bespoke Design Studio
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/story" className="hover:text-white transition-colors">
-                    Our Story & Sourcing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/cart" className="hover:text-white transition-colors">
-                    Shopping Bag & Checkout
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 2: Concierge & Trust */}
-            <div className="space-y-4">
-              <span className="text-xs font-semibold text-white block">
-                Concierge & Trust
-              </span>
-              <ul className="space-y-3 text-xs text-neutral-400">
-                <li>
-                  <div className="flex items-center gap-1.5 text-neutral-300">
-                    <ShieldCheck className="w-3.5 h-3.5 text-white" />
-                    <span>Certified Ceylon (NGJA)</span>
-                  </div>
-                </li>
-                <li>
-                  <a
-                    href="https://wa.me/94771234567"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-white transition-colors"
-                  >
-                    Direct WhatsApp Concierge
-                  </a>
-                </li>
-                <li>
-                  <Link href="/account" className="hover:text-white transition-colors">
-                    Client Portal & Orders
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/admin" className="hover:text-white transition-colors text-neutral-300 font-medium">
-                    Master Admin Hub
-                  </Link>
-                </li>
-              </ul>
-            </div>
+          {/* ========================================================= */}
+          {/* 2. Column: Jewellery & Stories                            */}
+          {/* ========================================================= */}
+          <div className="lg:col-span-4 space-y-3.5">
+            <span className="text-xs font-semibold text-white uppercase tracking-wider block">
+              Jewellery & Stories
+            </span>
+            <ul className="space-y-3 text-xs text-neutral-400">
+              <li>
+                <Link href="/shop" className="hover:text-white transition-colors">
+                  Ready-to-Wear Collection
+                </Link>
+              </li>
+              <li>
+                <Link href="/customize" className="hover:text-white transition-colors">
+                  Bespoke Design Studio
+                </Link>
+              </li>
+              <li>
+                <Link href="/story" className="hover:text-white transition-colors">
+                  Our Story & Sourcing
+                </Link>
+              </li>
+              <li>
+                <Link href="/cart" className="hover:text-white transition-colors">
+                  Shopping Bag & Checkout
+                </Link>
+              </li>
+            </ul>
           </div>
 
-          {/* 3. Right Section: Vertical Stack of Circular Social/Contact Icons */}
-          <div className="lg:col-span-2 flex lg:flex-col items-center justify-start lg:justify-center lg:border-l lg:border-neutral-800/80 lg:pl-8 gap-3 sm:gap-4">
+          {/* ========================================================= */}
+          {/* 3. Column: Concierge & Trust                              */}
+          {/* ========================================================= */}
+          <div className="lg:col-span-3 space-y-3.5">
+            <span className="text-xs font-semibold text-white uppercase tracking-wider block">
+              Concierge & Trust
+            </span>
+            <ul className="space-y-3 text-xs text-neutral-400">
+              <li>
+                <div className="flex items-center gap-1.5 text-neutral-300">
+                  <ShieldCheck className="w-3.5 h-3.5 text-white shrink-0" />
+                  <span>Certified Ceylon (NGJA)</span>
+                </div>
+              </li>
+              <li>
+                <a
+                  href="https://wa.me/94771234567"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors"
+                >
+                  Direct WhatsApp Concierge
+                </a>
+              </li>
+              <li>
+                <Link href="/account" className="hover:text-white transition-colors">
+                  Client Portal & Orders
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin" className="hover:text-white transition-colors text-neutral-300 font-medium">
+                  Master Admin Hub
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        {/* ========================================================= */}
+        {/* Bottom Sub-Bar: Copyright, Horizontal Socials, Legal Links */}
+        {/* ========================================================= */}
+        <div className="border-t border-neutral-800/80 mt-10 sm:mt-12 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-neutral-500 gap-5">
+          {/* Copyright */}
+          <p className="order-2 md:order-1 text-center md:text-left text-[11px]">
+            &copy; {new Date().getFullYear()} Zeyloraa. Ethically Sourced Ceylon Sapphires. All rights reserved.
+          </p>
+
+          {/* Horizontal Social Media Icons */}
+          <div className="order-1 md:order-2 flex items-center gap-5 text-neutral-400">
+            {/* Facebook */}
             <a
-              href="https://auraceylon.com"
+              href="https://facebook.com"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Website"
-              className="w-10 h-10 rounded-full bg-[#18181b] border border-neutral-800 hover:border-neutral-600 hover:bg-neutral-800 text-neutral-400 hover:text-white flex items-center justify-center transition-all cursor-pointer"
-              title="Global Atelier"
+              aria-label="Facebook"
+              className="hover:text-white transition-colors"
+              title="Facebook"
             >
-              <Globe className="w-4 h-4" />
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
             </a>
 
+            {/* Instagram */}
             <a
               href="https://instagram.com"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="w-10 h-10 rounded-full bg-[#18181b] border border-neutral-800 hover:border-neutral-600 hover:bg-neutral-800 text-neutral-400 hover:text-white flex items-center justify-center transition-all cursor-pointer"
+              className="hover:text-white transition-colors"
               title="Instagram"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -182,41 +201,55 @@ export const Footer: React.FC = () => {
               </svg>
             </a>
 
+            {/* WhatsApp */}
             <a
               href="https://wa.me/94771234567"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
-              className="w-10 h-10 rounded-full bg-[#18181b] border border-neutral-800 hover:border-neutral-600 hover:bg-neutral-800 text-neutral-400 hover:text-white flex items-center justify-center transition-all cursor-pointer"
+              className="hover:text-white transition-colors"
               title="WhatsApp Concierge"
             >
               <MessageCircle className="w-4 h-4" />
             </a>
 
+            {/* Email */}
             <a
-              href="mailto:concierge@auraceylon.com"
+              href="mailto:concierge@zeyloraa.com"
               aria-label="Email"
-              className="w-10 h-10 rounded-full bg-[#18181b] border border-neutral-800 hover:border-neutral-600 hover:bg-neutral-800 text-neutral-400 hover:text-white flex items-center justify-center transition-all cursor-pointer"
+              className="hover:text-white transition-colors"
               title="Email Concierge"
             >
               <Mail className="w-4 h-4" />
             </a>
           </div>
 
-        </div>
-
-        {/* Bottom Sub-Bar */}
-        <div className="border-t border-neutral-800/80 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-500 gap-4">
-          <p>
-            &copy; {new Date().getFullYear()} Zeyloraa. Ethically Sourced Ceylon Sapphires. All rights reserved.
-          </p>
-          <div className="flex items-center gap-4 text-neutral-400">
-            <span>Ratnapura & Colombo, SL</span>
-            <span>•</span>
-            <span>Worldwide Delivery</span>
+          {/* Legal Popups Trigger (Terms & Conditions / Privacy Policy) */}
+          <div className="order-3 flex items-center gap-3 text-neutral-400 text-[11px]">
+            <button
+              type="button"
+              onClick={() => setLegalModalType('terms')}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              Terms &amp; Conditions
+            </button>
+            <span className="text-neutral-600">•</span>
+            <button
+              type="button"
+              onClick={() => setLegalModalType('privacy')}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              Privacy Policy
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Terms & Privacy Popup Modal Card */}
+      <LegalModal
+        type={legalModalType}
+        onClose={() => setLegalModalType(null)}
+      />
     </footer>
   );
 };

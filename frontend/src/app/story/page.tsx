@@ -54,17 +54,17 @@ export default function OurStoryPage() {
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif text-white font-medium leading-tight">
-            {content?.heroHeadline || 'From Ratnapura Riverbeds to Australian Elegance'}
+            {content?.heroHeadline || 'From Ratnapura Riverbeds to Global Elegance'}
           </h1>
 
           <p className="text-sm sm:text-base text-neutral-300 max-w-2xl mx-auto font-light leading-relaxed">
             {content?.heroSubheadline ||
-              'A multi-generational lineage of Sri Lankan master lapidaries bringing unheated, ethically mined Ceylon Sapphires directly to discerning Australian collectors.'}
+              'A multi-generational lineage of Sri Lankan master lapidaries bringing unheated, ethically mined Ceylon Sapphires directly to discerning global collectors.'}
           </p>
 
           <div className="pt-4 flex items-center justify-center gap-2 text-xs text-neutral-400 font-semibold">
             <MapPin className="w-4 h-4" />
-            <span>Ratnapura & Elahera, Sri Lanka ➔ Australia</span>
+            <span>Ratnapura & Elahera, Sri Lanka ➔ Worldwide Delivery</span>
           </div>
         </div>
       </section>
@@ -156,9 +156,9 @@ export default function OurStoryPage() {
 
             <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-200 space-y-2">
               <Compass className="w-6 h-6 text-neutral-800 mx-auto" />
-              <h4 className="font-bold text-neutral-900">Direct Australia DDP</h4>
+              <h4 className="font-bold text-neutral-900">Insured Worldwide Delivery</h4>
               <p className="text-neutral-500 text-[11px] leading-relaxed">
-                Dispatched directly to Australian doorsteps with all customs pre-paid.
+                Dispatched directly to doorsteps worldwide with all customs clearance pre-paid.
               </p>
             </div>
           </div>

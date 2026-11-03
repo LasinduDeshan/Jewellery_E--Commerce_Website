@@ -19,6 +19,7 @@ const router = Router();
 // Public product browsing
 router.get('/', getProductsController);
 router.get('/id/:id', getProductByIdController);
+router.get('/:identifier/related', getRelatedProductsController);
 router.get('/:slug', getProductBySlugController);
 
 // Admin-only product management
