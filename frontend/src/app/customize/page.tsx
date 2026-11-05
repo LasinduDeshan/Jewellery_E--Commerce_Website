@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
 import { CustomizeHero } from '../../components/customize/CustomizeHero';
@@ -35,6 +35,14 @@ export default function CustomizePage() {
 
   // Studio modal state
   const [studioOpen, setStudioOpen] = useState(false);
+
+  // Apply luxury dark scrollbar on Customize Page
+  useEffect(() => {
+    document.documentElement.classList.add('dark-scrollbar');
+    return () => {
+      document.documentElement.classList.remove('dark-scrollbar');
+    };
+  }, []);
 
   // Success modal state
   const [successModalData, setSuccessModalData] = useState<{
@@ -97,7 +105,7 @@ export default function CustomizePage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col bg-white">
+    <main className="min-h-screen flex flex-col bg-white dark-scroll-theme">
       {/* Interactive Luxury Scroller Navigation & Top Progress Bar */}
       <CustomizeScroller onOpenStudio={openStudio} />
 

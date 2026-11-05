@@ -63,7 +63,7 @@ export default function AdminFaqsPage() {
     const activeToken =
       token ||
       (typeof window !== 'undefined'
-        ? localStorage.getItem('jewellery_token')
+        ? localStorage.getItem('aura_admin_token') || localStorage.getItem('jewellery_token')
         : null);
     return {
       'Content-Type': 'application/json',
@@ -246,7 +246,7 @@ export default function AdminFaqsPage() {
   });
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-16">
+    <div className="space-y-6 w-full pb-16">
       {/* Toast Notification */}
       {notification && (
         <div
@@ -269,7 +269,7 @@ export default function AdminFaqsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-2xs">
           <div className="flex items-center justify-between text-neutral-500 mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider">Total Questions</span>
+            <span className="text-xs font-semibold ">Total Questions</span>
             <HelpCircle className="w-4 h-4 text-neutral-400" />
           </div>
           <div className="text-2xl font-bold text-neutral-900">{faqs.length}</div>
@@ -278,8 +278,8 @@ export default function AdminFaqsPage() {
 
         <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-2xs">
           <div className="flex items-center justify-between text-neutral-500 mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider">Customize Page</span>
-            <Sparkles className="w-4 h-4 text-neutral-400" />
+            <span className="text-xs font-semibold ">Customize Page</span>
+            
           </div>
           <div className="text-2xl font-bold text-neutral-900">
             {faqs.filter((f) => f.category === 'customize').length}
@@ -289,7 +289,7 @@ export default function AdminFaqsPage() {
 
         <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-2xs">
           <div className="flex items-center justify-between text-neutral-500 mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider">Live & Published</span>
+            <span className="text-xs font-semibold ">Live & Published</span>
             <Check className="w-4 h-4 text-emerald-500" />
           </div>
           <div className="text-2xl font-bold text-emerald-600">

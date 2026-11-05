@@ -88,10 +88,10 @@ export const EditorialGrid: React.FC<EditorialGridProps> = ({
   galleryLinkText = 'View Gallery',
   galleryHref = '/shop',
   captionLines = [
-    'Zeyloraa Fine Jewellery Editorial',
-    'Rare, unheated sapphires from the historic valleys of Ceylon.',
-    'Handcrafted in solid gold and 925 sterling silver.',
-    'Timeless heirlooms sculpted for modern grace.',
+    'Zeyloraa, The Art of Fine Jewellery',
+    'Discover the captivating beauty of exquisite Ceylon sapphires.',
+    'Where timeless craftsmanship meets refined elegance.',
+    'Timeless creations designed to be treasured for generations.',
   ],
   images = {},
 }) => {

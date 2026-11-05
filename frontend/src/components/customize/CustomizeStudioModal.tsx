@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useId } from 'react';
-import { X, Check, AlertCircle, ArrowLeft, ArrowRight, Loader2, Upload, Trash2 } from 'lucide-react';
+import { X, Check, AlertCircle, ArrowLeft, ArrowRight, Loader2, Upload, Trash2, Info } from 'lucide-react';
 
 export interface SubmissionSuccessData {
   ticketId: string;
@@ -899,6 +899,14 @@ export const CustomizeStudioModal: React.FC<CustomizeStudioModalProps> = ({
                   {STEP_TITLES[step].title}
                 </h3>
                 <p className="text-xs sm:text-sm text-neutral-500 mt-1">{STEP_TITLES[step].help}</p>
+              </div>
+
+              {/* Bespoke Studio Design Disclaimer Banner */}
+              <div className="flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200/90 text-neutral-600 text-xs shadow-2xs">
+                <Info className="w-4 h-4 text-neutral-500 shrink-0 mt-0.5" />
+                <p className="text-[11px] leading-relaxed">
+                  <span className="font-semibold text-neutral-900">Design Disclaimer:</span> These preview illustrations are conceptual references only and not the final pieces. This studio is designed solely to collect your bespoke specifications so our master gemologists can craft your own unique custom design.
+                </p>
               </div>
 
               {/* STEP 0: JEWELLERY TYPE */}

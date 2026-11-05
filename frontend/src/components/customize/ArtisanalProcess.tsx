@@ -32,10 +32,10 @@ export const ArtisanalProcess: React.FC = () => {
         >
           
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-cormorant text-white mt-2 font-normal">
-            How Your Bespoke Jewellery is Born
+            The Art of Creating Your Perfect Piece
           </h2>
           <p className="mt-4 text-neutral-400 text-sm sm:text-base leading-relaxed font-light">
-            From the historic gem-rich gravels of Ratnapura to our master setting bench, every piece follows an unbroken lineage of Sri Lankan artisanal perfection.
+            Every extraordinary piece begins with a vision. From selecting exquisite Ceylon sapphires to refining every intricate detail, discover how thoughtful design and exceptional craftsmanship bring your dream jewellery to life.
           </p>
         </motion.div>
 

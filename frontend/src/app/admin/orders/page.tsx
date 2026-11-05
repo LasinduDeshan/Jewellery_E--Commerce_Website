@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { getAdminAuthHeaders } from '../../../utils/adminApi';
 import Link from 'next/link';
 import {
   Shield,
@@ -113,7 +114,7 @@ export default function AdminOrdersFulfilmentPage() {
       if (statusFilter !== 'all') query.append('status', statusFilter);
       if (searchTerm) query.append('search', searchTerm);
 
-      const res = await fetch(`${apiUrl}/orders?${query.toString()}`, { cache: 'no-store' });
+      const res = await fetch(`${apiUrl}/orders?${query.toString()}`, { cache: 'no-store', headers: getAdminAuthHeaders() });
       if (!res.ok) throw new Error(`HTTP error ${res.status}`);
 
       const data = await res.json();
@@ -163,7 +164,7 @@ export default function AdminOrdersFulfilmentPage() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${apiUrl}/orders/${selectedOrder._id}/tracking`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAdminAuthHeaders(),
         body: JSON.stringify({
           status: editStatus,
           isNgjaCleared: editIsNgjaCleared,
@@ -259,7 +260,7 @@ export default function AdminOrdersFulfilmentPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl w-full">
+    <div className="space-y-6 w-full">
       {/* Top Controls Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
         <div className="flex items-center gap-2">
@@ -316,7 +317,7 @@ export default function AdminOrdersFulfilmentPage() {
               />
             </div>
 
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs">
               <Filter className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
               {[
                 { id: 'all', label: 'All Orders' },
@@ -653,7 +654,7 @@ export default function AdminOrdersFulfilmentPage() {
                 {/* Internal Founder Notes */}
                 <div>
                   <label className="block text-xs font-medium text-neutral-700 mb-1">
-                    Internal Founder / Atelier Notes (Export permit #, airway bill details)
+                    Internal Admin / Store Notes (Export permit #, airway bill details)
                   </label>
                   <textarea
                     rows={2}
@@ -737,7 +738,7 @@ export default function AdminOrdersFulfilmentPage() {
                   <span className="text-[10px] font-bold text-neutral-500 block mb-1">
                     From (Shipper):
                   </span>
-                  <div className="font-bold text-neutral-900">Zeyloraa Atelier</div>
+                  <div className="font-bold text-neutral-900">Zeyloraa Store</div>
                   <div>14 Dharmapala Mawatha, Colombo 00700</div>
                   <div>SRI LANKA</div>
                   <div className="text-[11px] mt-1 font-mono">Tel: +94 77 123 4567</div>

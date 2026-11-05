@@ -541,7 +541,7 @@ function AccountPageContent() {
               <span>Dedicated Concierge</span>
             </div>
             <p className="text-neutral-600 text-[11px] leading-relaxed">
-              Questions regarding international customs, duty estimates, or resizing? Chat directly with our Colombo atelier.
+              Questions regarding international customs, duty estimates, or resizing? Chat directly with our team.
             </p>
             <a
               href="https://wa.me/94771234567"

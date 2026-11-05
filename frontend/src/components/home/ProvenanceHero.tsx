@@ -11,56 +11,58 @@ import {
   ChevronRight
 } from 'lucide-react';
 
+
 const VIDEOS = [
   {
     id: 'video-gemini',
     src: '/videos/gemini_generated_video_9cb08cca.mp4',
     poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=2000&q=85',
-    tag: 'Atelier Showcase',
-    headline: 'Celestial Sapphire Fire',
-    description: 'Immerse in the pure crystalline brilliance and unheated optical fire of certified Ceylon sapphires.',
-    leftLabel: 'Atelier Precision',
-    leftText: 'Meticulously faceted by master Sri Lankan lapidaries for extraordinary optical refraction.',
-    rightLabel: 'Bespoke Heirlooms',
-    rightText: 'Custom crafted in solid 925 sterling silver and solid 18K gold vermeil.'
+    tag: 'Fine Jewellery Collection',
+    headline: 'Elegance in Every Detail',
+    description: 'Experience the extraordinary beauty of fine jewellery, where captivating gemstones, elegant designs, and exquisite details create unforgettable brilliance.',
+    leftLabel: 'The Art of Fine Jewellery',
+    leftText: 'Every creation reflects a dedication to intricate detailing, refined design, and timeless sophistication.',
+    rightLabel: 'Uniquely Yours',
+    rightText: 'Transform your vision into a bespoke jewellery creation, thoughtfully designed to reflect your personal style.'
   },
   {
     id: 'video-1',
     src: '/videos/gemini_generated_video_81092fbd.mp4',
     poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=2000&q=85',
-    tag: 'Haute Joaillerie',
-    headline: 'Imperial Ceylon Corundum',
-    description: 'Ethically hand-mined from the alluvial riverbeds of Ratnapura, crafted into luminous bespoke heirlooms.',
-    leftLabel: 'Gemstone Provenance',
-    leftText: 'Direct from hereditary gem pits in Sri Lanka with certified origin traceability.',
-    rightLabel: 'Artisanal Atelier',
-    rightText: 'Handcrafted by master goldsmiths in solid 925 sterling silver and 18K gold.'
+    tag: 'Timeless Elegance',
+    headline: 'The Beauty of Ceylon',
+    description: 'Discover the timeless beauty of fine jewellery, where exquisite Ceylon sapphires meet exceptional craftsmanship to create pieces that last a lifetime.',
+    leftLabel: 'The Beauty of Ceylon Sapphires',
+    leftText: "Discover the remarkable colours and natural brilliance of Sri Lanka's treasured gemstones.",
+    rightLabel: 'Crafted with Precision',
+    rightText: 'Thoughtfully designed and expertly crafted, bringing elegance and artistry to every detail.'
   },
   {
     id: 'video-2',
     src: '/videos/1024.mp4',
     poster: 'https://images.unsplash.com/photo-1531995811006-35cb42e1a022?auto=format&fit=crop&w=2000&q=85',
-    tag: 'Generational Guild',
-    headline: 'Hereditary Lapidary Artistry',
-    description: 'Master artisans hand-cutting each optical facet to maximize internal brilliance and fire in precious metals.',
-    leftLabel: 'Optical Precision',
-    leftText: 'Facets cut along the optical c-axis to unlock intense sapphire fire and depth.',
-    rightLabel: 'Bespoke Commissions',
-    rightText: 'Custom 3D CAD modeling and private consultations for unique heirloom rings.'
+    tag: 'Bespoke Creations',
+    headline: 'A Story Worth Treasuring',
+    description: 'Celebrate your individuality with exceptional sapphire jewellery, thoughtfully designed to tell your story and treasure every moment.',
+    leftLabel: 'Inspired by Sri Lankan Heritage',
+    leftText: 'Celebrating the beauty of Ceylon gemstones and the artistry of traditional jewellery craftsmanship.',
+    rightLabel: 'A Commitment to Quality',
+    rightText: 'Carefully selected gemstones and refined craftsmanship come together in every Zeyloraa creation.'
   },
   {
     id: 'video-3',
     src: '/videos/hero2.mp4',
     poster: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=2000&q=85',
-    tag: 'Fair Luxury',
-    headline: 'Certified Earth to Heirloom',
-    description: 'Official NGJA government certified fine jewellery delivered directly from Sri Lankan ateliers with lifelong provenance.',
-    leftLabel: 'Ethical Sourcing',
-    leftText: 'Artisanal low-impact mining directly empowering local Sri Lankan gem mining families.',
-    rightLabel: 'Government Certified',
-    rightText: 'Official NGJA identification certificate included with every precious Ceylon piece.'
+    tag: 'The Zeyloraa Experience',
+    headline: 'Crafted to Be Remembered',
+    description: 'Discover jewellery that goes beyond beauty, bringing together timeless elegance, meaningful design, and the brilliance of Ceylon gemstones.',
+    leftLabel: 'Timeless Craftsmanship',
+    leftText: 'Inspired by tradition and refined through thoughtful design, each piece celebrates enduring elegance.',
+    rightLabel: 'Your Personal Expression',
+    rightText: 'Create something truly meaningful with bespoke jewellery designed around your unique vision.'
   },
 ];
+
 
 const AUTO_PLAY_DURATION = 8000; // 8 seconds per video
 

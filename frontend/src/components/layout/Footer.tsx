@@ -47,7 +47,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenStudio }) => {
 
             {/* Site Description */}
             <p className="text-xs sm:text-[13px] text-neutral-400 font-light leading-relaxed max-w-sm">
-              Zeyloraa is a fine jewellery atelier dedicated to ethically unearthed Ceylon sapphires and bespoke modern heirlooms. Handcrafted by master Sri Lankan lapidaries and certified by the National Gem and Jewellery Authority.
+              Zeyloraa is a fine jewellery atelier celebrating the timeless beauty of Ceylon sapphires and exceptional craftsmanship. Inspired by Sri Lanka's rich gemstone heritage, we create elegant, thoughtfully designed jewellery that reflects individuality, sophistication, and lasting beauty.
             </p>
 
             {/* Open Studio Action Button with 'Start Designing' */}
@@ -142,14 +142,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenStudio }) => {
               </li>
               <li>
                 <Link href="/account" className="hover:text-white transition-colors">
-                  Client Portal & Orders
+                  Profile & Orders
                 </Link>
               </li>
-              <li>
-                <Link href="/admin" className="hover:text-white transition-colors text-neutral-300 font-medium">
-                  Master Admin Hub
-                </Link>
-              </li>
+              
             </ul>
           </div>
 

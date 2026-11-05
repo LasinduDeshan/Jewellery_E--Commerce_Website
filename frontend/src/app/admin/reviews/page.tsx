@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { getAdminAuthHeaders } from '../../../utils/adminApi';
 import {
   Star,
   RefreshCw,
@@ -19,7 +20,7 @@ export default function AdminReviewsPage() {
     setLoading(true);
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-      const res = await fetch(`${apiUrl}/reviews/admin?status=${filterStatus}`);
+      const res = await fetch(`${apiUrl}/reviews/admin?status=${filterStatus}`, { headers: getAdminAuthHeaders() });
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         setReviews(data.data);
@@ -40,7 +41,7 @@ export default function AdminReviewsPage() {
     try {
       await fetch(`${apiUrl}/reviews/admin/${id}/status`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAdminAuthHeaders(),
         body: JSON.stringify({ status: newStatus }),
       });
       setReviews((prev) =>
@@ -54,10 +55,10 @@ export default function AdminReviewsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl w-full">
+    <div className="space-y-6 w-full">
       {/* Top Filter and Controls Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar w-full sm:w-auto">
           <div className="flex items-center gap-1.5 pl-2 pr-3 text-neutral-400 border-r border-neutral-100 mr-1 text-xs">
             <Filter className="w-3.5 h-3.5" />
             <span className="text-xs text-neutral-400 font-medium">Filter</span>

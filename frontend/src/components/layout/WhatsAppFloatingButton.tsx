@@ -26,7 +26,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
         <div className="hidden sm:flex items-center gap-2.5 bg-white text-neutral-800 text-xs px-4 py-2.5 rounded-2xl shadow-2xl border border-neutral-200/90 max-w-xs animate-in fade-in slide-in-from-bottom-2 duration-300">
           
           <p className="font-medium text-[11px] leading-tight text-neutral-800">
-            Questions about Ceylon sapphire cuts or bespoke pieces? Chat with our team.
+            Looking for the perfect piece? Our team is here to help you discover or create something truly special.
           </p>
           <button
             onClick={() => setShowTooltip(false)}

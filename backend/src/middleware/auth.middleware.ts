@@ -6,7 +6,7 @@ import { ApiError } from '../utils/apiError.js';
 export interface IUserPayload {
   userId: string;
   email: string;
-  role: 'admin' | 'customer';
+  role: 'super_admin' | 'admin' | 'customer';
 }
 
 export interface AuthRequest extends Request {
@@ -17,14 +17,6 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    if (config.nodeEnv === 'development') {
-      req.user = {
-        userId: 'dev-admin-id',
-        email: 'lasindudeshan61@gmail.com',
-        role: 'admin',
-      };
-      return next();
-    }
     return next(new ApiError(401, 'Unauthorized: No token provided'));
   }
 
@@ -35,14 +27,6 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
     req.user = decoded;
     next();
   } catch (error) {
-    if (config.nodeEnv === 'development') {
-      req.user = {
-        userId: 'dev-admin-id',
-        email: 'lasindudeshan61@gmail.com',
-        role: 'admin',
-      };
-      return next();
-    }
     return next(new ApiError(401, 'Unauthorized: Invalid or expired token'));
   }
 };
@@ -63,20 +47,17 @@ export const optionalAuthenticate = (req: AuthRequest, res: Response, next: Next
 };
 
 export const authorizeAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
-  const adminEmails = [
-    (config.founderEmail || '').toLowerCase(),
-    'lasindudeshan61@gmail.com',
-    'lasindudeshan617@gmail.com',
-    'admin@zeyloraa.com',
-  ].filter(Boolean);
-
-  if (
-    req.user?.role === 'admin' ||
-    (req.user?.email && adminEmails.includes(req.user.email.toLowerCase())) ||
-    config.nodeEnv === 'development'
-  ) {
+  if (req.user?.role === 'super_admin' || req.user?.role === 'admin') {
     return next();
   }
 
   return next(new ApiError(403, 'Forbidden: Admin access required'));
+};
+
+export const authorizeSuperAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (req.user?.role === 'super_admin') {
+    return next();
+  }
+
+  return next(new ApiError(403, 'Forbidden: Super Admin privileges required'));
 };

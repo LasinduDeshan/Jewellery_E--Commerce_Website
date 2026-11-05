@@ -13,10 +13,17 @@ import {
   RefreshCw,
   Globe,
   Sliders,
+  KeyRound,
+  Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  Crown,
 } from 'lucide-react';
+import { useAdminAuth } from '../../../context/AdminAuthContext';
 
 interface AdminSettingsState {
-  // Atelier Profile
+  // Store Profile
   storeName: string;
   atelierAddress: string;
   supportEmail: string;
@@ -81,10 +88,24 @@ const DEFAULT_SETTINGS: AdminSettingsState = {
 };
 
 export default function AdminSettingsPage() {
+  const { adminUser, isSuperAdmin, updateAdminPassword, toggleTwoFactor } = useAdminAuth();
   const [settings, setSettings] = useState<AdminSettingsState>(DEFAULT_SETTINGS);
-  const [activeTab, setActiveTab] = useState<'profile' | 'ngja' | 'courier' | 'whatsapp' | 'inventory'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'ngja' | 'courier' | 'whatsapp' | 'inventory' | 'security'>('profile');
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // Security & Password Form State
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [pwdLoading, setPwdLoading] = useState(false);
+  const [pwdError, setPwdError] = useState<string | null>(null);
+  const [pwdSuccess, setPwdSuccess] = useState<string | null>(null);
+
+  // 2FA Toggle State
+  const [twoFactorLoading, setTwoFactorLoading] = useState(false);
+  const [twoFactorMsg, setTwoFactorMsg] = useState<string | null>(null);
 
   // Load saved settings from localStorage
   useEffect(() => {
@@ -120,7 +141,7 @@ export default function AdminSettingsPage() {
   };
 
   const handleReset = () => {
-    if (window.confirm('Reset all operational settings to default atelier configurations?')) {
+    if (window.confirm('Reset all operational settings to default store configurations?')) {
       setSettings(DEFAULT_SETTINGS);
       localStorage.removeItem('aura_admin_settings');
       setSaveSuccess(true);
@@ -128,12 +149,55 @@ export default function AdminSettingsPage() {
     }
   };
 
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPwdError(null);
+    setPwdSuccess(null);
+
+    if (!currentPassword) {
+      setPwdError('Please enter your current administrator password.');
+      return;
+    }
+    if (newPassword.length < 8) {
+      setPwdError('New password must be at least 8 characters long.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPwdError('New passwords do not match. Please verify and try again.');
+      return;
+    }
+
+    setPwdLoading(true);
+    const result = await updateAdminPassword(newPassword, currentPassword);
+    setPwdLoading(false);
+
+    if (result.success) {
+      setPwdSuccess('Administrator password updated successfully. Your new password is now active.');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => setPwdSuccess(null), 6000);
+    } else {
+      setPwdError(result.message || 'Failed to update password.');
+    }
+  };
+
+  const handleToggle2FA = async () => {
+    setTwoFactorLoading(true);
+    setTwoFactorMsg(null);
+    const targetState = !adminUser?.twoFactorEnabled;
+    const res = await toggleTwoFactor(targetState);
+    setTwoFactorLoading(false);
+    setTwoFactorMsg(res.message);
+    setTimeout(() => setTwoFactorMsg(null), 5000);
+  };
+
   return (
-    <div className="space-y-6 max-w-5xl w-full">
+    <div className="space-y-6 w-full">
       {/* Top Banner and Quick Actions */}
       <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-base font-semibold text-black">Atelier Operational Settings</h2>
+          <h2 className="text-base font-semibold text-black">Store Operational Settings</h2>
           <p className="text-xs text-neutral-500 font-light mt-0.5">
             Configure boutique identity, Colombo NGJA export permits, Australia air courier rules, and WhatsApp concierge channels.
           </p>
@@ -177,13 +241,14 @@ export default function AdminSettingsPage() {
       </div>
 
       {/* Settings Navigation Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
         {[
-          { id: 'profile', label: 'Atelier Profile', icon: Building2 },
+          { id: 'profile', label: 'Store Profile', icon: Building2 },
           { id: 'ngja', label: 'NGJA Export & Customs', icon: Shield },
           { id: 'courier', label: 'Shipping & Couriers', icon: Truck },
           { id: 'whatsapp', label: 'WhatsApp Concierge', icon: MessageCircle },
           { id: 'inventory', label: 'Inventory & Alerts', icon: Sliders },
+          { id: 'security', label: 'Security & Password', icon: KeyRound },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -206,12 +271,12 @@ export default function AdminSettingsPage() {
 
       {/* Main Settings Form Container */}
       <form onSubmit={handleSave} className="space-y-6">
-        {/* TAB 1: Atelier Profile */}
+        {/* TAB 1: Store Profile */}
         {activeTab === 'profile' && (
           <div className="bg-white p-6 sm:p-8 rounded-2xl border border-neutral-200/90 shadow-2xs space-y-5 animate-in fade-in duration-150">
             <div className="pb-3 border-b border-neutral-100 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-semibold text-black">Atelier & Brand Identity</h3>
+                <h3 className="text-base font-semibold text-black">Store & Brand Identity</h3>
                 <p className="text-xs text-neutral-500 font-light mt-0.5">
                   General boutique contact details printed on buyer invoices, packing slips, and email receipts.
                 </p>
@@ -245,7 +310,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-neutral-700 font-medium mb-1">Colombo Atelier Workshop Address</label>
+                <label className="block text-neutral-700 font-medium mb-1">Colombo Store Address</label>
                 <input
                   type="text"
                   value={settings.atelierAddress}
@@ -268,7 +333,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div>
-                <label className="block text-neutral-700 font-medium mb-1">Atelier Phone Contact</label>
+                <label className="block text-neutral-700 font-medium mb-1">Store Phone Contact</label>
                 <input
                   type="text"
                   value={settings.supportPhone}
@@ -569,7 +634,7 @@ export default function AdminSettingsPage() {
                   />
                   <div className="flex flex-col">
                     <span className="text-xs font-semibold text-neutral-900">
-                      Send Instant Email Dispatch Alerts to Atelier Founder
+                      Send Instant Email Dispatch Alerts to Store Admin
                     </span>
                     <span className="text-[11px] text-neutral-500">
                       Delivers an immediate email notification when high-value sapphire orders are placed by Australian clients.
@@ -598,35 +663,214 @@ export default function AdminSettingsPage() {
           </div>
         )}
 
-        {/* Bottom Save Bar */}
-        <div className="pt-2 flex items-center justify-between">
-          <span className="text-xs text-emerald-700 font-semibold">
-            {saveSuccess ? 'All configuration preferences saved successfully to atelier records.' : ''}
-          </span>
+        {/* TAB 6: Security & Password Management */}
+        {activeTab === 'security' && (
+          <div className="space-y-6 animate-in fade-in duration-150">
+            {/* Account Overview Header */}
+            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-neutral-200/90 shadow-2xs space-y-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-neutral-100">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center font-bold text-lg shadow-md">
+                    {adminUser?.name ? adminUser.name.charAt(0).toUpperCase() : 'A'}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-semibold text-black">{adminUser?.name || 'Super Administrator'}</h3>
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                        <Crown className="w-3 h-3 text-amber-600" />
+                        {isSuperAdmin ? 'SUPER ADMIN' : 'ADMIN'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-neutral-500 font-mono mt-0.5">{adminUser?.email || 'admin@zeyloraa.com'}</p>
+                  </div>
+                </div>
+                <div className="text-xs text-neutral-500 bg-neutral-50 px-3.5 py-2 rounded-xl border border-neutral-200/70">
+                  <span className="font-medium text-neutral-800">Session Status:</span> Encrypted &amp; Authenticated
+                </div>
+              </div>
 
-          <button
-            type="submit"
-            disabled={saving}
-            className="px-8 py-3 bg-black hover:bg-neutral-800 text-white rounded-full text-xs font-medium transition-colors shadow-2xs cursor-pointer flex items-center gap-2 disabled:opacity-50"
-          >
-            {saving ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                <span>Saving Preferences...</span>
-              </>
-            ) : saveSuccess ? (
-              <>
-                <Check className="w-4 h-4 text-emerald-400" />
-                <span>Saved ✓</span>
-              </>
-            ) : (
-              <>
-                <Save className="w-4 h-4" />
-                <span>Save All Settings</span>
-              </>
-            )}
-          </button>
-        </div>
+              {/* Password Change Sub-Card */}
+              <div className="pt-2">
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-black flex items-center gap-2">
+                    <KeyRound className="w-4 h-4 text-neutral-600" />
+                    Change Administrator Password
+                  </h4>
+                  <p className="text-xs text-neutral-500 font-light mt-0.5">
+                    Update your executive password directly. Once saved, the new password is encrypted with bcrypt and applied immediately without restarting the server.
+                  </p>
+                </div>
+
+                {pwdError && (
+                  <div className="mb-4 p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-red-500" />
+                    <span>{pwdError}</span>
+                  </div>
+                )}
+
+                {pwdSuccess && (
+                  <div className="mb-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2">
+                    <Check className="w-4 h-4 shrink-0 text-emerald-600" />
+                    <span>{pwdSuccess}</span>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                  <div>
+                    <label className="block text-neutral-700 font-medium mb-1">Current Password</label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        placeholder="••••••••••••"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200/90 focus:outline-none focus:border-black text-xs text-neutral-900 font-mono"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-2.5 text-neutral-400 hover:text-neutral-700 cursor-pointer"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-neutral-700 font-medium mb-1">New Password (Min 8 Chars)</label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="••••••••••••"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200/90 focus:outline-none focus:border-black text-xs text-neutral-900 font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-neutral-700 font-medium mb-1">Confirm New Password</label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="••••••••••••"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200/90 focus:outline-none focus:border-black text-xs text-neutral-900 font-mono"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5 flex items-center justify-between pt-2 border-t border-neutral-100">
+                  <span className="text-[11px] text-neutral-400">
+                    Strong passwords combine uppercase, lowercase, numbers, and symbols.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handlePasswordSubmit}
+                    disabled={pwdLoading}
+                    className="px-6 py-2.5 bg-black hover:bg-neutral-800 text-white rounded-full text-xs font-semibold transition-colors shadow-2xs cursor-pointer flex items-center gap-2 disabled:opacity-50"
+                  >
+                    {pwdLoading ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Updating Password...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="w-3.5 h-3.5" />
+                        <span>Update Password</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Two-Factor Authentication (2FA) Card */}
+            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-neutral-200/90 shadow-2xs space-y-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-emerald-600" />
+                    <h4 className="text-sm font-semibold text-black">Two-Factor Authentication (2FA)</h4>
+                    <span
+                      className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
+                        adminUser?.twoFactorEnabled
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                          : 'bg-neutral-100 text-neutral-600 border border-neutral-200'
+                      }`}
+                    >
+                      {adminUser?.twoFactorEnabled ? 'ACTIVE' : 'DISABLED'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-neutral-500 font-light mt-1">
+                    Require a temporary 6-digit one-time passcode (OTP) on every admin login attempt for enhanced store security.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleToggle2FA}
+                  disabled={twoFactorLoading}
+                  className={`px-5 py-2.5 rounded-full text-xs font-semibold transition-colors cursor-pointer flex items-center gap-2 shrink-0 ${
+                    adminUser?.twoFactorEnabled
+                      ? 'bg-neutral-100 text-neutral-800 hover:bg-red-50 hover:text-red-700 border border-neutral-200'
+                      : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-2xs'
+                  }`}
+                >
+                  {twoFactorLoading ? (
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  ) : adminUser?.twoFactorEnabled ? (
+                    'Disable 2FA'
+                  ) : (
+                    'Enable 2FA'
+                  )}
+                </button>
+              </div>
+
+              {twoFactorMsg && (
+                <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-800">
+                  {twoFactorMsg}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Bottom Save Bar (Only for operational settings tabs) */}
+        {activeTab !== 'security' && (
+          <div className="pt-2 flex items-center justify-between">
+            <span className="text-xs text-emerald-700 font-semibold">
+              {saveSuccess ? 'All configuration preferences saved successfully to store records.' : ''}
+            </span>
+
+            <button
+              type="submit"
+              disabled={saving}
+              className="px-8 py-3 bg-black hover:bg-neutral-800 text-white rounded-full text-xs font-medium transition-colors shadow-2xs cursor-pointer flex items-center gap-2 disabled:opacity-50"
+            >
+              {saving ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Saving Preferences...</span>
+                </>
+              ) : saveSuccess ? (
+                <>
+                  <Check className="w-4 h-4 text-emerald-400" />
+                  <span>Saved ✓</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>Save All Settings</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </form>
     </div>
   );

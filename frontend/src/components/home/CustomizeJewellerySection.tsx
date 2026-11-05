@@ -29,12 +29,18 @@ export function CustomizeJewellerySection() {
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12 sm:mb-16 relative z-10 space-y-3"
       >
+        
         <h2 className="text-3xl sm:text-5xl lg:text-6xl font-cormorant text-white font-normal tracking-wide">
           Customize Your Jewellery
         </h2>
+
         <p className="text-xs sm:text-sm text-neutral-400 max-w-xl mx-auto font-light leading-relaxed">
-          Collaborate 1-on-1 with our master Ratnapura lapidaries and goldsmiths to sculpt a bespoke Ceylon sapphire heirloom that belongs solely to you.
+          Bring your dream jewellery to life. Choose your favourite
+          Ceylon sapphire, explore elegant designs, and create a
+          personalised piece that beautifully reflects your style
+          and individuality.
         </p>
+
       </motion.div>
 
       {/* Top Half: Full-Width 3-Photo Triptych with Motion Stagger */}
@@ -96,36 +102,42 @@ export function CustomizeJewellerySection() {
         transition={{ duration: 0.85, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
         className="max-w-3xl mx-auto text-center px-4 sm:px-6 mt-14 flex flex-col items-center relative z-10 space-y-5"
       >
-        {/* 3-Line Italicized Quotation */}
-        <p className="text-lg sm:text-xl md:text-2xl font-cormorant italic text-neutral-200 leading-relaxed max-w-xl">
-          &ldquo;In a world of mass production, true bespoke art remains rare.<br className="hidden sm:inline" />
-          However pure and understated you are,<br className="hidden sm:inline" />
-          your one-of-a-kind Ceylon heirloom is irreplaceable.&rdquo;
-        </p>
+        
+      {/* 3-Line Italicized Quotation */}
+      <p className="text-lg sm:text-xl md:text-2xl font-cormorant italic text-neutral-200 leading-relaxed max-w-xl">
+        &ldquo;Some stories deserve more than words.<br className="hidden sm:inline" />
+        A piece designed around your vision,<br className="hidden sm:inline" />
+        a timeless treasure that is uniquely yours.&rdquo;
+      </p>
 
-        {/* Description Subtext */}
-        <p className="text-xs text-neutral-400 font-light max-w-md leading-relaxed">
-          Can&apos;t find your dream piece? Select your rare Ceylon sapphire (Royal Blue, Padparadscha, Teal, or Canary), choose 925 Sterling Silver or 18K Rose Gold, and collaborate 1-on-1 with our master lapidaries.
-        </p>
+      {/* Description Subtext */}
+      <p className="text-xs text-neutral-400 font-light max-w-md leading-relaxed">
+        Create a piece as extraordinary as your story.
+        Explore the beauty of Ceylon sapphires, choose your
+        preferred design and precious metal, and bring your
+        vision to life with a personalised jewellery creation
+        crafted to celebrate your individuality.
+      </p>
 
-        {/* Action CTAs */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-          <Link
-            href="/customize"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white hover:bg-neutral-200 text-black font-semibold text-xs transition-all shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
-          >
-            <span>Design Bespoke Piece</span>
-          </Link>
+      {/* Action CTAs */}
+      <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <Link
+          href="/customize"
+          className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white hover:bg-neutral-200 text-black font-semibold text-xs transition-all shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
+        >
+          <span>Create Your Own Jewellery</span>
+        </Link>
 
-          <button
-            onClick={openDirectWhatsApp}
-            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-neutral-900/90 hover:bg-neutral-800 text-white border border-neutral-700/80 hover:border-neutral-500 text-xs font-semibold transition-all backdrop-blur-md shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
-          >
-            <MessageCircle className="w-4 h-4 text-neutral-300" />
-            <span>WhatsApp Master Lapidary</span>
-            <ArrowRight className="w-3.5 h-3.5 text-neutral-400" />
-          </button>
-        </div>
+        <button
+          onClick={openDirectWhatsApp}
+          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-neutral-900/90 hover:bg-neutral-800 text-white border border-neutral-700/80 hover:border-neutral-500 text-xs font-semibold transition-all backdrop-blur-md shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
+        >
+          <MessageCircle className="w-4 h-4 text-neutral-300" />
+          <span>Speak With Our Jewellery Team</span>
+          <ArrowRight className="w-3.5 h-3.5 text-neutral-400" />
+        </button>
+      </div>
+
       </motion.div>
 
 

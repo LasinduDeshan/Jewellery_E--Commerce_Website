@@ -52,6 +52,14 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
 
+  // Apply luxury dark scrollbar on Home Page
+  useEffect(() => {
+    document.documentElement.classList.add('dark-scrollbar');
+    return () => {
+      document.documentElement.classList.remove('dark-scrollbar');
+    };
+  }, []);
+
   // Fetch live catalogue from backend MongoDB Atlas
   useEffect(() => {
     let isMounted = true;
@@ -86,7 +94,7 @@ export default function HomePage() {
   });
 
   return (
-    <main className="min-h-screen flex flex-col bg-white">
+    <main className="min-h-screen flex flex-col bg-white dark-scroll-theme">
       <Navbar />
 
       {/* ============================================================ */}
@@ -116,12 +124,18 @@ export default function HomePage() {
           className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6"
         >
           <div>
+           
             <h2 className="text-4xl sm:text-5xl font-cormorant text-black font-normal leading-tight">
-              Featured Ceylon Sapphires
+              Discover Our Signature Collection
             </h2>
+
             <p className="text-xs sm:text-sm text-neutral-600 font-light mt-1 max-w-xl">
-              Hand-faceted Ceylon sapphires set in 925 sterling silver and 18K rose gold vermeil. Meticulously inspected by master lapidaries.
+              Explore our selection of elegant jewellery featuring beautiful
+              Ceylon sapphires. From timeless rings to delicate pendants
+              and earrings, discover pieces designed to complement
+              every style and occasion.
             </p>
+
           </div>
 
           {/* Category Filter Tabs with Sliding Active Pill */}

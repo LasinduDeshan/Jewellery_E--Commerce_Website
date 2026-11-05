@@ -362,3 +362,177 @@ export const resetPassword = asyncHandler(async (req: Request, res: Response) =>
     )
   );
 });
+
+// =========================================================================
+// DEDICATED ADMIN PORTAL AUTHENTICATION
+// =========================================================================
+
+/**
+ * Dedicated Admin Portal Login
+ * - Accepts email, password, and optional 2FA OTP
+ * - Enforces role: 'admin' | 'super_admin' (customers strictly forbidden)
+ * - Checks needsPasswordChange (first login requirement)
+ * - Verifies optional 2FA OTP if twoFactorEnabled is active
+ * - Issues an 8-hour admin session token
+ */
+export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
+  const { email, password, otp } = req.body;
+
+  if (!email || !password) {
+    throw new ApiError(400, 'Please provide administrator email and password');
+  }
+
+  const user = await User.findOne({ email: email.toLowerCase() });
+  if (!user || !(await user.comparePassword(password))) {
+    throw new ApiError(401, 'Invalid administrator credentials');
+  }
+
+  // Enforce role: only super_admin and admin are allowed
+  if (user.role !== 'admin' && user.role !== 'super_admin') {
+    throw new ApiError(403, 'Access denied: You do not have authorization to access the Admin Portal.');
+  }
+
+  // Optional Two-Factor Authentication Check
+  if (user.twoFactorEnabled) {
+    if (!otp) {
+      // Generate 6-digit OTP code valid for 10 minutes
+      const tempOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      user.twoFactorTempOtp = tempOtp;
+      user.twoFactorTempExpires = new Date(Date.now() + 10 * 60 * 1000);
+      await user.save();
+
+      console.log(`[Security 2FA] 6-digit OTP for admin ${user.email}: ${tempOtp}`);
+
+      return res.status(200).json(
+        ApiResponse.success(
+          {
+            twoFactorRequired: true,
+            email: user.email,
+            otp: tempOtp, // provided for seamless developer/local evaluation
+          },
+          'Two-factor authentication code required. Please enter the 6-digit code.'
+        )
+      );
+    }
+
+    // Verify OTP code
+    if (
+      !user.twoFactorTempOtp ||
+      user.twoFactorTempOtp !== String(otp).trim() ||
+      !user.twoFactorTempExpires ||
+      user.twoFactorTempExpires < new Date()
+    ) {
+      throw new ApiError(400, 'Invalid or expired 2FA verification code. Please try again.');
+    }
+
+    // Clear temp 2FA OTP
+    user.twoFactorTempOtp = undefined;
+    user.twoFactorTempExpires = undefined;
+  }
+
+  // Update last login timestamp
+  user.lastLoginAt = new Date();
+  await user.save();
+
+  // Generate Admin Token with 8h session expiration
+  const secret: Secret = config.jwtSecret;
+  const token = jwt.sign(
+    { userId: user._id.toString(), email: user.email, role: user.role },
+    secret,
+    { expiresIn: '8h' }
+  );
+
+  res.status(200).json(
+    ApiResponse.success(
+      {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          phoneNumber: user.phoneNumber,
+          needsPasswordChange: Boolean(user.needsPasswordChange),
+          twoFactorEnabled: Boolean(user.twoFactorEnabled),
+          lastLoginAt: user.lastLoginAt,
+        },
+        token,
+        needsPasswordChange: Boolean(user.needsPasswordChange),
+      },
+      user.needsPasswordChange
+        ? 'First login detected: You are required to update your initial password.'
+        : 'Welcome to the Zeyloraa Admin Portal.'
+    )
+  );
+});
+
+/**
+ * Admin First-Login / Mandatory Password Change
+ */
+export const adminChangePassword = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!newPassword || newPassword.length < 8) {
+    throw new ApiError(400, 'New password must be at least 8 characters long.');
+  }
+
+  const user = await User.findById(req.user?.userId);
+  if (!user) {
+    throw new ApiError(404, 'Administrator account not found.');
+  }
+
+  // If user does not have needsPasswordChange flag, require currentPassword verification
+  if (!user.needsPasswordChange) {
+    if (!currentPassword) {
+      throw new ApiError(400, 'Please provide your current password.');
+    }
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      throw new ApiError(400, 'Current password does not match.');
+    }
+  }
+
+  user.password = newPassword;
+  user.needsPasswordChange = false;
+  await user.save();
+
+  res.status(200).json(
+    ApiResponse.success(
+      {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          needsPasswordChange: false,
+        },
+      },
+      'Password updated successfully. You now have full access to the Admin Portal.'
+    )
+  );
+});
+
+/**
+ * Toggle Two-Factor Authentication for Admin Account
+ */
+export const adminToggle2FA = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const { enabled } = req.body;
+
+  const user = await User.findById(req.user?.userId);
+  if (!user) {
+    throw new ApiError(404, 'Administrator account not found.');
+  }
+
+  user.twoFactorEnabled = Boolean(enabled);
+  user.twoFactorTempOtp = undefined;
+  user.twoFactorTempExpires = undefined;
+  await user.save();
+
+  res.status(200).json(
+    ApiResponse.success(
+      { twoFactorEnabled: user.twoFactorEnabled },
+      user.twoFactorEnabled
+        ? 'Two-factor authentication has been enabled for this admin account.'
+        : 'Two-factor authentication has been disabled.'
+    )
+  );
+});

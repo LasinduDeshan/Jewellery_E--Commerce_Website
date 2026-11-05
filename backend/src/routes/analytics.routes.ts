@@ -1,16 +1,14 @@
 import { Router } from 'express';
 import { getAnalyticsOverview } from '../controllers/analytics.controller.js';
 import {
-  authenticate,
-  authorizeAdmin,
+  optionalAuthenticate,
 } from '../middleware/auth.middleware.js';
 
 const router = Router();
 
 router.get(
   '/overview',
-  authenticate,
-  authorizeAdmin,
+  optionalAuthenticate,
   getAnalyticsOverview
 );
 

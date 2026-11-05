@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { getAdminAuthHeaders } from '../../../utils/adminApi';
 import Link from 'next/link';
 import {
   Shield,
@@ -63,7 +64,7 @@ export default function AdminCustomRequestsPage() {
     setFetchError('');
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-      const res = await fetch(`${apiUrl}/custom-requests`);
+      const res = await fetch(`${apiUrl}/custom-requests`, { headers: getAdminAuthHeaders() });
       if (!res.ok) throw new Error('Failed to load custom requests from server');
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
@@ -102,7 +103,7 @@ export default function AdminCustomRequestsPage() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${apiUrl}/custom-requests/${selectedRequest._id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAdminAuthHeaders(),
         body: JSON.stringify({
           status: editStatus,
           adminNotes: editNotes,
@@ -156,7 +157,7 @@ export default function AdminCustomRequestsPage() {
   });
 
   return (
-    <div className="space-y-6 max-w-7xl w-full">
+    <div className="space-y-6 w-full">
       {/* Top Filter and Controls Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
         <div className="relative w-full sm:w-80">
@@ -170,7 +171,7 @@ export default function AdminCustomRequestsPage() {
           />
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto">
           {['all', 'New', 'Under Review', 'Quote Sent', 'In Production'].map((st) => (
             <button
               key={st}
@@ -221,7 +222,7 @@ export default function AdminCustomRequestsPage() {
           {loading ? (
             <div className="p-12 text-center text-neutral-400 text-xs flex flex-col items-center justify-center gap-2">
               <RefreshCw className="w-5 h-5 animate-spin text-neutral-600" />
-              <span>Loading atelier quote requests...</span>
+              <span>Loading custom quote requests...</span>
             </div>
           ) : filteredRequests.length === 0 ? (
             <div className="p-10 text-center text-neutral-400 text-xs space-y-2">

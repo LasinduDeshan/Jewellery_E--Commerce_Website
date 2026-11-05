@@ -98,16 +98,15 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         {/* Brand Logo Header */}
         <div className="flex items-center justify-between pb-6 border-b border-neutral-800">
           <Link href="/admin" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-white text-black flex items-center justify-center shadow-xs transition-transform group-hover:scale-105">
-              <Gem className="w-4 h-4 text-black" />
-            </div>
+            
             <div className="flex flex-col">
               <span className="font-bold text-sm text-white leading-none">
                 Zeyloraa
+                <span className="text-xs text-neutral-400 font-medium mt-0.5 ml-2">
+                 Admin Panel
               </span>
-              <span className="text-xs text-neutral-400 font-medium mt-0.5">
-                Admin Panel
               </span>
+              
             </div>
           </Link>
 
@@ -181,7 +180,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           <span>Settings</span>
         </Link>
 
-        {/* Quick Admin Profile Card */}
+        {/* Quick Admin Profile Card
         <div className="pt-3 mt-2 border-t border-neutral-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5 overflow-hidden">
             <div className="w-7 h-7 rounded-full bg-white text-black text-[11px] font-bold flex items-center justify-center shrink-0">
@@ -204,7 +203,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           >
             <LogOut className="w-3.5 h-3.5" />
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

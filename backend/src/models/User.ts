@@ -20,7 +20,7 @@ export interface IUser extends Document {
   email: string;
   password?: string;
   googleId?: string;
-  role: 'admin' | 'customer';
+  role: 'super_admin' | 'admin' | 'customer';
   phoneNumber?: string;
   avatar?: string;
   bio?: string;
@@ -29,6 +29,11 @@ export interface IUser extends Document {
   wishlist: mongoose.Types.ObjectId[];
   resetPasswordOtp?: string;
   resetPasswordExpires?: Date;
+  needsPasswordChange?: boolean;
+  twoFactorEnabled?: boolean;
+  twoFactorTempOtp?: string;
+  twoFactorTempExpires?: Date;
+  lastLoginAt?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -58,7 +63,7 @@ const UserSchema = new Schema<IUser>(
       unique: true,
       sparse: true,
     },
-    role: { type: String, enum: ['admin', 'customer'], default: 'customer' },
+    role: { type: String, enum: ['super_admin', 'admin', 'customer'], default: 'customer' },
     phoneNumber: { type: String, trim: true },
     avatar: { type: String },
     bio: { type: String, trim: true },
@@ -67,12 +72,20 @@ const UserSchema = new Schema<IUser>(
     wishlist: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
     resetPasswordOtp: { type: String },
     resetPasswordExpires: { type: Date },
+    needsPasswordChange: { type: Boolean, default: false },
+    twoFactorEnabled: { type: Boolean, default: false },
+    twoFactorTempOtp: { type: String },
+    twoFactorTempExpires: { type: Date },
+    lastLoginAt: { type: Date },
   },
   { timestamps: true }
 );
 
 UserSchema.pre<IUser>('save', async function (next) {
   if (!this.isModified('password') || !this.password) return next();
+  if (this.password.startsWith('$2a$') || this.password.startsWith('$2b$')) {
+    return next();
+  }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();

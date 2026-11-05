@@ -23,7 +23,7 @@ export const CustomizeWeddingRingSection: React.FC = () => {
           </h2>
 
           <p className="mt-3 text-sm sm:text-base text-neutral-600 font-light max-w-2xl mx-auto leading-relaxed">
-            A sacred symbol of lifelong commitment, sculpted with generational Ceylon mastery and tailored to fit your love story flawlessly.
+            A timeless symbol of love, thoughtfully designed to reflect your unique story and celebrate a lifetime of togetherness.
           </p>
         </motion.div>
 
@@ -38,7 +38,7 @@ export const CustomizeWeddingRingSection: React.FC = () => {
             </div>
 
             <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed">
-              Whether you desire a classic high-polish band, a contour band crafted to nest flush against your engagement ring, or intricate hand-carved pavé settings, our goldsmiths calibrate every contour to your personal aesthetic.
+              From classic wedding bands to elegant contemporary designs, create a ring that reflects your personal style. Explore beautiful finishes, intricate details, and meaningful customizations to make your special piece truly yours.
             </p>
 
           </div>
@@ -69,7 +69,7 @@ export const CustomizeWeddingRingSection: React.FC = () => {
             
 
             <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed">
-              Enrich your wedding ring with natural unheated Ceylon sapphires or brilliant diamonds. Each stone is individually inspected for optical purity and hand-set with artisanal precision for lasting daily wear.
+              Add a personal touch with the captivating beauty of Ceylon sapphires or the timeless brilliance of diamonds. Every detail is thoughtfully considered to create a wedding ring that celebrates your love and lasts for generations.
             </p>
 
           
@@ -84,13 +84,13 @@ export const CustomizeWeddingRingSection: React.FC = () => {
               href="/customize"
               className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-black text-white hover:bg-neutral-800 text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 shadow-sm hover:shadow-lg active:scale-95 group cursor-pointer"
             >
-            <span>Customize Your Wedding Ring</span>
+            <span>Design Your Wedding Ring</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
           </motion.div>
 
           <p className="text-xs text-neutral-500 font-light max-w-md mx-auto leading-relaxed">
-            Launch our interactive 8-step bespoke studio to configure your band silhouette, choose metals, select Ceylon gemstones, and preview your heirloom piece.
+           Bring your dream wedding ring to life. Choose your perfect design, explore precious metals and gemstones, and create a timeless symbol of your love.
           </p>
         </div>
 

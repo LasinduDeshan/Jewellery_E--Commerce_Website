@@ -42,7 +42,7 @@ export const CutsGallery: React.FC<CutsGalleryProps> = ({ selectedCut, onSelectC
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-xs font-semibold  text-neutral-500 block"
             >
-              Artisanal Precision Faceting
+              The Art of Gemstone Cutting
             </motion.span>
 
             {/* Topic changed to our bespoke sapphire cuts */}
@@ -64,7 +64,7 @@ export const CutsGallery: React.FC<CutsGalleryProps> = ({ selectedCut, onSelectC
               transition={{ duration: 0.7, delay: 0.3 }}
               className="text-sm sm:text-base text-neutral-600 font-light leading-relaxed pt-1"
             >
-              The faceting style transforms raw crystalline corundum into a captivating play of light. Learn how different cuts impact finger coverage, optical brilliance, and color depth.
+              Every sapphire cut reveals a unique expression of beauty and brilliance. Explore the elegance of different shapes, each thoughtfully designed to enhance the gemstone's natural colour, sparkle, and timeless appeal.
             </motion.p>
           </div>
 

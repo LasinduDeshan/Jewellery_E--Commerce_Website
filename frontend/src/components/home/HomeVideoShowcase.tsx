@@ -77,10 +77,10 @@ export const HomeVideoShowcase: React.FC = () => {
           >
             <div className="max-w-2xl">
               <h3 className="text-2xl sm:text-3xl lg:text-5xl font-normal text-white tracking-tight leading-tight font-cormorant">
-                Crafted with Generational Precision.
+                Where Artistry Meets Timeless Elegance.
               </h3>
               <p className="mt-3 text-xs sm:text-sm lg:text-base text-neutral-300 font-light leading-relaxed max-w-xl">
-                Witness our master craftsmen shape ethically unearthed natural Ceylon sapphires and cast recycled precious metals into bespoke heirloom creations.
+                Discover the art of fine jewellery, where the natural beauty of Ceylon sapphires meets exceptional craftsmanship. Every creation is thoughtfully designed with precision, passion, and attention to detail, bringing timeless elegance to life.
               </p>
             </div>
 
@@ -89,14 +89,14 @@ export const HomeVideoShowcase: React.FC = () => {
                 href="/customize"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white text-black hover:bg-neutral-100 font-semibold text-xs sm:text-sm transition-all shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
               >
-                <span>Design Bespoke Piece</span>
+                <span>Create Your Own Jewellery</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/shop"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-black/50 hover:bg-black/80 backdrop-blur-md border border-white/30 text-white font-medium text-xs sm:text-sm transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
               >
-                <span>Explore Store</span>
+                <span>Explore Our Collections</span>
               </Link>
             </div>
           </motion.div>
