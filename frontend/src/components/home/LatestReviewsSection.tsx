@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import {
   Star,
@@ -172,12 +173,19 @@ export function LatestReviewsSection() {
   const progressPercent = totalReviews > 1 ? (currentIndex / (totalReviews - 1)) * 100 : 0;
 
   return (
-    <section className="py-20 sm:py-24 bg-white text-neutral-900 overflow-hidden select-none">
+    <section className="w-full bg-black select-none">
+      <div className="w-full bg-white rounded-t-[36px] sm:rounded-t-[48px] lg:rounded-t-[56px] xl:rounded-t-[64px] pt-16 sm:pt-20 lg:pt-24 pb-20 sm:pb-24 text-neutral-900 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* ========================================================= */}
         {/* TOP HEADER: Centered title & Trustpilot rating badge      */}
         {/* ========================================================= */}
-        <div className="text-center max-w-2xl mx-auto mb-16 sm:mb-20 space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-2xl mx-auto mb-16 sm:mb-20 space-y-4"
+        >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-sans font-bold tracking-tight text-neutral-900 leading-tight">
             Read reviews, <br />
             Made to Make You Shine.
@@ -193,15 +201,19 @@ export function LatestReviewsSection() {
                 <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
               ))}
             </div>
-
-           
           </div>
-        </div>
+        </motion.div>
 
         {/* ========================================================= */}
         {/* MAIN SECTION: Left Quote & Controls + Right Cards Slider  */}
         {/* ========================================================= */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start"
+        >
           {/* LEFT COLUMN: Quotation mark, Heading & Slider Navigation */}
           <div className="lg:col-span-4 xl:col-span-3 flex flex-col justify-between self-stretch pr-0 lg:pr-4">
             <div className="space-y-4">
@@ -272,7 +284,7 @@ export function LatestReviewsSection() {
                   className="w-[300px] sm:w-[330px] md:w-[340px] shrink-0 flex flex-col"
                 >
                   {/* SPEECH BUBBLE CARD */}
-                  <div className="relative bg-white rounded-2xl p-6 sm:p-7 border border-neutral-100 shadow-[0_4px_24px_rgba(0,0,0,0.06)] min-h-[220px] sm:min-h-[230px] flex flex-col justify-between">
+                  <div className="relative bg-white rounded-2xl p-6 sm:p-7 border border-neutral-100 shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-shadow duration-300 min-h-[220px] sm:min-h-[230px] flex flex-col justify-between">
                     {/* Review Comment Text */}
                     <p className="text-xs sm:text-[13px] text-neutral-700 leading-relaxed font-normal">
                       {rev.comment}
@@ -339,7 +351,8 @@ export function LatestReviewsSection() {
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
+      </div>
       </div>
     </section>
   );

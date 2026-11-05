@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
 import { useCart } from '../../context/CartContext';
+import { useCurrency } from '../../context/CurrencyContext';
 import { AcceptedPaymentMethods } from '../../components/ui/PaymentIcons';
 import {
   ShoppingBag,
@@ -40,6 +41,7 @@ export default function CartPage() {
     removeCoupon,
     generateWhatsAppCartLink,
   } = useCart();
+  const { formatPrice } = useCurrency();
 
   const [promoCodeInput, setPromoCodeInput] = useState('');
   const [promoMessage, setPromoMessage] = useState<{ text: string; error: boolean } | null>(null);
@@ -79,9 +81,7 @@ export default function CartPage() {
       {/* Header */}
       <section className="bg-black text-white py-10 px-4 sm:px-6 lg:px-8 border-b border-neutral-800">
         <div className="max-w-7xl mx-auto">
-          <span className="text-xs font-semibold text-neutral-400 block mb-1">
-            Section 5.3 • Persistent Bag
-          </span>
+          
           <h1 className="text-2xl sm:text-4xl font-serif text-white">
             Your Fine Jewellery Bag ({cartCount} {cartCount === 1 ? 'item' : 'items'})
           </h1>
@@ -164,9 +164,9 @@ export default function CartPage() {
 
                       <div className="text-right min-w-[90px]">
                         <span className="text-base font-serif font-bold text-neutral-900 block">
-                          ${item.price * item.quantity} AUD
+                          {formatPrice(item.price * item.quantity)}
                         </span>
-                        <span className="text-[10px] text-neutral-400">(${item.price} each)</span>
+                        <span className="text-[10px] text-neutral-400">({formatPrice(item.price)} each)</span>
                       </div>
 
                       <button
@@ -261,7 +261,7 @@ export default function CartPage() {
                 <div className="space-y-2.5 text-xs text-neutral-600 pt-2 border-t border-neutral-100">
                   <div className="flex justify-between">
                     <span>Items Subtotal</span>
-                    <span className="font-semibold text-neutral-900">${subtotal} AUD</span>
+                    <span className="font-semibold text-neutral-900">{formatPrice(subtotal)}</span>
                   </div>
 
                   {discountAmount > 0 && (

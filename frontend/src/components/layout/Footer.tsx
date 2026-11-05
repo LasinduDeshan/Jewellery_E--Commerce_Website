@@ -11,20 +11,14 @@ import {
   Check,
 } from 'lucide-react';
 import { LegalModal, LegalModalType } from './LegalModal';
+import { CurrencySelector } from '../common/CurrencySelector';
 
-export const Footer: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
+interface FooterProps {
+  onOpenStudio?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenStudio }) => {
   const [legalModalType, setLegalModalType] = useState<LegalModalType>(null);
-
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email.trim()) {
-      setSubscribed(true);
-      setEmail('');
-      setTimeout(() => setSubscribed(false), 3500);
-    }
-  };
 
   return (
     <footer className="w-full bg-white py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
@@ -45,7 +39,7 @@ export const Footer: React.FC = () => {
                 <span className="font-bold text-base text-white leading-none tracking-tight">
                   Zeyloraa
                 </span>
-                <span className="text-[10px] text-neutral-400 font-medium tracking-wider uppercase mt-1">
+                <span className="text-[10px] text-neutral-400 font-medium  mt-1">
                   Fine Sapphire Atelier
                 </span>
               </div>
@@ -56,36 +50,37 @@ export const Footer: React.FC = () => {
               Zeyloraa is a fine jewellery atelier dedicated to ethically unearthed Ceylon sapphires and bespoke modern heirlooms. Handcrafted by master Sri Lankan lapidaries and certified by the National Gem and Jewellery Authority.
             </p>
 
-            {/* Newsletter Subscription */}
-            <div className="pt-1 max-w-sm space-y-2">
-              <span className="text-xs text-neutral-400 block font-normal">
-                Subscribe to our newsletter
-              </span>
-              <form onSubmit={handleNewsletterSubmit} className="relative">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email address"
-                  required
-                  className="w-full bg-[#18181b] text-white placeholder-neutral-500 text-xs rounded-full pl-5 pr-12 py-3 border border-neutral-800 focus:outline-none focus:border-neutral-600 transition-colors"
-                />
+            {/* Open Studio Action Button with 'Start Designing' */}
+            <div className="pt-2">
+              {onOpenStudio ? (
                 <button
-                  type="submit"
-                  aria-label="Subscribe"
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#27272a] hover:bg-white hover:text-black text-white flex items-center justify-center transition-all cursor-pointer shadow-sm"
+                  type="button"
+                  onClick={onOpenStudio}
+                  className="inline-flex items-center p-1 sm:p-1.5 rounded-full bg-[#18181b]  hover:border-neutral-500 shadow-md transition-all duration-300 cursor-pointer group active:scale-95"
+                  aria-label="Start Designing - Open Studio"
                 >
-                  {subscribed ? (
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  ) : (
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  )}
+                  <span className="px-3.5 sm:px-4 py-1.5 text-xs sm:text-sm font-medium tracking-wide text-white whitespace-nowrap">
+                    Start Designing
+                  </span>
+                  <div className="px-3.5 sm:px-4 py-1.5 rounded-full bg-white text-black font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-sm group-hover:bg-neutral-100 transition-colors whitespace-nowrap">
+                    <Gem className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black group-hover:scale-110 transition-transform" />
+                    <span>Open Studio</span>
+                  </div>
                 </button>
-              </form>
-              {subscribed && (
-                <span className="text-[11px] text-emerald-400 block">
-                  Thank you for subscribing to our atelier gazette.
-                </span>
+              ) : (
+                <Link
+                  href="/customize"
+                  className="inline-flex items-center p-1 sm:p-1.5 rounded-full bg-[#18181b] border border-neutral-700/80 hover:border-neutral-500 shadow-md transition-all duration-300 group active:scale-95"
+                  aria-label="Start Designing - Open Studio"
+                >
+                  <span className="px-3.5 sm:px-4 py-1.5 text-xs sm:text-sm font-medium tracking-wide text-white whitespace-nowrap">
+                    Start Designing
+                  </span>
+                  <div className="px-3.5 sm:px-4 py-1.5 rounded-full bg-white text-black font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-sm group-hover:bg-neutral-100 transition-colors whitespace-nowrap">
+                    <Gem className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black group-hover:scale-110 transition-transform" />
+                    <span>Open Studio</span>
+                  </div>
+                </Link>
               )}
             </div>
           </div>
@@ -94,7 +89,7 @@ export const Footer: React.FC = () => {
           {/* 2. Column: Jewellery & Stories                            */}
           {/* ========================================================= */}
           <div className="lg:col-span-4 space-y-3.5">
-            <span className="text-xs font-semibold text-white uppercase tracking-wider block">
+            <span className="text-xs font-semibold text-white  block">
               Jewellery & Stories
             </span>
             <ul className="space-y-3 text-xs text-neutral-400">
@@ -125,7 +120,7 @@ export const Footer: React.FC = () => {
           {/* 3. Column: Concierge & Trust                              */}
           {/* ========================================================= */}
           <div className="lg:col-span-3 space-y-3.5">
-            <span className="text-xs font-semibold text-white uppercase tracking-wider block">
+            <span className="text-xs font-semibold text-white  block">
               Concierge & Trust
             </span>
             <ul className="space-y-3 text-xs text-neutral-400">
@@ -161,13 +156,17 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* ========================================================= */}
-        {/* Bottom Sub-Bar: Copyright, Horizontal Socials, Legal Links */}
+        {/* Bottom Sub-Bar: Copyright, Currency Selector, Socials & Legal */}
         {/* ========================================================= */}
         <div className="border-t border-neutral-800/80 mt-10 sm:mt-12 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-neutral-500 gap-5">
-          {/* Copyright */}
-          <p className="order-2 md:order-1 text-center md:text-left text-[11px]">
-            &copy; {new Date().getFullYear()} Zeyloraa. Ethically Sourced Ceylon Sapphires. All rights reserved.
-          </p>
+          {/* Copyright & Currency Selector */}
+          <div className="order-2 md:order-1 flex flex-col sm:flex-row items-center gap-4 text-center md:text-left">
+            <p className="text-[11px]">
+              &copy; {new Date().getFullYear()} Zeyloraa. Ethically Sourced Ceylon Sapphires. All rights reserved.
+            </p>
+            <div className="hidden sm:block text-neutral-700">•</div>
+            <CurrencySelector variant="footer" />
+          </div>
 
           {/* Horizontal Social Media Icons */}
           <div className="order-1 md:order-2 flex items-center gap-5 text-neutral-400">

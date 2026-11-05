@@ -30,9 +30,7 @@ export const ArtisanalProcess: React.FC = () => {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <span className="text-neutral-400 text-xs font-semibold uppercase tracking-wider block">
-            Ceylon Heritage & Craftsmanship
-          </span>
+          
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-cormorant text-white mt-2 font-normal">
             How Your Bespoke Jewellery is Born
           </h2>
@@ -55,24 +53,19 @@ export const ArtisanalProcess: React.FC = () => {
                   delay: idx * 0.08,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="relative rounded-2xl bg-neutral-900 border border-neutral-800 p-6 flex flex-col justify-between hover:border-neutral-500 transition-colors group cursor-default"
+                className="relative rounded-2xl bg-neutral-900  p-6 flex flex-col justify-between hover:border-neutral-500 transition-colors group cursor-default"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <span className="font-cormorant text-4xl font-bold text-white/20 group-hover:text-white/40 transition-colors">
                       {step.stepNumber}
                     </span>
-                    <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 text-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors duration-300">
-                      {iconMap[step.iconName] || <Sparkles className="w-5 h-5" />}
-                    </div>
+                    
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-neutral-400 text-xs font-medium mb-1">
-                    <MapPin className="w-3 h-3 text-neutral-500" />
-                    <span>{step.location}</span>
-                  </div>
+                  
 
-                  <h3 className="text-xl font-cormorant font-medium text-white mb-2 group-hover:text-neutral-100 transition-colors">
+                  <h3 className="text-l  font-medium text-white/70 mb-2 group-hover:text-neutral-100 transition-colors">
                     {step.title}
                   </h3>
 

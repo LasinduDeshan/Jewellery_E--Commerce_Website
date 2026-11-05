@@ -6,6 +6,7 @@ import {
   getAllReviews,
   approveReview,
   rejectReview,
+  checkReviewEligibility,
 } from '../services/review.service.js';
 import { ApiError } from '../utils/apiError.js';
 import { ApiResponse } from '../utils/apiResponse.js';
@@ -100,5 +101,15 @@ export const rejectReviewController = asyncHandler(
     res
       .status(200)
       .json(ApiResponse.success(review, 'Review rejected successfully'));
+  }
+);
+
+export const checkReviewEligibilityController = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const productId = String(req.params.productId);
+    const userId = req.user?.userId;
+
+    const eligibility = await checkReviewEligibility(productId, userId);
+    res.status(200).json(ApiResponse.success(eligibility));
   }
 );

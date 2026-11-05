@@ -11,6 +11,7 @@ import {
   MessageCircle,
   Star,
   FileText,
+  HelpCircle,
   Settings,
   ExternalLink,
   LogOut,
@@ -74,6 +75,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       href: '/admin/reviews',
       icon: Star,
       isActive: currentActive === 'reviews' || pathname.startsWith('/admin/reviews'),
+    },
+    {
+      id: 'faqs',
+      label: 'FAQ Management',
+      href: '/admin/faqs',
+      icon: HelpCircle,
+      isActive: currentActive === 'faqs' || pathname.startsWith('/admin/faqs'),
     },
     {
       id: 'cms',

@@ -26,49 +26,76 @@ export const createReview = async (data: CreateReviewData) => {
     throw new Error('Product not found');
   }
 
-  // If orderId is provided, perform strict order verification
-  if (orderId && userId) {
-    const order = await Order.findOne({
-      _id: orderId,
+  if (!userId) {
+    throw new Error('Authentication required: Please sign in to review your purchased piece.');
+  }
+
+  // Strict verification: User must have a DELIVERED & CONFIRMED order for this product
+  const query: any = {
+    user: userId,
+    $or: [{ status: 'Delivered' }, { isDeliveryConfirmed: true }],
+    $and: [
+      {
+        $or: [
+          { 'orderItems.product': productId },
+          { 'orderItems.title': product.name },
+          ...(orderId ? [{ _id: orderId }] : []),
+        ],
+      },
+    ],
+  };
+
+  let verifiedOrder = await Order.findOne(query);
+
+  if (!verifiedOrder && orderId) {
+    const checkOrder = await Order.findOne({ _id: orderId, user: userId });
+    if (checkOrder && (checkOrder.status === 'Delivered' || checkOrder.isDeliveryConfirmed)) {
+      verifiedOrder = checkOrder;
+    }
+  }
+
+  if (!verifiedOrder) {
+    // Check if there is an in-progress order
+    const pendingOrder = await Order.findOne({
       user: userId,
+      $or: [
+        { 'orderItems.product': productId },
+        { 'orderItems.title': product.name },
+        ...(orderId ? [{ _id: orderId }] : []),
+      ],
     });
 
-    if (!order) {
-      throw new Error('Order not found or does not belong to this user');
+    if (pendingOrder) {
+      throw new Error(
+        `Delivery confirmation required: Your order (#${pendingOrder.orderNumber}) is currently ${pendingOrder.status}. Reviews can only be submitted after delivery is completed and confirmed.`
+      );
     }
 
-    if (order.status !== 'Delivered') {
-      throw new Error('You can only review products from delivered orders');
-    }
-
-    const purchasedProduct = order.orderItems.some(
-      (item) => item.product?.toString() === productId
+    throw new Error(
+      'Verified purchase required: Only patrons who have purchased and received this piece can submit a review.'
     );
+  }
 
-    if (!purchasedProduct) {
-      throw new Error('You can only review products purchased in this order');
-    }
+  // Ensure customer hasn't already reviewed this product
+  const existingReview = await Review.findOne({
+    product: productId,
+    user: userId,
+  });
 
-    const existingReview = await Review.findOne({
-      product: productId,
-      user: userId,
-      order: orderId,
-    });
-
-    if (existingReview) {
-      throw new Error('You have already reviewed this product for this order');
-    }
+  if (existingReview) {
+    throw new Error('You have already submitted a verified review for this piece.');
   }
 
   return Review.create({
     product: productId,
-    user: userId || undefined,
-    order: orderId || undefined,
+    user: userId,
+    order: verifiedOrder._id,
     customerName: customerName || 'Verified Buyer',
-    title: title || 'Customer Review',
+    title: title || 'Verified Customer Review',
     photos: photos || [],
     rating,
     comment,
+    verifiedPurchase: true,
     isApproved: false,
     status: 'pending',
   });
@@ -199,4 +226,91 @@ export const rejectReview = async (reviewId: string) => {
   }
 
   return review;
+};
+
+export const checkReviewEligibility = async (productId: string, userId?: string) => {
+  if (!userId) {
+    return {
+      canReview: false,
+      reason: 'unauthenticated',
+      message: 'Sign in to verify if you can review this piece.',
+    };
+  }
+
+  const product = await Product.findById(productId);
+  if (!product) {
+    return {
+      canReview: false,
+      reason: 'not_found',
+      message: 'Product not found.',
+    };
+  }
+
+  // 1. Has user already reviewed?
+  const existingReview = await Review.findOne({
+    product: productId,
+    user: userId,
+  });
+
+  if (existingReview) {
+    return {
+      canReview: false,
+      hasReviewed: true,
+      reviewStatus: existingReview.status,
+      message: 'You have already submitted a verified review for this piece.',
+    };
+  }
+
+  // 2. Has user purchased and has delivered/confirmed order?
+  const deliveredOrder = await Order.findOne({
+    user: userId,
+    $or: [{ status: 'Delivered' }, { isDeliveryConfirmed: true }],
+    $and: [
+      {
+        $or: [
+          { 'orderItems.product': productId },
+          { 'orderItems.title': product.name },
+        ],
+      },
+    ],
+  });
+
+  if (deliveredOrder) {
+    return {
+      canReview: true,
+      orderId: deliveredOrder._id,
+      orderNumber: deliveredOrder.orderNumber,
+      message: 'You are verified and eligible to review this delivered piece.',
+    };
+  }
+
+  // 3. Has user purchased but order is pending/shipped/not yet confirmed delivered?
+  const pendingOrder = await Order.findOne({
+    user: userId,
+    $or: [
+      { 'orderItems.product': productId },
+      { 'orderItems.title': product.name },
+    ],
+  });
+
+  if (pendingOrder) {
+    return {
+      canReview: false,
+      needsDeliveryConfirmation: true,
+      orderId: pendingOrder._id,
+      orderNumber: pendingOrder.orderNumber,
+      orderStatus: pendingOrder.status,
+      message:
+        pendingOrder.status === 'Shipped'
+          ? 'Your order is in transit! Confirm delivery upon arrival to unlock reviews.'
+          : `Your order is ${pendingOrder.status}. You can review this piece once delivery is confirmed.`,
+    };
+  }
+
+  // 4. User has not purchased this piece
+  return {
+    canReview: false,
+    reason: 'not_purchased',
+    message: 'Reviews are reserved exclusively for patrons who have purchased and received this piece.',
+  };
 };

@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Product, IProduct } from '../models/Product.js';
 import { SEED_PRODUCTS, SeedProduct } from '../data/seedProducts.js';
 
@@ -48,16 +49,7 @@ export const createProduct = async (
       return { ...img, sortOrder: img.sortOrder || idx + 1 };
     });
 
-    const fallbackUrl =
-      productData.images[0]?.url ||
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80';
-    while (productData.images.length < 4) {
-      productData.images.push({
-        url: fallbackUrl,
-        alt: `${productData.name} angle ${productData.images.length + 1}`,
-        sortOrder: productData.images.length + 1,
-      });
-    }
+
   }
 
   try {
@@ -296,7 +288,7 @@ export const getRelatedProducts = async (
 ): Promise<any[]> => {
   try {
     const isObjectId = mongoose.Types.ObjectId.isValid(currentIdOrSlug);
-    const current = await Product.findOne(
+    const current: any = await Product.findOne(
       isObjectId
         ? { $or: [{ _id: currentIdOrSlug }, { slug: currentIdOrSlug }] }
         : { slug: currentIdOrSlug }

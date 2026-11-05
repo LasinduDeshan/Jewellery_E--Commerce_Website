@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { AdminSidebar } from '../../components/admin/AdminSidebar';
 import { NotificationCenter } from '../../components/admin/NotificationCenter';
+import { CurrencySelector } from '../../components/common/CurrencySelector';
 import {
   Search,
   ChevronDown,
@@ -65,6 +66,12 @@ export default function AdminLayout({
       return {
         title: 'Reviews & Photo Moderation',
         subtitle: 'Moderate buyer testimonials and verified photo uploads before live display on product detail pages.',
+      };
+    }
+        if (pathname.startsWith('/admin/faqs')) {
+      return {
+        title: 'Bespoke Jewellery FAQ Manager',
+        subtitle: 'Manage and customize frequently asked questions and answers displayed on the Customize page and store.',
       };
     }
     if (pathname.startsWith('/admin/cms')) {
@@ -139,6 +146,9 @@ export default function AdminLayout({
                   className="w-full pl-9 pr-4 py-2 bg-neutral-50 hover:bg-neutral-100 focus:bg-white border border-neutral-200/90 rounded-full text-xs text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-black transition-all shadow-2xs"
                 />
               </form>
+
+              {/* Currency Selector for Admin */}
+              <CurrencySelector variant="admin" />
 
               {/* Fully-functional Interactive Notification Center */}
               <NotificationCenter />

@@ -603,13 +603,15 @@ export const CustomizeStudioModal: React.FC<CustomizeStudioModalProps> = ({
     setSubmitError('');
   }, [isOpen, initialJewelleryType, initialMetal, initialSapphire, initialCut]);
 
-  // Prevent background scroll
+  // Prevent background scroll & eliminate window scrollbar flash when studio is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     }
     return () => {
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
   }, [isOpen]);
 
@@ -848,7 +850,7 @@ export const CustomizeStudioModal: React.FC<CustomizeStudioModalProps> = ({
         </button>
 
         {/* Modal Content Scroll Area */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* LEFT / CENTER: Interactive Step Wizard (Cols 7) */}
             <div className="lg:col-span-8 space-y-6">

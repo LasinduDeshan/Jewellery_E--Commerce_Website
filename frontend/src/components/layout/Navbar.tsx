@@ -7,6 +7,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useAuthModal } from '../../context/AuthModalContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useCart } from '../../context/CartContext';
+import { useCurrency } from '../../context/CurrencyContext';
+import { CurrencySelector } from '../common/CurrencySelector';
 import {
   Sparkles,
   MessageCircle,
@@ -185,6 +187,7 @@ export const Navbar: React.FC = () => {
   const { openAuthModal } = useAuthModal();
   const { wishlistCount } = useWishlist();
   const { cartCount } = useCart();
+  const { formatPrice } = useCurrency();
 
   // Scroll state for transparent -> white navbar transition
   const [isScrolled, setIsScrolled] = useState(false);
@@ -273,7 +276,7 @@ export const Navbar: React.FC = () => {
   const headerRef = useRef<HTMLElement>(null);
 
   // Pages with a dark/video hero at the top
-  const hasDarkHero = pathname === '/' || pathname === '/customize' || pathname === '/story';
+  const hasDarkHero = pathname === '/' || pathname === '/customize' || pathname === '/story' || pathname === '/shop';
   const isAnyDropdownOpen = activeDropdown !== null || mobileMenuOpen;
   const isTransparent = hasDarkHero && !isScrolled && !isAnyDropdownOpen;
 
@@ -511,7 +514,10 @@ export const Navbar: React.FC = () => {
             {/* -------------------------------------------------------- */}
             {/* 3. PERSISTENT ICONS (SEARCH, WISHLIST, BAG, ACCOUNT)     */}
             {/* -------------------------------------------------------- */}
-            <div className="flex items-center space-x-1.5 sm:space-x-3">
+            <div className="flex items-center space-x-1 sm:space-x-2.5">
+              {/* Currency Selector */}
+              <CurrencySelector variant="navbar" isTransparent={isTransparent} />
+
               {/* Search Icon Button */}
               <button
                 type="button"
@@ -771,7 +777,7 @@ export const Navbar: React.FC = () => {
 
                     <div className="flex items-center justify-between pt-2 border-t border-white/10">
                       <span className="font-bold text-sm text-white">
-                        ${latestProduct.price} {latestProduct.currency || 'AUD'}
+                        {formatPrice(latestProduct.price)}
                       </span>
                       <Link
                         href={`/product/${latestProduct.slug}`}
@@ -1159,6 +1165,9 @@ export const Navbar: React.FC = () => {
                   <X className="w-5 h-5" />
                 </button>
               </div>
+
+              {/* Mobile Currency Selector */}
+              <CurrencySelector variant="mobile" />
 
               {/* Mobile Search Bar */}
               <form onSubmit={handleSearchSubmit} className="relative">

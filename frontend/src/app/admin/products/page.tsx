@@ -341,19 +341,13 @@ export default function AdminProductsPage() {
       '-' +
       cleanSku.toLowerCase();
 
-    // Ensure valid images array (min 4 images for luxury multi-angle standards)
+    // Save only the exact images added by the admin - no artificial cloning or padding
     let validImages = formImages.filter((s) => s && s.trim().length > 0).map((s) => s.trim());
     if (validImages.length === 0) {
-      validImages = [
-        'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1598560917505-59a3ad559071?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=800&q=80',
-      ];
-    } else {
-      while (validImages.length < 4) {
-        validImages.push(validImages[0]);
-      }
+      setErrorMsg('Please upload at least one image for this jewellery piece.');
+      setActiveModalTab('media');
+      setSaveLoading(false);
+      return;
     }
 
     const payload = {
@@ -385,7 +379,7 @@ export default function AdminProductsPage() {
         'Clean gently with lukewarm soapy water and a soft microfibre cloth. Store in separate velvet pouch.',
       images: validImages.map((url, idx) => ({
         url,
-        alt: `${cleanName} - Angle ${idx + 1}`,
+        alt: `${cleanName} - ${idx === 0 ? 'Cover' : `Angle ${idx + 1}`}`,
         sortOrder: idx + 1,
       })),
       media: {
@@ -878,7 +872,7 @@ export default function AdminProductsPage() {
                             <span>Multi-Angle Jewellery Images</span>
                           </h4>
                           <p className="text-[11px] text-neutral-500 font-light">
-                            Upload photos showing front, side, on-model, and facet closeups (min 4 recommended).
+                            Upload photos showing front, side, on-model, or facet angles.
                           </p>
                         </div>
                         <button

@@ -40,7 +40,7 @@ export const CutsGallery: React.FC<CutsGalleryProps> = ({ selectedCut, onSelectC
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-xs font-semibold tracking-wider uppercase text-neutral-500 block"
+              className="text-xs font-semibold  text-neutral-500 block"
             >
               Artisanal Precision Faceting
             </motion.span>

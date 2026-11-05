@@ -8,6 +8,8 @@ import { SapphireGallery } from '../../components/customize/SapphireGallery';
 import { CutsGallery } from '../../components/customize/CutsGallery';
 import { BirthstoneGuide } from '../../components/customize/BirthstoneGuide';
 import { ArtisanalProcess } from '../../components/customize/ArtisanalProcess';
+import { CustomizeVideoBanner } from '../../components/customize/CustomizeVideoBanner';
+import { CustomizeFaq } from '../../components/customize/CustomizeFaq';
 import { CustomizeStudioModal } from '../../components/customize/CustomizeStudioModal';
 import { SubmissionSuccessModal } from '../../components/customize/SubmissionSuccessModal';
 import { CustomizeScroller } from '../../components/customize/CustomizeScroller';
@@ -126,6 +128,15 @@ export default function CustomizePage() {
       {/* Our Artisanal Process */}
       <ArtisanalProcess />
 
+      {/* Atelier Craftsmanship Showcase Video */}
+      <CustomizeVideoBanner onOpenStudio={openStudio} />
+
+      {/* Frequently Asked Questions */}
+      <CustomizeFaq
+        onOpenStudio={openStudio}
+        onOpenConsultation={openDirectWhatsApp}
+      />
+
       {/* Premium 8-Step Design Studio Popup */}
       <CustomizeStudioModal
         isOpen={studioOpen}
@@ -147,7 +158,7 @@ export default function CustomizePage() {
         jewellerySummary={successModalData.jewellerySummary}
       />
 
-      <Footer />
+      <Footer onOpenStudio={openStudio} />
     </main>
   );
 }

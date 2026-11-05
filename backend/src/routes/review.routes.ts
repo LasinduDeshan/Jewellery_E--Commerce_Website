@@ -6,6 +6,7 @@ import {
   getAllReviewsController,
   approveReviewController,
   rejectReviewController,
+  checkReviewEligibilityController,
 } from '../controllers/review.controller.js';
 import { approveReview, rejectReview } from '../services/review.service.js';
 import { ApiResponse } from '../utils/apiResponse.js';
@@ -22,13 +23,16 @@ router.get('/latest', getLatestReviewsController);
 // Public: view approved reviews for a product
 router.get('/product/:productId', getProductReviewsController);
 
-// Review submission: authenticates if token is present, otherwise allows guest submission
-router.post('/', (req, res, next) => {
+// Check customer review eligibility for a product
+router.get('/eligibility/:productId', (req, res, next) => {
   if (req.headers.authorization) {
-    return authenticate(req, res, () => createReviewController(req, res, next));
+    return authenticate(req, res, () => checkReviewEligibilityController(req, res, next));
   }
-  return createReviewController(req, res, next);
+  return checkReviewEligibilityController(req, res, next);
 });
+
+// Review submission: strictly requires authentication & verified delivered purchase
+router.post('/', authenticate, createReviewController);
 
 // Admin: review moderation
 router.get('/admin', getAllReviewsController);

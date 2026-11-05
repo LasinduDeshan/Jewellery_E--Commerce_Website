@@ -10,6 +10,7 @@ import analyticsRoutes from './analytics.routes.js';
 import contentRoutes from './content.routes.js';
 import leadRoutes from './lead.routes.js';
 import uploadRoutes from './upload.routes.js';
+import faqRoutes from './faq.routes.js';
 
 const router = Router();
 
@@ -24,6 +25,7 @@ router.use('/analytics', analyticsRoutes);
 router.use('/content', contentRoutes);
 router.use('/leads', leadRoutes);
 router.use('/upload', uploadRoutes);
+router.use('/faqs', faqRoutes);
 
 router.get('/health', (req, res) => {
   res.status(200).json({

@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Heart, ArrowUpRight } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
+import { useCurrency } from '../../context/CurrencyContext';
 
 export interface ProductCardProps {
   product: {
@@ -24,6 +26,7 @@ export interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, compact = false, onQuickAdd }) => {
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const { formatPrice } = useCurrency();
   const [activeImageIdx, setActiveImageIdx] = useState(0);
 
   const inWish = isInWishlist(product._id);
@@ -65,7 +68,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, compact = fal
     'Hand-cut optical facets crafted by hereditary Sri Lankan lapidaries for radiant light dispersion.';
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-30px' }}
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       className={`group bg-white ${
         compact
           ? 'max-w-[280px] w-full mx-auto rounded-[24px] p-3 sm:p-3.5 shadow-[0_2px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.08)]'
@@ -97,50 +105,57 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, compact = fal
           </div>
 
           {/* Wishlist Button */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.88 }}
             onClick={handleWishlistToggle}
             aria-label="Toggle Wishlist"
             className={`absolute top-2 right-2 ${
               compact ? 'w-7 h-7' : 'w-8 h-8'
-            } rounded-full bg-white/90 hover:bg-white text-neutral-800 shadow-xs flex items-center justify-center transition-transform active:scale-90 cursor-pointer`}
+            } rounded-full bg-white/90 hover:bg-white text-neutral-800 shadow-xs flex items-center justify-center transition-transform cursor-pointer`}
           >
             <Heart
               className={`${compact ? 'w-3.5 h-3.5' : 'w-4 h-4'} ${
                 inWish ? 'fill-black text-black' : 'text-neutral-700'
               }`}
             />
-          </button>
+          </motion.button>
         </div>
 
-        {/* 2. Carousel Dots (Matching Reference Design) */}
-        <div
-          className={`flex items-center justify-center gap-1.5 ${
-            compact ? 'pt-2 pb-1.5' : 'pt-3 pb-3'
-          }`}
-        >
-          {[0, 1, 2, 3].map((dotIdx) => {
-            const isActive = (activeImageIdx % 4) === dotIdx;
-            return (
-              <button
-                key={dotIdx}
-                onClick={() => setActiveImageIdx(dotIdx)}
-                onMouseEnter={() => {
-                  if (dotIdx < images.length) setActiveImageIdx(dotIdx);
-                }}
-                aria-label={`View photo angle ${dotIdx + 1}`}
-                className={`transition-all rounded-full cursor-pointer ${
-                  compact
-                    ? isActive
-                      ? 'w-1.5 h-1.5 bg-black'
-                      : 'w-1.5 h-1.5 bg-neutral-300 hover:bg-neutral-400'
-                    : isActive
-                    ? 'w-2 h-2 bg-black'
-                    : 'w-2 h-2 bg-neutral-300 hover:bg-neutral-400'
-                }`}
-              />
-            );
-          })}
-        </div>
+        {/* 2. Carousel Dots (Only shown if multiple angles were added by admin) */}
+        {images.length > 1 && (
+          <div
+            className={`flex items-center justify-center gap-1.5 ${
+              compact ? 'pt-2 pb-1.5' : 'pt-3 pb-3'
+            }`}
+          >
+            {images.map((_, dotIdx) => {
+              const isActive = (activeImageIdx % images.length) === dotIdx;
+              return (
+                <button
+                  key={dotIdx}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setActiveImageIdx(dotIdx);
+                  }}
+                  onMouseEnter={() => setActiveImageIdx(dotIdx)}
+                  aria-label={`View photo angle ${dotIdx + 1}`}
+                  className={`transition-all rounded-full cursor-pointer ${
+                    compact
+                      ? isActive
+                        ? 'w-1.5 h-1.5 bg-black'
+                        : 'w-1.5 h-1.5 bg-neutral-300 hover:bg-neutral-400'
+                      : isActive
+                      ? 'w-2 h-2 bg-black'
+                      : 'w-2 h-2 bg-neutral-300 hover:bg-neutral-400'
+                  }`}
+                />
+              );
+            })}
+          </div>
+        )}
 
         {/* 3. Product Info */}
         <div className="px-1">
@@ -185,10 +200,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, compact = fal
           <span
             className={`${
               compact ? 'text-sm' : 'text-base sm:text-lg'
-            } font-bold text-neutral-900 `}
+            } font-bold text-neutral-900`}
           >
-            ${product.price}{' '}
-            <span className="text-[10px] font-normal text-neutral-400">AUD</span>
+            {formatPrice(product.price)}
           </span>
         </div>
 
@@ -209,6 +223,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, compact = fal
           </div>
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 };

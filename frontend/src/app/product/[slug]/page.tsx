@@ -7,6 +7,8 @@ import { Navbar } from '../../../components/layout/Navbar';
 import { Footer } from '../../../components/layout/Footer';
 import { useCart } from '../../../context/CartContext';
 import { useWishlist } from '../../../context/WishlistContext';
+import { useCurrency } from '../../../context/CurrencyContext';
+import { useAuth } from '../../../context/AuthContext';
 import {
   Sparkles,
   ShieldCheck,
@@ -183,6 +185,19 @@ export default function ProductDetailPage({
 
   const { addToCart } = useCart();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const { formatPrice } = useCurrency();
+  const { user, token } = useAuth();
+
+  const [eligibility, setEligibility] = useState<{
+    canReview: boolean;
+    hasReviewed?: boolean;
+    needsDeliveryConfirmation?: boolean;
+    orderId?: string;
+    orderNumber?: string;
+    orderStatus?: string;
+    message?: string;
+  } | null>(null);
+  const [confirmingDelivery, setConfirmingDelivery] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -225,6 +240,30 @@ export default function ProductDetailPage({
 
     fetchProductData();
   }, [slug]);
+
+  useEffect(() => {
+    if (!product?._id) return;
+    const checkEligibility = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        const res = await fetch(`${apiUrl}/reviews/eligibility/${product._id}`, { headers });
+        const data = await res.json();
+        if (data.success && data.data) {
+          setEligibility(data.data);
+          if (data.data.canReview && user?.name) {
+            setReviewName(user.name);
+          }
+        }
+      } catch {
+        // Fallback
+      }
+    };
+    checkEligibility();
+  }, [product?._id, token, user?.name]);
 
   if (loading) {
     return (
@@ -319,6 +358,42 @@ export default function ProductDetailPage({
     window.open(`https://wa.me/94771234567?text=${text}`, '_blank');
   };
 
+
+  const handleConfirmDeliveryFromProduct = async () => {
+    if (!eligibility?.orderId || !token) return;
+    setConfirmingDelivery(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const res = await fetch(`${apiUrl}/orders/${eligibility.orderId}/confirm-delivery`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setToastMessage('Delivery confirmed! You can now review your piece.');
+        setTimeout(() => setToastMessage(''), 4000);
+        setEligibility({
+          canReview: true,
+          orderId: eligibility.orderId,
+          orderNumber: eligibility.orderNumber,
+          message: 'You are verified and eligible to review this delivered piece.',
+        });
+        setReviewModalOpen(true);
+      } else {
+        setToastMessage(data.message || 'Could not confirm delivery.');
+        setTimeout(() => setToastMessage(''), 3000);
+      }
+    } catch {
+      setToastMessage('Error confirming delivery.');
+      setTimeout(() => setToastMessage(''), 3000);
+    } finally {
+      setConfirmingDelivery(false);
+    }
+  };
+
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!reviewName || !reviewComment) return;
@@ -329,9 +404,13 @@ export default function ProductDetailPage({
     try {
       const res = await fetch(`${apiUrl}/reviews`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({
           productId: product._id,
+          orderId: eligibility?.orderId,
           productName: product.name,
           customerName: reviewName,
           rating: reviewRating,
@@ -346,23 +425,15 @@ export default function ProductDetailPage({
         setReviewModalOpen(false);
         setReviewComment('');
         setReviewPhotoUrl('');
-        setToastMessage('Thank you! Your verified review has been published.');
-        setTimeout(() => setToastMessage(''), 3000);
+        setToastMessage('Thank you! Your verified review has been submitted.');
+        setTimeout(() => setToastMessage(''), 4000);
+      } else {
+        setToastMessage(data.message || 'Unable to submit review.');
+        setTimeout(() => setToastMessage(''), 4000);
       }
     } catch {
-      // Local fallback
-      const mockRev: ReviewItem = {
-        _id: `rev_${Date.now()}`,
-        customerName: reviewName,
-        rating: reviewRating,
-        title: reviewTitle || 'Verified Customer Review',
-        comment: reviewComment,
-        photos: reviewPhotoUrl ? [reviewPhotoUrl] : [],
-        verifiedPurchase: true,
-        createdAt: new Date().toISOString(),
-      };
-      setReviews([mockRev, ...reviews]);
-      setReviewModalOpen(false);
+      setToastMessage('Error connecting to review service.');
+      setTimeout(() => setToastMessage(''), 3000);
     } finally {
       setSubmittingReview(false);
     }
@@ -417,7 +488,7 @@ export default function ProductDetailPage({
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
-                <span>Multi-Angle Photos ({product.images?.length || 4})</span>
+                <span>{product.images && product.images.length > 1 ? `Multi-Angle Photos (${product.images.length})` : 'Product Photo'}</span>
               </button>
 
               <button
@@ -538,7 +609,7 @@ export default function ProductDetailPage({
               {/* Price in AUD */}
               <div className="mt-4 flex items-baseline gap-3">
                 <span className="text-3xl font-bold text-black">
-                  ${product.price} AUD
+                  {formatPrice(product.price)}
                 </span>
                 <span className="text-xs text-black font-semibold bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200">
                   ✓ Free Insured DHL Express Worldwide
@@ -723,17 +794,38 @@ export default function ProductDetailPage({
                 Customer Testimonials & Proof
               </span>
               <h3 className="text-2xl text-black font-semibold mt-1">
-                Verified Reviews ({reviews.length})
+                Reviews ({reviews.length})
               </h3>
             </div>
 
-            <button
-              onClick={() => setReviewModalOpen(true)}
-              className="px-4 py-2.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
-            >
-              <Camera className="w-3.5 h-3.5 text-white" />
-              <span>Write a Review & Add Photo</span>
-            </button>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              {eligibility?.canReview ? (
+                <button
+                  onClick={() => setReviewModalOpen(true)}
+                  className="px-4 py-2.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-semibold transition-all shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer flex items-center gap-2"
+                >
+                  <Camera className="w-3.5 h-3.5 text-white" />
+                  <span>Write a Review & Add Photo</span>
+                </button>
+              ) : eligibility?.hasReviewed ? (
+                <div className="px-4 py-2 rounded-xl bg-neutral-100 text-neutral-800 text-xs font-semibold flex items-center gap-1.5 border border-neutral-200">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span>You reviewed this piece</span>
+                </div>
+              ) : eligibility?.needsDeliveryConfirmation ? (
+                <button
+                  onClick={handleConfirmDeliveryFromProduct}
+                  disabled={confirmingDelivery}
+                  className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                  title="Click to confirm package receipt and review this piece"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>
+                    {confirmingDelivery ? 'Confirming Delivery...' : 'Confirm Delivery & Write Review'}
+                  </span>
+                </button>
+              ) : null}
+            </div>
           </div>
 
           {/* Customer Reviews Grid */}

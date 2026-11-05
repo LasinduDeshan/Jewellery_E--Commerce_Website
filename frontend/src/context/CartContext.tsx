@@ -1,6 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { useAuth, UserProfile } from './AuthContext';
 
 export interface CartItem {
   id: string; // unique item key (productId + size + metal)
@@ -49,38 +50,224 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 const FREE_SHIPPING_THRESHOLD = 500; // AUD $500 threshold for Free Express DHL Shipping
 const STANDARD_SHIPPING_FEE = 35; // AUD $35 standard international courier fee
 
+/**
+ * Returns a stable, sanitized storage key identifier for the current user.
+ * Guests / unregistered users share 'guest'.
+ * Logged-in accounts are strictly isolated by their unique ID or email.
+ */
+function getUserStorageKey(user: UserProfile | null): string {
+  if (!user) return 'guest';
+  const rawId = user._id || user.id || user.email || 'guest';
+  return String(rawId).toLowerCase().replace(/[^a-z0-9_@.-]/g, '_');
+}
+
+/**
+ * Checks whether a legacy, un-scoped cart ('aura_cart') exists from previous versions.
+ * If found, migrates it specifically to Deshan's account (as stated by user),
+ * clears the global key, and ensures unregistered users/other accounts start with clean bags.
+ */
+function handleLegacyCartMigration(currentUser: UserProfile | null): { cart: CartItem[]; coupon: AppliedCoupon | null } | null {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const legacyCartStr = localStorage.getItem('aura_cart');
+    const legacyCouponStr = localStorage.getItem('aura_coupon');
+
+    if (!legacyCartStr) return null;
+
+    let parsedLegacyCart: CartItem[] = [];
+    try {
+      parsedLegacyCart = JSON.parse(legacyCartStr);
+    } catch {
+      parsedLegacyCart = [];
+    }
+
+    let parsedLegacyCoupon: AppliedCoupon | null = null;
+    if (legacyCouponStr) {
+      try {
+        parsedLegacyCoupon = JSON.parse(legacyCouponStr);
+      } catch {
+        parsedLegacyCoupon = null;
+      }
+    }
+
+    // Always preserve Deshan's cart into a dedicated backup key
+    if (Array.isArray(parsedLegacyCart) && parsedLegacyCart.length > 0) {
+      localStorage.setItem('aura_cart_deshan_backup', JSON.stringify(parsedLegacyCart));
+      if (parsedLegacyCoupon) {
+        localStorage.setItem('aura_coupon_deshan_backup', JSON.stringify(parsedLegacyCoupon));
+      }
+    }
+
+    // Delete the shared un-scoped keys so no cross-user pollution happens
+    localStorage.removeItem('aura_cart');
+    localStorage.removeItem('aura_coupon');
+
+    // If the active user right now is Deshan, save into his user-scoped key immediately
+    const isDeshan =
+      currentUser &&
+      (currentUser.name?.toLowerCase().includes('deshan') ||
+       currentUser.email?.toLowerCase().includes('deshan'));
+
+    if (isDeshan) {
+      const userKey = getUserStorageKey(currentUser);
+      localStorage.setItem(`aura_cart_${userKey}`, JSON.stringify(parsedLegacyCart));
+      if (parsedLegacyCoupon) {
+        localStorage.setItem(`aura_coupon_${userKey}`, JSON.stringify(parsedLegacyCoupon));
+      }
+      return { cart: parsedLegacyCart, coupon: parsedLegacyCoupon };
+    }
+
+    return null;
+  } catch (err) {
+    console.error('Error in handleLegacyCartMigration:', err);
+    return null;
+  }
+}
+
+/**
+ * Loads the scoped cart and applied coupon for the given user profile.
+ */
+function loadScopedCart(user: UserProfile | null): { cart: CartItem[]; coupon: AppliedCoupon | null } {
+  if (typeof window === 'undefined') {
+    return { cart: [], coupon: null };
+  }
+
+  // Check one-time migration first
+  const migrated = handleLegacyCartMigration(user);
+  if (migrated) return migrated;
+
+  const userKey = getUserStorageKey(user);
+  const cartKey = `aura_cart_${userKey}`;
+  const couponKey = `aura_coupon_${userKey}`;
+
+  // If this user is Deshan, check if we need to restore from his preserved backup
+  const isDeshan =
+    user &&
+    (user.name?.toLowerCase().includes('deshan') ||
+     user.email?.toLowerCase().includes('deshan'));
+
+  if (isDeshan) {
+    const existingCart = localStorage.getItem(cartKey);
+    if (!existingCart || existingCart === '[]') {
+      const backupCartStr = localStorage.getItem('aura_cart_deshan_backup');
+      if (backupCartStr) {
+        try {
+          const backupCart = JSON.parse(backupCartStr);
+          if (Array.isArray(backupCart) && backupCart.length > 0) {
+            localStorage.setItem(cartKey, backupCartStr);
+            const backupCouponStr = localStorage.getItem('aura_coupon_deshan_backup');
+            let backupCoupon = null;
+            if (backupCouponStr) {
+              localStorage.setItem(couponKey, backupCouponStr);
+              backupCoupon = JSON.parse(backupCouponStr);
+            }
+            return { cart: backupCart, coupon: backupCoupon };
+          }
+        } catch (e) {
+          console.error('Failed to restore Deshan cart backup', e);
+        }
+      }
+    }
+  }
+
+  try {
+    const savedCart = localStorage.getItem(cartKey);
+    const savedCoupon = localStorage.getItem(couponKey);
+
+    return {
+      cart: savedCart ? JSON.parse(savedCart) : [],
+      coupon: savedCoupon ? JSON.parse(savedCoupon) : null,
+    };
+  } catch (e) {
+    console.error(`Failed to load cart for key [${userKey}]`, e);
+    return { cart: [], coupon: null };
+  }
+}
+
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, isLoading: isAuthLoading } = useAuth();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load cart from localStorage on mount
+  // Tracks the user key whose cart is currently loaded in memory
+  const activeUserKeyRef = useRef<string | null>(null);
+  const isInitializedRef = useRef(false);
+
+  // Synchronize cart state whenever the active user changes (Login / Logout / Switch account)
   useEffect(() => {
-    try {
-      const savedCart = localStorage.getItem('aura_cart');
-      const savedCoupon = localStorage.getItem('aura_coupon');
-      if (savedCart) {
-        setCart(JSON.parse(savedCart));
+    // If auth is in initial load, check if cached user is already in localStorage to avoid brief flash
+    if (isAuthLoading && !isInitializedRef.current) {
+      if (typeof window !== 'undefined') {
+        const cachedUserStr = localStorage.getItem('jewellery_user');
+        if (cachedUserStr) {
+          try {
+            const cachedUser = JSON.parse(cachedUserStr);
+            const cachedKey = getUserStorageKey(cachedUser);
+            activeUserKeyRef.current = cachedKey;
+            const data = loadScopedCart(cachedUser);
+            setCart(data.cart);
+            setAppliedCoupon(data.coupon);
+            setIsLoaded(true);
+            isInitializedRef.current = true;
+            return;
+          } catch {
+            // fallback to guest below
+          }
+        }
       }
-      if (savedCoupon) {
-        setAppliedCoupon(JSON.parse(savedCoupon));
+      return;
+    }
+
+    const nextUserKey = getUserStorageKey(user);
+
+    // Only re-hydrate cart if the user account actually switched
+    if (activeUserKeyRef.current !== nextUserKey || !isInitializedRef.current) {
+      // 1. If switching from an existing active user, flush their cart to storage first
+      if (activeUserKeyRef.current && isLoaded) {
+        try {
+          const prevCartKey = `aura_cart_${activeUserKeyRef.current}`;
+          const prevCouponKey = `aura_coupon_${activeUserKeyRef.current}`;
+          localStorage.setItem(prevCartKey, JSON.stringify(cart));
+          if (appliedCoupon) {
+            localStorage.setItem(prevCouponKey, JSON.stringify(appliedCoupon));
+          } else {
+            localStorage.removeItem(prevCouponKey);
+          }
+        } catch (e) {
+          console.error('Failed to flush previous user cart', e);
+        }
+      }
+
+      // 2. Set new active user key
+      activeUserKeyRef.current = nextUserKey;
+
+      // 3. Load the new user's isolated cart
+      const data = loadScopedCart(user);
+      setCart(data.cart);
+      setAppliedCoupon(data.coupon);
+      setIsLoaded(true);
+      isInitializedRef.current = true;
+    }
+  }, [user, isAuthLoading]);
+
+  // Save active user's cart to their scoped storage key whenever cart or coupon state changes
+  useEffect(() => {
+    if (!isLoaded || !activeUserKeyRef.current) return;
+
+    try {
+      const cartKey = `aura_cart_${activeUserKeyRef.current}`;
+      const couponKey = `aura_coupon_${activeUserKeyRef.current}`;
+
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      if (appliedCoupon) {
+        localStorage.setItem(couponKey, JSON.stringify(appliedCoupon));
+      } else {
+        localStorage.removeItem(couponKey);
       }
     } catch (e) {
-      console.error('Failed to load cart from storage', e);
-    } finally {
-      setIsLoaded(true);
-    }
-  }, []);
-
-  // Save cart to localStorage on changes
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('aura_cart', JSON.stringify(cart));
-      if (appliedCoupon) {
-        localStorage.setItem('aura_coupon', JSON.stringify(appliedCoupon));
-      } else {
-        localStorage.removeItem('aura_coupon');
-      }
+      console.error('Failed to save scoped cart', e);
     }
   }, [cart, appliedCoupon, isLoaded]);
 
@@ -115,6 +302,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const clearCart = useCallback(() => {
     setCart([]);
     setAppliedCoupon(null);
+    if (activeUserKeyRef.current) {
+      try {
+        localStorage.setItem(`aura_cart_${activeUserKeyRef.current}`, '[]');
+        localStorage.removeItem(`aura_coupon_${activeUserKeyRef.current}`);
+      } catch (e) {
+        console.error('Failed to clear cart storage', e);
+      }
+    }
   }, []);
 
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -171,9 +366,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const removeCoupon = () => {
     setAppliedCoupon(null);
+    if (activeUserKeyRef.current) {
+      try {
+        localStorage.removeItem(`aura_coupon_${activeUserKeyRef.current}`);
+      } catch (e) {}
+    }
   };
 
-  // 5.3: "Prefer to order via WhatsApp?" option
   // Pre-fills cart contents into WhatsApp message & auto-logs lead in backend admin desk
   const generateWhatsAppCartLink = async (customerName?: string, customerPhone?: string): Promise<string> => {
     const lines = [
@@ -203,8 +402,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          customerName: customerName || 'Worldwide Client',
-          phoneNumber: customerPhone || 'WhatsApp Direct Lead',
+          customerName: customerName || (user?.name ? user.name : 'Worldwide Client'),
+          phoneNumber: customerPhone || user?.phoneNumber || 'WhatsApp Direct Lead',
+          email: user?.email,
           source: 'Cart WhatsApp Checkout',
           cartItems: cart.map((c) => ({
             productId: c.productId,

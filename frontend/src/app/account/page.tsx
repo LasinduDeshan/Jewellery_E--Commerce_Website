@@ -31,6 +31,7 @@ import {
   X,
   Camera,
   Upload,
+  Star,
 } from 'lucide-react';
 
 interface OrderItem {
@@ -39,6 +40,7 @@ interface OrderItem {
   createdAt: string;
   status: string;
   isNgjaCleared: boolean;
+  isDeliveryConfirmed?: boolean;
   trackingNumber?: string;
   courierPartner?: string;
   trackingUrl?: string;
@@ -52,6 +54,8 @@ interface OrderItem {
     metal?: string;
     gemstone?: string;
     size?: string;
+    product?: { slug?: string; name?: string; _id?: string };
+    slug?: string;
   }>;
   timeline: Array<{
     status: string;
@@ -191,6 +195,31 @@ function AccountPageContent() {
       setLoadingOrders(false);
     }
   }, [token, user?.email]);
+
+  const [confirmingOrderId, setConfirmingOrderId] = useState<string | null>(null);
+
+  const handleConfirmOrderDelivery = async (orderId: string) => {
+    if (!token) return;
+    setConfirmingOrderId(orderId);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const res = await fetch(`${apiUrl}/orders/${orderId}/confirm-delivery`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      if (data.success) {
+        await fetchAccountData();
+      }
+    } catch {
+      // fallback
+    } finally {
+      setConfirmingOrderId(null);
+    }
+  };
 
   useEffect(() => {
     fetchAccountData();
@@ -1006,9 +1035,31 @@ function AccountPageContent() {
                           <span className="text-sm font-bold font-serif text-neutral-900">
                             ${order.totalPrice} {order.currency}
                           </span>
-                          <span className="text-xs px-3 py-1 rounded-full font-bold bg-neutral-200 text-neutral-900 border border-neutral-300">
+                          <span
+                            className={`text-xs px-3 py-1 rounded-full font-bold border ${
+                              order.status === 'Delivered'
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                : 'bg-neutral-200 text-neutral-900 border-neutral-300'
+                            }`}
+                          >
                             {order.status}
                           </span>
+
+                          {order.status !== 'Delivered' && order.status !== 'Cancelled' && (
+                            <button
+                              onClick={() => handleConfirmOrderDelivery(order._id)}
+                              disabled={confirmingOrderId === order._id}
+                              className="px-3.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer disabled:opacity-50"
+                              title="Click to confirm delivery upon receiving your parcel"
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span>
+                                {confirmingOrderId === order._id
+                                  ? 'Confirming...'
+                                  : 'Confirm Delivery Received'}
+                              </span>
+                            </button>
+                          )}
                         </div>
                       </div>
 
@@ -1023,9 +1074,24 @@ function AccountPageContent() {
                                 {it.metal} • {it.gemstone} {it.size ? `• Size: ${it.size}` : ''}
                               </p>
                             </div>
-                            <span className="text-xs font-bold text-neutral-900">
-                              ${it.price} {order.currency}
-                            </span>
+                            <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2">
+                              <span className="text-xs font-bold text-neutral-900">
+                                ${it.price} {order.currency}
+                              </span>
+  
+  
+                              {(order.status === 'Delivered' || order.isDeliveryConfirmed) && (
+                                <Link
+                                  href={`/product/${it.product?.slug || it.slug || it.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                                  className="px-2.5 py-1 rounded-md bg-black hover:bg-neutral-800 text-white text-[11px] font-semibold flex items-center gap-1 transition-colors"
+                                >
+                                  <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                                  <span>Review</span>
+                                </Link>
+                              )}
+                            </div>
+
+
                           </div>
                         ))}
                       </div>
@@ -1074,6 +1140,7 @@ function AccountPageContent() {
                             <span className="font-mono font-bold text-neutral-900">
                               {order.courierPartner}: {order.trackingNumber}
                             </span>
+
                           </div>
                           {order.trackingUrl && (
                             <a

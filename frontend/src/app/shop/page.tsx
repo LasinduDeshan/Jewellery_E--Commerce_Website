@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import shopHeroBg from '../../assets/img/0662d3bbdf90196b0a10b02f9a63f5a4.jpg';
 import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
 import { useCart } from '../../context/CartContext';
@@ -19,6 +21,8 @@ import {
   Check,
   ArrowUpDown,
   Filter,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 
 interface ProductItem {
@@ -61,6 +65,11 @@ export default function ShopCataloguePage() {
   const [sortBy, setSortBy] = useState<string>('newest');
   const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
   const [notification, setNotification] = useState<string>('');
+
+  // Pagination state (12 items per section / page)
+  const ITEMS_PER_PAGE = 12;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const collectionTopRef = useRef<HTMLElement>(null);
 
   const { addToCart } = useCart();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
@@ -153,6 +162,25 @@ export default function ShopCataloguePage() {
     });
   }, [products, searchTerm, selectedCategory, selectedMetal, selectedGemstone, selectedGender, sortBy]);
 
+  // Reset to first page whenever search, category, metal, gemstone, gender or sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, selectedMetal, selectedGemstone, selectedGender, searchTerm, sortBy]);
+
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE) || 1;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedProducts = useMemo(() => {
+    return filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredProducts, startIndex]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    setCurrentPage(newPage);
+    if (collectionTopRef.current) {
+      collectionTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const handleQuickAdd = (product: ProductItem, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -218,16 +246,29 @@ export default function ShopCataloguePage() {
         </div>
       )}
 
-      {/* Hero Header */}
-      <section className="bg-black text-white py-12 px-4 sm:px-6 lg:px-8 border-b border-neutral-800">
-        <div className="max-w-7xl mx-auto text-center">
-          <span className="text-neutral-400 text-xs font-semibold block mb-2">
-            Section 5.1 • Certified Fine Jewellery
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-normal text-white">
+      {/* Hero Header with Custom Imagery */}
+      <section className="relative text-white pt-28 sm:pt-36 lg:pt-40 pb-16 sm:pb-20 lg:pb-24 px-4 sm:px-6 lg:px-8 border-b border-neutral-800 overflow-hidden bg-black">
+        {/* Background Image Container */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src={shopHeroBg}
+            alt="Natural Ceylon Sapphire Collection"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center scale-105 transition-transform duration-1000"
+          />
+          {/* Refined Luxury Overlays */}
+          <div className="absolute inset-0 bg-black/45 backdrop-blur-[1px]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto text-center">
+          
+          <h1 className="text-3xl sm:text-5xl lg:text-4xl font-normal text-white tracking-tight">
             Natural Ceylon Sapphire Collection
           </h1>
-          <p className="mt-3 text-sm text-neutral-400 max-w-2xl mx-auto font-light leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base text-neutral-300 max-w-2xl mx-auto font-light leading-relaxed">
             Ethically gathered from Sri Lankan riverbeds, set in solid 925 sterling silver and 18K rose gold vermeil. Priced in AUD with insured express Australian delivery.
           </p>
 
@@ -239,9 +280,9 @@ export default function ShopCataloguePage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search by gemstone, ring, pendant, metal..."
-                className="w-full bg-neutral-900 border border-neutral-700 rounded-full py-3 pl-12 pr-10 text-sm text-white placeholder-neutral-400 focus:outline-none focus:border-white focus:ring-1 focus:ring-white"
+                className="w-full bg-black/60 backdrop-blur-md border border-white/25 rounded-full py-3.5 pl-12 pr-10 text-sm text-white placeholder-neutral-400 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all shadow-xl"
               />
-              <Search className="w-4 h-4 text-neutral-400 absolute left-4 top-3.5" />
+              <Search className="w-4 h-4 text-neutral-400 absolute left-4 top-4" />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
@@ -256,7 +297,7 @@ export default function ShopCataloguePage() {
       </section>
 
       {/* Main Content Area */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+      <section ref={collectionTopRef} id="collection-grid" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full scroll-mt-24">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Desktop Filter Sidebar */}
           <aside className="hidden lg:block w-64 shrink-0 space-y-6">
@@ -314,25 +355,45 @@ export default function ShopCataloguePage() {
               </label>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <button
+                  type="button"
                   onClick={() => setSelectedMetal(selectedMetal === 'silver' ? 'all' : 'silver')}
                   className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
                     selectedMetal === 'silver'
-                      ? 'border-black bg-black text-white font-bold'
+                      ? 'border-black bg-black text-white font-bold shadow-sm'
                       : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400'
                   }`}
                 >
-                  <div className={`w-4 h-4 rounded-full mx-auto mb-1 border ${selectedMetal === 'silver' ? 'bg-white border-neutral-300' : 'bg-neutral-300 border-neutral-400'}`} />
+                  <div
+                    className={`w-4 h-4 rounded-full mx-auto mb-1.5 shadow-sm transition-transform ${
+                      selectedMetal === 'silver'
+                        ? 'ring-2 ring-white/80 scale-105'
+                        : 'border border-neutral-300'
+                    }`}
+                    style={{
+                      background: 'linear-gradient(135deg, #FFFFFF 0%, #E2E6EA 35%, #C4CCD6 65%, #9EA7B3 100%)',
+                    }}
+                  />
                   <span>925 Silver</span>
                 </button>
                 <button
+                  type="button"
                   onClick={() => setSelectedMetal(selectedMetal === 'rose-gold' ? 'all' : 'rose-gold')}
                   className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
                     selectedMetal === 'rose-gold'
-                      ? 'border-black bg-black text-white font-bold'
+                      ? 'border-black bg-black text-white font-bold shadow-sm'
                       : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400'
                   }`}
                 >
-                  <div className={`w-4 h-4 rounded-full mx-auto mb-1 border ${selectedMetal === 'rose-gold' ? 'bg-white border-neutral-300' : 'bg-neutral-400 border-neutral-500'}`} />
+                  <div
+                    className={`w-4 h-4 rounded-full mx-auto mb-1.5 shadow-sm transition-transform ${
+                      selectedMetal === 'rose-gold'
+                        ? 'ring-2 ring-white/80 scale-105'
+                        : 'border border-[#E0907E]/50'
+                    }`}
+                    style={{
+                      background: 'linear-gradient(135deg, #FFE4D6 0%, #F5B8A5 30%, #E0907E 65%, #B76255 100%)',
+                    }}
+                  />
                   <span>18K Rose Gold</span>
                 </button>
               </div>
@@ -394,7 +455,7 @@ export default function ShopCataloguePage() {
             {/* Bespoke Customization CTA card */}
             <div className="p-4 rounded-2xl bg-neutral-100 border border-neutral-200 text-xs space-y-2">
               <div className="flex items-center gap-1.5 text-black font-bold">
-                <Sparkles className="w-3.5 h-3.5 text-black" />
+                
                 <span>Need a Custom Piece?</span>
               </div>
               <p className="text-neutral-600 text-[11px] leading-relaxed">
@@ -415,7 +476,17 @@ export default function ShopCataloguePage() {
             <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-neutral-200 mb-6">
               <div className="flex items-center gap-2">
                 <span className="text-xs text-neutral-500 font-medium">
-                  Showing <strong>{filteredProducts.length}</strong> heirloom pieces
+                  {filteredProducts.length === 0 ? (
+                    'Showing 0 heirloom pieces'
+                  ) : filteredProducts.length <= ITEMS_PER_PAGE ? (
+                    <>
+                      Showing <strong>{filteredProducts.length}</strong> heirloom pieces
+                    </>
+                  ) : (
+                    <>
+                      Showing <strong>{startIndex + 1}–{Math.min(startIndex + ITEMS_PER_PAGE, filteredProducts.length)}</strong> of <strong>{filteredProducts.length}</strong> heirloom pieces
+                    </>
+                  )}
                 </span>
                 {activeFilterCount > 0 && (
                   <span className="text-[11px] px-2 py-0.5 rounded-full bg-neutral-100 text-black font-semibold border border-neutral-200">
@@ -473,15 +544,80 @@ export default function ShopCataloguePage() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
-                  <ProductCard
-                    key={product._id}
-                    product={product}
-                    onQuickAdd={handleQuickAdd}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {paginatedProducts.map((product) => (
+                    <ProductCard
+                      key={product._id}
+                      product={product}
+                      onQuickAdd={handleQuickAdd}
+                    />
+                  ))}
+                </div>
+
+                {/* Bottom Pagination Navigation */}
+                {totalPages > 1 && (
+                  <div className="mt-12 pt-8 border-t border-neutral-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="text-xs text-neutral-500 order-2 sm:order-1">
+                      Showing section <strong>{currentPage}</strong> of <strong>{totalPages}</strong> ({filteredProducts.length} total pieces)
+                    </div>
+
+                    <nav aria-label="Collection pagination" className="flex items-center gap-2 order-1 sm:order-2">
+                      {/* Previous Page Button */}
+                      <button
+                        type="button"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                          currentPage === 1
+                            ? 'opacity-40 cursor-not-allowed text-neutral-400 bg-neutral-100 border border-neutral-200'
+                            : 'text-neutral-800 bg-white border border-neutral-300 hover:border-black hover:text-black cursor-pointer shadow-2xs hover:shadow-xs'
+                        }`}
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        <span>Previous</span>
+                      </button>
+
+                      {/* Page Numbers */}
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+                          const isActive = pageNum === currentPage;
+                          return (
+                            <button
+                              key={pageNum}
+                              type="button"
+                              onClick={() => handlePageChange(pageNum)}
+                              aria-current={isActive ? 'page' : undefined}
+                              className={`min-w-[36px] h-9 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                                isActive
+                                  ? 'bg-black text-white shadow-sm ring-1 ring-black'
+                                  : 'bg-white text-neutral-700 border border-neutral-200 hover:border-black hover:text-black hover:bg-neutral-50'
+                              }`}
+                            >
+                              {pageNum}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Next Page Button */}
+                      <button
+                        type="button"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                          currentPage === totalPages
+                            ? 'opacity-40 cursor-not-allowed text-neutral-400 bg-neutral-100 border border-neutral-200'
+                            : 'text-neutral-800 bg-white border border-neutral-300 hover:border-black hover:text-black cursor-pointer shadow-2xs hover:shadow-xs'
+                        }`}
+                      >
+                        <span>Next</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </nav>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -527,20 +663,38 @@ export default function ShopCataloguePage() {
               <span className="text-xs font-bold block mb-2 text-black">Precious Metal</span>
               <div className="flex gap-2 text-xs">
                 <button
-                  onClick={() => setSelectedMetal('silver')}
-                  className={`flex-1 py-2 border rounded text-center cursor-pointer ${
+                  type="button"
+                  onClick={() => setSelectedMetal(selectedMetal === 'silver' ? 'all' : 'silver')}
+                  className={`flex-1 py-2.5 border rounded-xl text-center cursor-pointer flex items-center justify-center gap-2 transition-all ${
                     selectedMetal === 'silver' ? 'border-black bg-black text-white font-bold' : 'border-neutral-200 text-neutral-700'
                   }`}
                 >
-                  925 Silver
+                  <span
+                    className={`w-3.5 h-3.5 rounded-full shadow-sm shrink-0 ${
+                      selectedMetal === 'silver' ? 'ring-2 ring-white/80' : 'border border-neutral-300'
+                    }`}
+                    style={{
+                      background: 'linear-gradient(135deg, #FFFFFF 0%, #E2E6EA 35%, #C4CCD6 65%, #9EA7B3 100%)',
+                    }}
+                  />
+                  <span>925 Silver</span>
                 </button>
                 <button
-                  onClick={() => setSelectedMetal('rose-gold')}
-                  className={`flex-1 py-2 border rounded text-center cursor-pointer ${
+                  type="button"
+                  onClick={() => setSelectedMetal(selectedMetal === 'rose-gold' ? 'all' : 'rose-gold')}
+                  className={`flex-1 py-2.5 border rounded-xl text-center cursor-pointer flex items-center justify-center gap-2 transition-all ${
                     selectedMetal === 'rose-gold' ? 'border-black bg-black text-white font-bold' : 'border-neutral-200 text-neutral-700'
                   }`}
                 >
-                  Rose Gold
+                  <span
+                    className={`w-3.5 h-3.5 rounded-full shadow-sm shrink-0 ${
+                      selectedMetal === 'rose-gold' ? 'ring-2 ring-white/80' : 'border border-[#E0907E]/50'
+                    }`}
+                    style={{
+                      background: 'linear-gradient(135deg, #FFE4D6 0%, #F5B8A5 30%, #E0907E 65%, #B76255 100%)',
+                    }}
+                  />
+                  <span>18K Rose Gold</span>
                 </button>
               </div>
             </div>

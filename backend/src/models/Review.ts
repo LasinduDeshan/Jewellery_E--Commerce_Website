@@ -9,6 +9,7 @@ export interface IReview extends Document {
   photos?: string[];
   rating: number;
   comment: string;
+  verifiedPurchase?: boolean;
   isApproved: boolean;
   status: 'pending' | 'approved' | 'rejected';
   createdAt: Date;
@@ -65,6 +66,11 @@ const ReviewSchema = new Schema<IReview>(
       trim: true,
       minlength: 3,
       maxlength: 1000,
+    },
+
+    verifiedPurchase: {
+      type: Boolean,
+      default: true,
     },
 
     isApproved: {

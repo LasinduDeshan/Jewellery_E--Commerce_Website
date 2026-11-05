@@ -1,7 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { useAuth, UserProfile } from './AuthContext';
 
 export interface WishlistItem {
   _id: string;
@@ -25,61 +25,113 @@ interface WishlistContextType {
   clearWishlist: () => void;
 }
 
-const defaultMockWishlist: WishlistItem[] = [
-  {
-    _id: 'mock_w1',
-    title: 'Royal Ceylon Sapphire Solitaire Ring',
-    slug: 'royal-ceylon-sapphire-ring',
-    price: 1850,
-    discountPrice: 1650,
-    image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=600&q=80',
-    categoryName: 'Rings',
-    metal: '18K Rose Gold',
-    gemstone: 'Royal Blue Sapphire (2.2ct)',
-  },
-  {
-    _id: 'mock_w2',
-    title: 'Padparadscha Lotus Sunrise Halo Pendant',
-    slug: 'padparadscha-halo-pendant',
-    price: 3200,
-    image: 'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?auto=format&fit=crop&w=600&q=80',
-    categoryName: 'Necklaces',
-    metal: '18K Yellow Gold',
-    gemstone: 'Padparadscha Sapphire (1.8ct)',
-  },
-];
-
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
+function getWishlistStorageKey(user: UserProfile | null): string {
+  if (!user) return 'guest';
+  const rawId = user._id || user.id || user.email || 'guest';
+  return String(rawId).toLowerCase().replace(/[^a-z0-9_@.-]/g, '_');
+}
+
 export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, token } = useAuth();
+  const { user, token, isLoading: isAuthLoading } = useAuth();
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load wishlist from localStorage or backend
+  const activeUserKeyRef = useRef<string | null>(null);
+  const isInitializedRef = useRef(false);
+
+  // Sync wishlist whenever user changes or logs in/out
   useEffect(() => {
-    const saved = localStorage.getItem('jewellery_wishlist');
-    if (saved) {
-      try {
-        setWishlist(JSON.parse(saved));
-      } catch (e) {
-        setWishlist(defaultMockWishlist);
+    if (isAuthLoading && !isInitializedRef.current) {
+      if (typeof window !== 'undefined') {
+        const cachedUserStr = localStorage.getItem('jewellery_user');
+        if (cachedUserStr) {
+          try {
+            const cachedUser = JSON.parse(cachedUserStr);
+            const cachedKey = getWishlistStorageKey(cachedUser);
+            activeUserKeyRef.current = cachedKey;
+            const saved = localStorage.getItem(`jewellery_wishlist_${cachedKey}`);
+            if (saved) {
+              setWishlist(JSON.parse(saved));
+            }
+            setIsLoaded(true);
+            isInitializedRef.current = true;
+            return;
+          } catch {}
+        }
       }
-    } else {
-      setWishlist(defaultMockWishlist);
+      return;
     }
-  }, []);
 
-  // Save to localStorage
+    const nextUserKey = getWishlistStorageKey(user);
+
+    if (activeUserKeyRef.current !== nextUserKey || !isInitializedRef.current) {
+      // Flush previous user wishlist to storage
+      if (activeUserKeyRef.current && isLoaded) {
+        try {
+          localStorage.setItem(`jewellery_wishlist_${activeUserKeyRef.current}`, JSON.stringify(wishlist));
+        } catch (e) {}
+      }
+
+      activeUserKeyRef.current = nextUserKey;
+
+      // Load new user's wishlist
+      if (typeof window !== 'undefined') {
+        try {
+          const saved = localStorage.getItem(`jewellery_wishlist_${nextUserKey}`);
+          setWishlist(saved ? JSON.parse(saved) : []);
+        } catch {
+          setWishlist([]);
+        }
+      }
+
+      setIsLoaded(true);
+      isInitializedRef.current = true;
+
+      // If user is authenticated, sync from backend
+      if (token) {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        fetch(`${apiUrl}/user/wishlist`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success && Array.isArray(data.data)) {
+              const formatted: WishlistItem[] = data.data.map((p: any) => ({
+                _id: p._id,
+                title: p.name || p.title,
+                slug: p.slug,
+                price: p.price,
+                discountPrice: p.discountPrice,
+                image: p.images?.[0]?.url || p.image || '/img/placeholder.jpg',
+                categoryName: p.category,
+                metal: p.metal?.type,
+                gemstone: p.gemstone?.type,
+              }));
+              setWishlist(formatted);
+              localStorage.setItem(`jewellery_wishlist_${nextUserKey}`, JSON.stringify(formatted));
+            }
+          })
+          .catch(() => {});
+      }
+    }
+  }, [user, token, isAuthLoading]);
+
+  // Save to user-scoped storage key whenever wishlist state changes
   useEffect(() => {
-    localStorage.setItem('jewellery_wishlist', JSON.stringify(wishlist));
+    if (!isLoaded || !activeUserKeyRef.current) return;
+    try {
+      localStorage.setItem(`jewellery_wishlist_${activeUserKeyRef.current}`, JSON.stringify(wishlist));
+    } catch (e) {}
+  }, [wishlist, isLoaded]);
+
+  const isInWishlist = useCallback((productId: string) => {
+    return wishlist.some((item) => item._id === productId);
   }, [wishlist]);
 
-  const isInWishlist = (productId: string) => {
-    return wishlist.some((item) => item._id === productId);
-  };
-
-  const toggleWishlist = async (product: WishlistItem) => {
-    const exists = isInWishlist(product._id);
+  const toggleWishlist = useCallback(async (product: WishlistItem) => {
+    const exists = wishlist.some((item) => item._id === product._id);
     let updated: WishlistItem[];
 
     if (exists) {
@@ -106,9 +158,9 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         console.warn('Backend wishlist sync fallback to local');
       }
     }
-  };
+  }, [wishlist, token]);
 
-  const removeFromWishlist = async (productId: string) => {
+  const removeFromWishlist = useCallback(async (productId: string) => {
     const updated = wishlist.filter((item) => item._id !== productId);
     setWishlist(updated);
 
@@ -123,13 +175,18 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           },
           body: JSON.stringify({ productId }),
         });
-      } catch (e) {
-        // ignore
-      }
+      } catch (e) {}
     }
-  };
+  }, [wishlist, token]);
 
-  const clearWishlist = () => setWishlist([]);
+  const clearWishlist = useCallback(() => {
+    setWishlist([]);
+    if (activeUserKeyRef.current) {
+      try {
+        localStorage.setItem(`jewellery_wishlist_${activeUserKeyRef.current}`, '[]');
+      } catch (e) {}
+    }
+  }, []);
 
   return (
     <WishlistContext.Provider
