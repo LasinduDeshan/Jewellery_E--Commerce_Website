@@ -13,8 +13,20 @@ import {
 
 const VIDEOS = [
   {
+    id: 'video-gemini',
+    src: '/videos/gemini_generated_video_9cb08cca.mp4',
+    poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=2000&q=85',
+    tag: 'Atelier Showcase',
+    headline: 'Celestial Sapphire Fire',
+    description: 'Immerse in the pure crystalline brilliance and unheated optical fire of certified Ceylon sapphires.',
+    leftLabel: 'Atelier Precision',
+    leftText: 'Meticulously faceted by master Sri Lankan lapidaries for extraordinary optical refraction.',
+    rightLabel: 'Bespoke Heirlooms',
+    rightText: 'Custom crafted in solid 925 sterling silver and solid 18K gold vermeil.'
+  },
+  {
     id: 'video-1',
-    src: '/videos/1024.mp4',
+    src: '/videos/gemini_generated_video_81092fbd.mp4',
     poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=2000&q=85',
     tag: 'Haute Joaillerie',
     headline: 'Imperial Ceylon Corundum',
@@ -38,7 +50,7 @@ const VIDEOS = [
   },
   {
     id: 'video-3',
-    src: '/videos/1024.mp4',
+    src: '/videos/hero2.mp4',
     poster: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=2000&q=85',
     tag: 'Fair Luxury',
     headline: 'Certified Earth to Heirloom',
@@ -206,9 +218,9 @@ export function ProvenanceHero() {
               >
                 <span>Design Bespoke Piece</span>
               </Link>
-
-             
             </div>
+
+
           </div>
 
           {/* Right Small Description */}

@@ -6,6 +6,7 @@ import { AuthProvider } from "../context/AuthContext";
 import { AuthModalProvider } from "../context/AuthModalContext";
 import { WishlistProvider } from "../context/WishlistContext";
 import { CartProvider } from "../context/CartContext";
+import { CurrencyProvider } from "../context/CurrencyContext";
 import { WhatsAppFloatingButton } from "../components/layout/WhatsAppFloatingButton";
 
 const inter = Inter({
@@ -43,7 +44,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${cormorant.variable} ${tangerine.variable} ${inter.className} h-full antialiased`}
+      className={`${inter.variable} ${cormorant.variable} ${tangerine.variable} ${inter.className} h-full antialiased bg-[#111113]`}
     >
       <body className="min-h-full flex flex-col bg-white text-neutral-900 font-sans selection:bg-black selection:text-white">
         <GoogleOAuthProvider
@@ -53,8 +54,10 @@ export default function RootLayout({
             <AuthModalProvider>
               <WishlistProvider>
                 <CartProvider>
-                  {children}
-                  <WhatsAppFloatingButton />
+                  <CurrencyProvider>
+                    {children}
+                    <WhatsAppFloatingButton />
+                  </CurrencyProvider>
                 </CartProvider>
               </WishlistProvider>
             </AuthModalProvider>

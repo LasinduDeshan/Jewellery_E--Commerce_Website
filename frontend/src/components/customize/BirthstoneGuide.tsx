@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { BIRTHSTONE_GUIDE } from '../../data/customizationData';
-import { Calendar, Info, Sparkles, Check } from 'lucide-react';
+import { Calendar, Info, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface BirthstoneGuideProps {
   onSelectBirthstoneSapphire: (sapphireType: string) => void;
@@ -17,12 +18,22 @@ export const BirthstoneGuide: React.FC<BirthstoneGuideProps> = ({
     BIRTHSTONE_GUIDE.find((b) => b.month === selectedMonth) || BIRTHSTONE_GUIDE[8];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-neutral-500 text-xs font-semibold">
+    <section
+      id="birthstone-guide-section"
+      className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
+    >
+      {/* Animated Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-50px' }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="text-center max-w-3xl mx-auto mb-12"
+      >
+        <span className="text-neutral-500 text-xs font-semibold uppercase tracking-wider block">
           Curated Gifting & Meaning
         </span>
-        <h2 className="text-3xl sm:text-4xl font-cormorant text-black mt-2 font-normal">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-cormorant text-black mt-2 font-normal">
           Sapphire Birthstone Styling Guide
         </h2>
         <p className="mt-4 text-neutral-600 text-sm sm:text-base leading-relaxed font-light">
@@ -36,10 +47,16 @@ export const BirthstoneGuide: React.FC<BirthstoneGuideProps> = ({
             <strong>Note:</strong> Blue Sapphire is the traditional September birthstone. Other months represent our master jewellers&apos; exclusive sapphire styling suggestions for milestone gifting.
           </span>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Month Selector Pills */}
-      <div className="flex items-center justify-center flex-wrap gap-2 mb-10 max-w-4xl mx-auto">
+      {/* Month Selector Pills with Stagger */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+        className="flex items-center justify-center flex-wrap gap-2 mb-10 max-w-4xl mx-auto"
+      >
         {BIRTHSTONE_GUIDE.map((item) => {
           const isActive = item.month === selectedMonth;
           const isSept = item.month === 'September';
@@ -50,7 +67,7 @@ export const BirthstoneGuide: React.FC<BirthstoneGuideProps> = ({
               onClick={() => setSelectedMonth(item.month)}
               className={`px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                 isActive
-                  ? 'bg-black text-white shadow-md'
+                  ? 'bg-black text-white shadow-md scale-105'
                   : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-800'
               }`}
             >
@@ -67,12 +84,19 @@ export const BirthstoneGuide: React.FC<BirthstoneGuideProps> = ({
             </button>
           );
         })}
-      </div>
+      </motion.div>
 
       {/* Featured Month Detail Card */}
-      <div className="max-w-4xl mx-auto bg-neutral-950 text-white rounded-3xl p-8 sm:p-10 border border-neutral-800 shadow-2xl relative overflow-hidden">
+      <motion.div
+        layout
+        initial={{ opacity: 0, y: 25 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-50px' }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="max-w-4xl mx-auto bg-neutral-950 text-white rounded-3xl p-8 sm:p-10 border border-neutral-800 shadow-2xl relative overflow-hidden"
+      >
         <div
-          className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full blur-3xl opacity-20 pointer-events-none"
+          className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full blur-3xl opacity-20 pointer-events-none transition-colors duration-700"
           style={{ backgroundColor: activeMonthData.stoneColor }}
         />
 
@@ -100,7 +124,7 @@ export const BirthstoneGuide: React.FC<BirthstoneGuideProps> = ({
 
           <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-neutral-900 border border-neutral-800 text-center">
             <div
-              className="w-16 h-16 rounded-full shadow-lg border-2 border-white/20 mb-4 flex items-center justify-center"
+              className="w-16 h-16 rounded-full shadow-lg border-2 border-white/20 mb-4 flex items-center justify-center transition-colors duration-500"
               style={{ backgroundColor: activeMonthData.stoneColor }}
             >
               <Sparkles className="w-6 h-6 text-white/90" />
@@ -108,14 +132,16 @@ export const BirthstoneGuide: React.FC<BirthstoneGuideProps> = ({
 
             <button
               onClick={() => onSelectBirthstoneSapphire(activeMonthData.recommendedSapphire)}
-              className="w-full py-2.5 px-4 rounded-full bg-white hover:bg-neutral-200 text-black text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+              className="w-full py-2.5 px-4 rounded-full bg-white hover:bg-neutral-200 text-black text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-95"
             >
               <Sparkles className="w-3.5 h-3.5 text-black" />
               <span>Apply to My Design</span>
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
+
+export default BirthstoneGuide;

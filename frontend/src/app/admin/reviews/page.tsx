@@ -124,7 +124,7 @@ export default function AdminReviewsPage() {
                   </span>
                   <div className="flex gap-0.5 text-neutral-800">
                     {[...Array(rev.rating || 5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-black text-black" />
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
                 </div>

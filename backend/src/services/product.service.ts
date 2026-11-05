@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Product, IProduct } from '../models/Product.js';
 import { SEED_PRODUCTS, SeedProduct } from '../data/seedProducts.js';
 
@@ -48,16 +49,7 @@ export const createProduct = async (
       return { ...img, sortOrder: img.sortOrder || idx + 1 };
     });
 
-    const fallbackUrl =
-      productData.images[0]?.url ||
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80';
-    while (productData.images.length < 4) {
-      productData.images.push({
-        url: fallbackUrl,
-        alt: `${productData.name} angle ${productData.images.length + 1}`,
-        sortOrder: productData.images.length + 1,
-      });
-    }
+
   }
 
   try {
@@ -292,8 +284,29 @@ export const getProductBySlug = async (slug: string): Promise<any | null> => {
 
 export const getRelatedProducts = async (
   currentIdOrSlug: string,
-  limit: number = 4
+  limit: number = 8
 ): Promise<any[]> => {
+  try {
+    const isObjectId = mongoose.Types.ObjectId.isValid(currentIdOrSlug);
+    const current: any = await Product.findOne(
+      isObjectId
+        ? { $or: [{ _id: currentIdOrSlug }, { slug: currentIdOrSlug }] }
+        : { slug: currentIdOrSlug }
+    ).lean();
+
+    const query: any = { isActive: true };
+    if (current) {
+      query._id = { $ne: current._id };
+    }
+
+    const dbProducts = await Product.find(query).limit(limit).lean();
+    if (dbProducts && dbProducts.length > 0) {
+      return dbProducts;
+    }
+  } catch (err: any) {
+    console.warn('MongoDB related products query fallback:', err.message);
+  }
+
   const current =
     runtimeProducts.find((p) => p._id === currentIdOrSlug || p.slug === currentIdOrSlug) ||
     runtimeProducts[0];
@@ -302,8 +315,7 @@ export const getRelatedProducts = async (
     .filter(
       (p) =>
         p._id !== current?._id &&
-        p.slug !== current?.slug &&
-        (p.category === current?.category || p.gemstone?.type?.includes('Sapphire'))
+        p.slug !== current?.slug
     )
     .slice(0, limit);
 

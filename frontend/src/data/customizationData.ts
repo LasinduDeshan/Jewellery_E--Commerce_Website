@@ -27,6 +27,7 @@ export interface BirthstoneMonth {
   stoneColor: string;
   symbolism: string;
   stylingNote: string;
+  image: string;
 }
 
 export interface ProcessStep {
@@ -144,7 +145,7 @@ export const SAPPHIRE_CUTS: SapphireCut[] = [
     sparkleProfile: 'Maximum Surface Fire & Elongation',
     description: 'Accentuates the finger with graceful elongation while preserving maximum carat weight and color density.',
     bestSuitedFor: 'Engagement rings, solitaire pendants',
-    image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=600&q=80',
+    image: '/img/cuts/oval.jpg',
   },
   {
     id: 'cushion',
@@ -153,7 +154,7 @@ export const SAPPHIRE_CUTS: SapphireCut[] = [
     sparkleProfile: 'Vintage Romance & Soft Pillow Corners',
     description: 'Combines antique vintage charm with large open facets that deepen the gemstone’s inherent rich color saturation.',
     bestSuitedFor: 'Halo settings, three-stone rings',
-    image: 'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?auto=format&fit=crop&w=600&q=80',
+    image: '/img/cuts/cushion.jpg',
   },
   {
     id: 'round-brilliant',
@@ -162,7 +163,7 @@ export const SAPPHIRE_CUTS: SapphireCut[] = [
     sparkleProfile: 'Maximum Scintillation & Dispersion',
     description: '57 precisely calculated facets engineered to reflect light from every angle, creating vivid kaleidoscopic sparkle.',
     bestSuitedFor: 'Classic solitaires, stud earrings',
-    image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80',
+    image: '/img/cuts/round-brilliant.jpg',
   },
   {
     id: 'emerald-cut',
@@ -171,7 +172,7 @@ export const SAPPHIRE_CUTS: SapphireCut[] = [
     sparkleProfile: 'Hall-of-Mirrors Optical Clarity',
     description: 'Parallel rectangular step facets highlight crystal clarity and aristocratic elegance over flash sparkle.',
     bestSuitedFor: 'Art Deco settings, bezel-set pieces',
-    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=600&q=80',
+    image: '/img/cuts/emerald-cut.jpg',
   },
   {
     id: 'pear',
@@ -180,7 +181,7 @@ export const SAPPHIRE_CUTS: SapphireCut[] = [
     sparkleProfile: 'Dramatic Point & Brilliant Basin',
     description: 'Marries the brilliant sparkle of a round cut with the elongated grace of a marquise, creating a flattering silhouette.',
     bestSuitedFor: 'Drop earrings, directional rings, necklaces',
-    image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=600&q=80',
+    image: '/img/cuts/pear.jpg',
   },
   {
     id: 'princess',
@@ -189,7 +190,7 @@ export const SAPPHIRE_CUTS: SapphireCut[] = [
     sparkleProfile: 'Contemporary Geometric Sparkle',
     description: 'Modern 90-degree square symmetry with pyramid chevron pavilion facets for intense, crisp light reflection.',
     bestSuitedFor: 'Modern channel & prong settings',
-    image: 'https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=600&q=80',
+    image: '/img/cuts/princess.jpg',
   },
 ];
 
@@ -200,6 +201,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#4A3B69',
     symbolism: 'Constancy, inner resolve, and calm nobility',
     stylingNote: 'Styling recommendation offering a velvety alternative to garnet.',
+    image: '/img/203eda56cc198bbd78668d9f76616317.jpg',
   },
   {
     month: 'February',
@@ -207,6 +209,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#8C6C9F',
     symbolism: 'Serenity, royalty, and creative intuition',
     stylingNote: 'Curated as a durable luxury alternative to amethyst.',
+    image: '/img/natural-pink-sapphires-Photoroom.png',
   },
   {
     month: 'March',
@@ -214,6 +217,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#5B84B1',
     symbolism: 'Youthful vitality, oceanic tranquility, and truth',
     stylingNote: 'Matches the refreshing tones of aquamarine with superior lustre.',
+    image: '/img/cuts/oval.jpg',
   },
   {
     month: 'April',
@@ -221,6 +225,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#98A3B2',
     symbolism: 'Purity, clarity, invincible strength',
     stylingNote: 'Natural corundum choice pairing diamond clarity with sustainable heritage.',
+    image: '/img/colorless-white-sapphires-scaled-Photoroom.png',
   },
   {
     month: 'May',
@@ -228,6 +233,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#1E6B52',
     symbolism: 'Renewal, prosperity, and harmonic growth',
     stylingNote: 'A durable gemstone recommendation evoking emerald richness.',
+    image: '/img/091ce2cd7cf5cd013154c34765e13d6a.jpg',
   },
   {
     month: 'June',
@@ -235,13 +241,15 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#E68A6C',
     symbolism: 'Warm affection, rare grace, and sunset allure',
     stylingNote: 'Curated styling choice inspired by the warm sheen of pearls.',
+    image: '/img/1-padparadschasapphirePA2051-300x300-Photoroom.png',
   },
   {
     month: 'July',
-    recommendedSapphire: 'Magenta & Vivid Pink Sapphire',
+    recommendedSapphire: 'Imperial Ceylon Ruby & Vivid Red',
     stoneColor: '#D1345B',
     symbolism: 'Passion, boundless courage, and heartfelt devotion',
     stylingNote: 'A radiant Sri Lankan sister gem to natural rubies.',
+    image: '/img/1-naturaluntreatedrubyU2639-Photoroom.png',
   },
   {
     month: 'August',
@@ -249,6 +257,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#8E9A34',
     symbolism: 'Sunlit warmth, protection, and boundless energy',
     stylingNote: 'Echoes the joyful light of peridot in a scratch-resistant setting.',
+    image: '/img/cuts/emerald-cut.jpg',
   },
   {
     month: 'September',
@@ -256,6 +265,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#0F2862',
     symbolism: 'Sincerity, wisdom, divine protection, and royalty',
     stylingNote: 'The official, historical birthstone for September worldwide.',
+    image: '/img/cuts/cushion.jpg',
   },
   {
     month: 'October',
@@ -263,6 +273,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#E58A9F',
     symbolism: 'Compassion, unconditional tenderness, and luck',
     stylingNote: 'Curated pastel elegance recommended for October gifting.',
+    image: '/img/66eb990fb3b88ca8d1edabec3e9bbd1a.jpg',
   },
   {
     month: 'November',
@@ -270,6 +281,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#D68910',
     symbolism: 'Abundance, radiant joy, and enduring wisdom',
     stylingNote: 'Styling recommendation capturing golden citrine tones.',
+    image: '/img/NSC-Y2448-radiant-cut-vivid-yellow-sapphire-Small-300x300-Photoroom.png',
   },
   {
     month: 'December',
@@ -277,6 +289,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#1B4F72',
     symbolism: 'Intuition, peaceful stillness, and confidence',
     stylingNote: 'Deep blue hues complementing turquoise & tanzanite traditions.',
+    image: '/img/cuts/round-brilliant.jpg',
   },
 ];
 

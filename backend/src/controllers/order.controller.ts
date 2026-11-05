@@ -58,7 +58,9 @@ export const getAllOrders = asyncHandler(async (req: Request, res: Response) => 
 export const getMyOrders = asyncHandler(async (req: AuthRequest, res: Response) => {
   let orders: any[] = [];
   try {
-    orders = await Order.find({ user: req.user?.userId }).sort({ createdAt: -1 });
+    orders = await Order.find({ user: req.user?.userId })
+      .populate('orderItems.product', 'slug name images price')
+      .sort({ createdAt: -1 });
     // Real database orders only
 
   } catch (e) {
@@ -382,4 +384,82 @@ export const updateOrderTracking = asyncHandler(async (req: Request, res: Respon
   }
 
   res.status(200).json(ApiResponse.success(order, 'Order tracking updated successfully'));
+});
+
+// Customer: Confirm delivery of received order to unlock reviews
+export const confirmOrderDelivery = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    throw new ApiError(401, 'Authentication required');
+  }
+
+  let order: any;
+  try {
+    order = await Order.findOne({
+      $or: [{ _id: id }, { orderNumber: id }],
+      user: userId,
+    });
+  } catch (e) {
+    order = inMemoryOrders.find((o) => (o._id === id || o.orderNumber === id) && o.user === userId);
+  }
+
+  if (!order) {
+    throw new ApiError(404, 'Order not found or does not belong to you');
+  }
+
+  if (order.status === 'Cancelled') {
+    throw new ApiError(400, 'Cannot confirm delivery on a cancelled order');
+  }
+
+  order.status = 'Delivered';
+  order.isDeliveryConfirmed = true;
+  order.deliveryConfirmedAt = new Date();
+
+  // Mark all timeline steps up to Delivered as completed
+  const statusesOrder = [
+    'Processing',
+    'Gem Setting & Inspection',
+    'Pending NGJA Export Clearance',
+    'Shipped',
+    'Delivered',
+  ];
+  if (order.timeline && Array.isArray(order.timeline)) {
+    order.timeline.forEach((step: any) => {
+      const stepIdx = statusesOrder.indexOf(step.status);
+      if (stepIdx <= 4) {
+        step.isCompleted = true;
+      }
+    });
+  }
+
+  try {
+    if (typeof order.save === 'function') {
+      await order.save();
+    }
+  } catch (e) {
+    // handled in-memory
+  }
+
+  const memIdx = inMemoryOrders.findIndex((o) => o._id === id || o.orderNumber === id);
+  if (memIdx > -1) {
+    inMemoryOrders[memIdx] = {
+      ...inMemoryOrders[memIdx],
+      status: 'Delivered',
+      isDeliveryConfirmed: true,
+      deliveryConfirmedAt: order.deliveryConfirmedAt,
+      timeline: order.timeline,
+      updatedAt: new Date(),
+    };
+  }
+
+  res
+    .status(200)
+    .json(
+      ApiResponse.success(
+        order,
+        'Delivery confirmed successfully! You can now review your purchased pieces.'
+      )
+    );
 });

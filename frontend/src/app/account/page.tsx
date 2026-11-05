@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Navbar } from '../../components/layout/Navbar';
 import { useAuth, SavedAddress } from '../../context/AuthContext';
 import { useWishlist } from '../../context/WishlistContext';
@@ -31,6 +31,7 @@ import {
   X,
   Camera,
   Upload,
+  Star,
 } from 'lucide-react';
 
 interface OrderItem {
@@ -39,6 +40,7 @@ interface OrderItem {
   createdAt: string;
   status: string;
   isNgjaCleared: boolean;
+  isDeliveryConfirmed?: boolean;
   trackingNumber?: string;
   courierPartner?: string;
   trackingUrl?: string;
@@ -52,6 +54,8 @@ interface OrderItem {
     metal?: string;
     gemstone?: string;
     size?: string;
+    product?: { slug?: string; name?: string; _id?: string };
+    slug?: string;
   }>;
   timeline: Array<{
     status: string;
@@ -89,12 +93,27 @@ const avatarPresets = [
   },
 ];
 
-export default function AccountPage() {
+type AccountTab = 'overview' | 'orders' | 'wishlist' | 'addresses' | 'custom_quotes' | 'security';
+
+function AccountPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, token, logout, updateUser } = useAuth();
   const { wishlist, removeFromWishlist } = useWishlist();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'wishlist' | 'addresses' | 'custom_quotes' | 'security'>('overview');
+  const urlTab = searchParams?.get('tab');
+  const validTabs: AccountTab[] = ['overview', 'orders', 'wishlist', 'addresses', 'custom_quotes', 'security'];
+  const activeTab: AccountTab = urlTab && validTabs.includes(urlTab as AccountTab)
+    ? (urlTab as AccountTab)
+    : 'overview';
+
+  const handleTabChange = (tab: AccountTab) => {
+    if (tab === 'overview') {
+      router.push('/account');
+    } else {
+      router.push(`/account?tab=${tab}`);
+    }
+  };
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [customQuotes, setCustomQuotes] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
@@ -176,6 +195,31 @@ export default function AccountPage() {
       setLoadingOrders(false);
     }
   }, [token, user?.email]);
+
+  const [confirmingOrderId, setConfirmingOrderId] = useState<string | null>(null);
+
+  const handleConfirmOrderDelivery = async (orderId: string) => {
+    if (!token) return;
+    setConfirmingOrderId(orderId);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const res = await fetch(`${apiUrl}/orders/${orderId}/confirm-delivery`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      if (data.success) {
+        await fetchAccountData();
+      }
+    } catch {
+      // fallback
+    } finally {
+      setConfirmingOrderId(null);
+    }
+  };
 
   useEffect(() => {
     fetchAccountData();
@@ -390,7 +434,7 @@ export default function AccountPage() {
         <aside className="lg:col-span-3 space-y-3">
           <div className="bg-white rounded-2xl border border-neutral-200/90 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-3 space-y-1">
             <button
-              onClick={() => setActiveTab('overview')}
+              onClick={() => handleTabChange('overview')}
               className={`w-full p-3 rounded-xl text-left text-sm font-medium flex items-center gap-3 transition-all cursor-pointer ${
                 activeTab === 'overview'
                   ? 'bg-black text-white font-semibold shadow-xs'
@@ -402,7 +446,7 @@ export default function AccountPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab('orders')}
+              onClick={() => handleTabChange('orders')}
               className={`w-full p-3 rounded-xl text-left text-sm font-medium flex items-center justify-between transition-all cursor-pointer ${
                 activeTab === 'orders'
                   ? 'bg-black text-white font-semibold shadow-xs'
@@ -419,7 +463,7 @@ export default function AccountPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab('wishlist')}
+              onClick={() => handleTabChange('wishlist')}
               className={`w-full p-3 rounded-xl text-left text-sm font-medium flex items-center justify-between transition-all cursor-pointer ${
                 activeTab === 'wishlist'
                   ? 'bg-black text-white font-semibold shadow-xs'
@@ -436,7 +480,7 @@ export default function AccountPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab('addresses')}
+              onClick={() => handleTabChange('addresses')}
               className={`w-full p-3 rounded-xl text-left text-sm font-medium flex items-center gap-3 transition-all cursor-pointer ${
                 activeTab === 'addresses'
                   ? 'bg-black text-white font-semibold shadow-xs'
@@ -448,7 +492,7 @@ export default function AccountPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab('custom_quotes')}
+              onClick={() => handleTabChange('custom_quotes')}
               className={`w-full p-3 rounded-xl text-left text-sm font-medium flex items-center justify-between transition-all cursor-pointer ${
                 activeTab === 'custom_quotes'
                   ? 'bg-black text-white font-semibold shadow-xs'
@@ -467,7 +511,7 @@ export default function AccountPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab('security')}
+              onClick={() => handleTabChange('security')}
               className={`w-full p-3 rounded-xl text-left text-sm font-medium flex items-center gap-3 transition-all cursor-pointer ${
                 activeTab === 'security'
                   ? 'bg-black text-white font-semibold shadow-xs'
@@ -497,7 +541,7 @@ export default function AccountPage() {
               <span>Dedicated Concierge</span>
             </div>
             <p className="text-neutral-600 text-[11px] leading-relaxed">
-              Questions regarding Australian customs, duty estimates, or resizing? Chat directly with our Colombo atelier.
+              Questions regarding international customs, duty estimates, or resizing? Chat directly with our Colombo atelier.
             </p>
             <a
               href="https://wa.me/94771234567"
@@ -898,7 +942,7 @@ export default function AccountPage() {
                       </h3>
                     </div>
                     <button
-                      onClick={() => setActiveTab('orders')}
+                      onClick={() => handleTabChange('orders')}
                       className="text-xs font-bold text-neutral-900 hover:text-neutral-600 flex items-center gap-1 cursor-pointer"
                     >
                       <span>Full Timeline</span>
@@ -967,7 +1011,7 @@ export default function AccountPage() {
             <div className="space-y-6">
               <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-6 sm:p-8">
                 <h3 className="text-xl font-serif text-neutral-900 mb-1">
-                  Orders & Sri Lanka → Australia Tracking
+                  Orders & Worldwide Tracking
                 </h3>
                 <p className="text-xs text-neutral-500 mb-6">
                   Every Ceylon sapphire piece is independently appraised by the National Gem & Jewellery Authority (NGJA) in Sri Lanka before international courier export.
@@ -991,9 +1035,31 @@ export default function AccountPage() {
                           <span className="text-sm font-bold font-serif text-neutral-900">
                             ${order.totalPrice} {order.currency}
                           </span>
-                          <span className="text-xs px-3 py-1 rounded-full font-bold bg-neutral-200 text-neutral-900 border border-neutral-300">
+                          <span
+                            className={`text-xs px-3 py-1 rounded-full font-bold border ${
+                              order.status === 'Delivered'
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                : 'bg-neutral-200 text-neutral-900 border-neutral-300'
+                            }`}
+                          >
                             {order.status}
                           </span>
+
+                          {order.status !== 'Delivered' && order.status !== 'Cancelled' && (
+                            <button
+                              onClick={() => handleConfirmOrderDelivery(order._id)}
+                              disabled={confirmingOrderId === order._id}
+                              className="px-3.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer disabled:opacity-50"
+                              title="Click to confirm delivery upon receiving your parcel"
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span>
+                                {confirmingOrderId === order._id
+                                  ? 'Confirming...'
+                                  : 'Confirm Delivery Received'}
+                              </span>
+                            </button>
+                          )}
                         </div>
                       </div>
 
@@ -1008,9 +1074,24 @@ export default function AccountPage() {
                                 {it.metal} • {it.gemstone} {it.size ? `• Size: ${it.size}` : ''}
                               </p>
                             </div>
-                            <span className="text-xs font-bold text-neutral-900">
-                              ${it.price} {order.currency}
-                            </span>
+                            <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2">
+                              <span className="text-xs font-bold text-neutral-900">
+                                ${it.price} {order.currency}
+                              </span>
+  
+  
+                              {(order.status === 'Delivered' || order.isDeliveryConfirmed) && (
+                                <Link
+                                  href={`/product/${it.product?.slug || it.slug || it.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                                  className="px-2.5 py-1 rounded-md bg-black hover:bg-neutral-800 text-white text-[11px] font-semibold flex items-center gap-1 transition-colors"
+                                >
+                                  <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                                  <span>Review</span>
+                                </Link>
+                              )}
+                            </div>
+
+
                           </div>
                         ))}
                       </div>
@@ -1059,6 +1140,7 @@ export default function AccountPage() {
                             <span className="font-mono font-bold text-neutral-900">
                               {order.courierPartner}: {order.trackingNumber}
                             </span>
+
                           </div>
                           {order.trackingUrl && (
                             <a
@@ -1167,7 +1249,7 @@ export default function AccountPage() {
                     Saved Shipping Addresses
                   </h3>
                   <p className="text-xs text-neutral-500 mt-0.5">
-                    Pre-save your Australian or international shipping destinations for fast white-glove checkout.
+                    Pre-save your shipping destinations for fast white-glove checkout.
                   </p>
                 </div>
                 <button
@@ -1264,7 +1346,7 @@ export default function AccountPage() {
                   href="/customize"
                   className="px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-md text-xs font-semibold flex items-center gap-1.5 transition-colors"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
+                 
                   <span>New Custom Design</span>
                 </Link>
               </div>
@@ -1564,5 +1646,17 @@ export default function AccountPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center bg-[#fbfbfb]">
+        <div className="w-8 h-8 rounded-full border-2 border-black border-t-transparent animate-spin" />
+      </main>
+    }>
+      <AccountPageContent />
+    </Suspense>
   );
 }

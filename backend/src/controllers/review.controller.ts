@@ -1,10 +1,12 @@
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import {
   createReview,
   getProductReviews,
+  getLatestReviews,
   getAllReviews,
   approveReview,
   rejectReview,
+  checkReviewEligibility,
 } from '../services/review.service.js';
 import { ApiError } from '../utils/apiError.js';
 import { ApiResponse } from '../utils/apiResponse.js';
@@ -13,12 +15,12 @@ import { AuthRequest } from '../middleware/auth.middleware.js';
 
 export const createReviewController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { productId, orderId, rating, comment } = req.body;
+    const { productId, orderId, rating, comment, title, customerName, photos } = req.body;
 
-    if (!productId || !orderId || rating === undefined || !comment) {
+    if (!productId || rating === undefined || !comment) {
       throw new ApiError(
         400,
-        'Product, order, rating, and comment are required'
+        'Product, rating, and comment are required'
       );
     }
 
@@ -29,7 +31,10 @@ export const createReviewController = asyncHandler(
     const review = await createReview({
       productId,
       orderId,
-      userId: req.user!.userId,
+      userId: req.user?.userId,
+      customerName: customerName || (req.user as any)?.name || 'Verified Buyer',
+      title,
+      photos,
       rating,
       comment,
     });
@@ -45,8 +50,18 @@ export const createReviewController = asyncHandler(
   }
 );
 
+export const getLatestReviewsController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const limit = req.query.limit ? parseInt(String(req.query.limit), 10) : 6;
+
+    const reviews = await getLatestReviews(limit);
+
+    res.status(200).json(ApiResponse.success(reviews));
+  }
+);
+
 export const getProductReviewsController = asyncHandler(
-  async (req, res: Response) => {
+  async (req: Request, res: Response) => {
     const productId = String(req.params.productId);
 
     const reviews = await getProductReviews(productId);
@@ -56,8 +71,10 @@ export const getProductReviewsController = asyncHandler(
 );
 
 export const getAllReviewsController = asyncHandler(
-  async (_req: AuthRequest, res: Response) => {
-    const reviews = await getAllReviews();
+  async (req: Request, res: Response) => {
+    const status = req.query.status as string | undefined;
+
+    const reviews = await getAllReviews(status);
 
     res.status(200).json(ApiResponse.success(reviews));
   }
@@ -84,5 +101,15 @@ export const rejectReviewController = asyncHandler(
     res
       .status(200)
       .json(ApiResponse.success(review, 'Review rejected successfully'));
+  }
+);
+
+export const checkReviewEligibilityController = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const productId = String(req.params.productId);
+    const userId = req.user?.userId;
+
+    const eligibility = await checkReviewEligibility(productId, userId);
+    res.status(200).json(ApiResponse.success(eligibility));
   }
 );

@@ -8,9 +8,11 @@ import { SapphireGallery } from '../../components/customize/SapphireGallery';
 import { CutsGallery } from '../../components/customize/CutsGallery';
 import { BirthstoneGuide } from '../../components/customize/BirthstoneGuide';
 import { ArtisanalProcess } from '../../components/customize/ArtisanalProcess';
-import { CustomizationForm } from '../../components/customize/CustomizationForm';
-import { SizeGuideModal } from '../../components/customize/SizeGuideModal';
+import { CustomizeVideoBanner } from '../../components/customize/CustomizeVideoBanner';
+import { CustomizeFaq } from '../../components/customize/CustomizeFaq';
+import { CustomizeStudioModal } from '../../components/customize/CustomizeStudioModal';
 import { SubmissionSuccessModal } from '../../components/customize/SubmissionSuccessModal';
+import { CustomizeScroller } from '../../components/customize/CustomizeScroller';
 
 interface SubmissionSuccessData {
   ticketId: string;
@@ -27,12 +29,14 @@ interface SubmissionSuccessData {
 export default function CustomizePage() {
   // State for selections across all interactive sections
   const [selectedJewelleryType, setSelectedJewelleryType] = useState<string>('ring');
-  const [selectedMetal, setSelectedMetal] = useState<string>('18K Rose Gold');
+  const [selectedMetal, setSelectedMetal] = useState<string>('Silver');
   const [selectedSapphire, setSelectedSapphire] = useState<string>('Royal Blue Sapphire');
   const [selectedCut, setSelectedCut] = useState<string>('Oval Cut');
 
-  // Modals state
-  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  // Studio modal state
+  const [studioOpen, setStudioOpen] = useState(false);
+
+  // Success modal state
   const [successModalData, setSuccessModalData] = useState<{
     isOpen: boolean;
     ticketId: string;
@@ -57,12 +61,7 @@ export default function CustomizePage() {
     },
   });
 
-  const scrollToForm = () => {
-    const el = document.getElementById('customization-form-section');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const openStudio = () => setStudioOpen(true);
 
   const openDirectWhatsApp = () => {
     const msg = encodeURIComponent(
@@ -71,22 +70,23 @@ export default function CustomizePage() {
     window.open(`https://wa.me/94771234567?text=${msg}`, '_blank');
   };
 
-  const handleSelectSapphireAndScroll = (sapphireName: string) => {
+  const handleSelectSapphireAndOpen = (sapphireName: string) => {
     setSelectedSapphire(sapphireName);
-    scrollToForm();
+    setStudioOpen(true);
   };
 
-  const handleSelectCutAndScroll = (cutName: string) => {
+  const handleSelectCutAndOpen = (cutName: string) => {
     setSelectedCut(cutName);
-    scrollToForm();
+    setStudioOpen(true);
   };
 
-  const handleSelectBirthstoneAndScroll = (sapphireName: string) => {
+  const handleSelectBirthstoneAndOpen = (sapphireName: string) => {
     setSelectedSapphire(sapphireName);
-    scrollToForm();
+    setStudioOpen(true);
   };
 
-  const handleFormSuccess = (data: SubmissionSuccessData) => {
+  const handleStudioSuccess = (data: SubmissionSuccessData) => {
+    setStudioOpen(false);
     setSuccessModalData({
       isOpen: true,
       ticketId: data.ticketId,
@@ -98,55 +98,57 @@ export default function CustomizePage() {
 
   return (
     <main className="min-h-screen flex flex-col bg-white">
+      {/* Interactive Luxury Scroller Navigation & Top Progress Bar */}
+      <CustomizeScroller onOpenStudio={openStudio} />
+
       <Navbar />
 
-      {/* 8.1.1 Hero & Expectations */}
-      <CustomizeHero />
+      {/* Hero & Expectations */}
+      <CustomizeHero onStartDesigning={openStudio} />
 
-      {/* 8.1.2 Sapphire Varieties Gallery */}
+      {/* Sapphire Varieties Gallery */}
       <SapphireGallery
         selectedSapphire={selectedSapphire}
-        onSelectSapphire={handleSelectSapphireAndScroll}
-        onStartCustomizing={scrollToForm}
+        onSelectSapphire={handleSelectSapphireAndOpen}
+        onStartCustomizing={openStudio}
         onOpenWhatsApp={openDirectWhatsApp}
       />
 
-      {/* 8.1.3 Sapphire Cuts Gallery */}
+      {/* Sapphire Cuts Gallery */}
       <CutsGallery
         selectedCut={selectedCut}
-        onSelectCut={handleSelectCutAndScroll}
+        onSelectCut={handleSelectCutAndOpen}
       />
 
-      {/* 8.1.4 Birthstone Styling Guide */}
+      {/* Birthstone Styling Guide */}
       <BirthstoneGuide
-        onSelectBirthstoneSapphire={handleSelectBirthstoneAndScroll}
+        onSelectBirthstoneSapphire={handleSelectBirthstoneAndOpen}
       />
 
-      {/* 8.1.5 Our Artisanal Process */}
+      {/* Our Artisanal Process */}
       <ArtisanalProcess />
 
-      {/* 8.1.6 & 8.2 Interactive Customization Request Form */}
-      <CustomizationForm
-        selectedJewelleryType={selectedJewelleryType}
-        setSelectedJewelleryType={setSelectedJewelleryType}
-        selectedMetal={selectedMetal}
-        setSelectedMetal={setSelectedMetal}
-        selectedSapphire={selectedSapphire}
-        setSelectedSapphire={setSelectedSapphire}
-        selectedCut={selectedCut}
-        setSelectedCut={setSelectedCut}
-        onOpenSizeGuide={() => setSizeGuideOpen(true)}
-        onSubmitSuccess={handleFormSuccess}
+      {/* Atelier Craftsmanship Showcase Video */}
+      <CustomizeVideoBanner onOpenStudio={openStudio} />
+
+      {/* Frequently Asked Questions */}
+      <CustomizeFaq
+        onOpenStudio={openStudio}
+        onOpenConsultation={openDirectWhatsApp}
       />
 
-      {/* Size Guide Modal */}
-      <SizeGuideModal
-        isOpen={sizeGuideOpen}
-        onClose={() => setSizeGuideOpen(false)}
-        jewelleryType={selectedJewelleryType}
+      {/* Premium 8-Step Design Studio Popup */}
+      <CustomizeStudioModal
+        isOpen={studioOpen}
+        onClose={() => setStudioOpen(false)}
+        onSuccess={handleStudioSuccess}
+        initialJewelleryType={selectedJewelleryType}
+        initialMetal={selectedMetal}
+        initialSapphire={selectedSapphire}
+        initialCut={selectedCut}
       />
 
-      {/* 8.3 Post-Submission Success Confirmation Modal */}
+      {/* Post-Submission Success Confirmation Modal */}
       <SubmissionSuccessModal
         isOpen={successModalData.isOpen}
         onClose={() => setSuccessModalData((prev) => ({ ...prev, isOpen: false }))}
@@ -156,7 +158,7 @@ export default function CustomizePage() {
         jewellerySummary={successModalData.jewellerySummary}
       />
 
-      <Footer />
+      <Footer onOpenStudio={openStudio} />
     </main>
   );
 }

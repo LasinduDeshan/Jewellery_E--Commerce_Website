@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 /* ========================================================================= */
 /* EDITORIAL IMAGE CONFIGURATION                                             */
@@ -112,53 +113,72 @@ export const EditorialGrid: React.FC<EditorialGridProps> = ({
         <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-12 lg:space-y-20">
           
           {/* Top Left Title Block */}
-          <div className="space-y-2">
-            <h2 className="text-xl sm:text-2xl font-bold ] text-black">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-2"
+          >
+            <h2 className="text-xl sm:text-2xl font-bold text-black tracking-tight">
               {title}
             </h2>
             <div className="w-20 h-[2px] bg-black" />
             <Link
               href={galleryHref}
-              className="inline-flex items-center gap-1.5 text-[10px] font-mono ] text-neutral-500 hover:text-black transition-colors pt-1 group"
+              className="inline-flex items-center gap-1.5 text-[10px] font-mono text-neutral-500 hover:text-black transition-colors pt-1 group"
             >
               <span>{galleryLinkText}</span>
               <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
-          </div>
+          </motion.div>
 
           {/* Left Middle: Horizontal Card 1 */}
-          <div className="relative group overflow-hidden bg-neutral-100 shadow-sm border border-neutral-200/80">
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ y: -4 }}
+            className="relative group overflow-hidden bg-neutral-100 shadow-sm hover:shadow-xl border border-neutral-200/80 rounded-2xl transition-shadow duration-500"
+          >
             <Link href={mergedImages.card1.link || '/shop'} className="block overflow-hidden">
               <img
                 src={mergedImages.card1.imageUrl}
                 alt={mergedImages.card1.alt}
-                className="w-full aspect-[4/3] sm:aspect-[16/11] object-cover group-hover:scale-105 transition-all duration-700"
+                className="w-full aspect-[4/3] sm:aspect-[16/11] object-cover group-hover:scale-105 transition-all duration-700 ease-out"
               />
             </Link>
 
             {/* Subtle Vertical Rotated Tag */}
             <div className="absolute top-4 right-3 pointer-events-none select-none">
-              <span className="text-[9px] font-mono ] text-white/90 drop-shadow [writing-mode:vertical-rl] rotate-180">
+              <span className="text-[9px] font-mono text-white/90 drop-shadow [writing-mode:vertical-rl] rotate-180">
                 {mergedImages.card1.tag}
               </span>
             </div>
-          </div>
+          </motion.div>
 
           {/* Bottom Left: Editorial Micro-Copy Paragraph */}
-          <div className="pt-4 lg:pt-14 max-w-sm space-y-1.5">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="pt-4 lg:pt-14 max-w-sm space-y-1.5"
+          >
             {captionLines.map((line, idx) => (
               <p
                 key={idx}
                 className={
                   idx === 0
-                    ? 'text-xs font-semibold text-neutral-900  font-sans'
-                    : 'text-xs text-neutral-600 leading-relaxed font-light font-sans '
+                    ? 'text-xs font-semibold text-neutral-900 font-sans'
+                    : 'text-xs text-neutral-600 leading-relaxed font-light font-sans'
                 }
               >
                 {line}
               </p>
             ))}
-          </div>
+          </motion.div>
         </div>
 
         {/* ========================================================== */}
@@ -167,51 +187,72 @@ export const EditorialGrid: React.FC<EditorialGridProps> = ({
         <div className="lg:col-span-7 flex flex-col space-y-8 lg:space-y-12">
           
           {/* Top Right: Large Portrait Card 2 */}
-          <div className="relative group overflow-hidden bg-neutral-100 shadow-sm border border-neutral-200/80">
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ y: -4 }}
+            className="relative group overflow-hidden bg-neutral-100 shadow-sm hover:shadow-xl border border-neutral-200/80 rounded-2xl transition-shadow duration-500"
+          >
             <Link href={mergedImages.card2.link || '/shop'} className="block overflow-hidden">
               <img
                 src={mergedImages.card2.imageUrl}
                 alt={mergedImages.card2.alt}
-                className="w-full aspect-[4/3] sm:aspect-[16/12] object-cover object-center group-hover:scale-105 transition-all duration-700"
+                className="w-full aspect-[4/3] sm:aspect-[16/12] object-cover object-center group-hover:scale-105 transition-all duration-700 ease-out"
               />
             </Link>
 
             {/* Subtle Vertical Rotated Tag */}
             <div className="absolute top-4 right-3 pointer-events-none select-none">
-              <span className="text-[9px] font-mono ] text-neutral-800 drop-shadow-sm [writing-mode:vertical-rl] rotate-180">
+              <span className="text-[9px] font-mono text-neutral-800 drop-shadow-sm [writing-mode:vertical-rl] rotate-180">
                 {mergedImages.card2.tag}
               </span>
             </div>
-          </div>
+          </motion.div>
 
           {/* Bottom Right Row: 2 Images (Tall Center Portrait + Offset Card) */}
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 sm:gap-8 items-start">
             
             {/* Bottom Center: Tall Portrait Card 3 */}
-            <div className="sm:col-span-7 relative group overflow-hidden bg-neutral-100 shadow-sm border border-neutral-200/80">
+            <motion.div
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.85, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ y: -4 }}
+              className="sm:col-span-7 relative group overflow-hidden bg-neutral-100 shadow-sm hover:shadow-xl border border-neutral-200/80 rounded-2xl transition-shadow duration-500"
+            >
               <Link href={mergedImages.card3.link || '/customize'} className="block overflow-hidden">
                 <img
                   src={mergedImages.card3.imageUrl}
                   alt={mergedImages.card3.alt}
-                  className="w-full aspect-[3/4] sm:aspect-[2/3] object-cover group-hover:scale-105 transition-all duration-700"
+                  className="w-full aspect-[3/4] sm:aspect-[2/3] object-cover group-hover:scale-105 transition-all duration-700 ease-out"
                 />
               </Link>
 
               {/* Vertical Rotated Tag */}
               <div className="absolute top-4 right-3 pointer-events-none select-none">
-                <span className="text-[9px] font-mono ] text-neutral-700 drop-shadow-sm [writing-mode:vertical-rl] rotate-180">
+                <span className="text-[9px] font-mono text-neutral-700 drop-shadow-sm [writing-mode:vertical-rl] rotate-180">
                   {mergedImages.card3.tag}
                 </span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Bottom Right: Offset Card 4 with Geometric Curved Accent */}
-            <div className="sm:col-span-5 relative group overflow-hidden bg-neutral-100 shadow-sm border border-neutral-200/80 self-start">
+            <motion.div
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.85, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ y: -4 }}
+              className="sm:col-span-5 relative group overflow-hidden bg-neutral-100 shadow-sm hover:shadow-xl border border-neutral-200/80 self-start rounded-2xl transition-shadow duration-500"
+            >
               <Link href={mergedImages.card4.link || '/shop'} className="block overflow-hidden relative">
                 <img
                   src={mergedImages.card4.imageUrl}
                   alt={mergedImages.card4.alt}
-                  className="w-full aspect-[4/4] sm:aspect-[4/5] object-cover group-hover:scale-105 transition-all duration-700"
+                  className="w-full aspect-[4/4] sm:aspect-[4/5] object-cover group-hover:scale-105 transition-all duration-700 ease-out"
                 />
 
                 {/* Decorative Geometric Curved Overlay on the Right (matching reference screenshot) */}
@@ -220,11 +261,11 @@ export const EditorialGrid: React.FC<EditorialGridProps> = ({
 
               {/* Vertical Rotated Tag */}
               <div className="absolute top-4 right-3 pointer-events-none select-none z-10">
-                <span className="text-[9px] font-mono ] text-white/90 drop-shadow [writing-mode:vertical-rl] rotate-180">
+                <span className="text-[9px] font-mono text-white/90 drop-shadow [writing-mode:vertical-rl] rotate-180">
                   {mergedImages.card4.tag}
                 </span>
               </div>
-            </div>
+            </motion.div>
 
           </div>
 

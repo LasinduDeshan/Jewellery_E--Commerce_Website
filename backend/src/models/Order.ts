@@ -53,6 +53,8 @@ export interface IOrder extends Document {
     | 'Delivered'
     | 'Cancelled';
   isNgjaCleared: boolean;
+  isDeliveryConfirmed?: boolean;
+  deliveryConfirmedAt?: Date;
   ngjaClearanceDate?: Date;
   trackingNumber?: string;
   courierPartner?: 'DHL Express' | 'FedEx International' | 'Australia Post Global' | 'Other';
@@ -150,6 +152,8 @@ const OrderSchema = new Schema<IOrder>(
       default: 'Processing',
     },
     isNgjaCleared: { type: Boolean, default: false },
+    isDeliveryConfirmed: { type: Boolean, default: false },
+    deliveryConfirmedAt: { type: Date },
     ngjaClearanceDate: { type: Date },
     trackingNumber: { type: String },
     courierPartner: {

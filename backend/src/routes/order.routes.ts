@@ -5,8 +5,9 @@ import {
   getOrderById,
   createOrder,
   updateOrderTracking,
+  confirmOrderDelivery,
 } from '../controllers/order.controller.js';
-import { optionalAuthenticate } from '../middleware/auth.middleware.js';
+import { optionalAuthenticate, authenticate } from '../middleware/auth.middleware.js';
 
 const router = Router();
 
@@ -26,5 +27,8 @@ router.post('/', createOrder);
 
 // Admin manual status & tracking update (Section 5.4)
 router.patch('/:id/tracking', updateOrderTracking);
+
+// Customer confirm delivery of package to unlock reviews
+router.patch('/:id/confirm-delivery', authenticate, confirmOrderDelivery);
 
 export default router;
