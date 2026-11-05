@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { getAdminAuthHeaders } from '../../../utils/adminApi';
 import Link from 'next/link';
 import {
   FileText,
@@ -50,7 +51,7 @@ export default function AdminCmsPage() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       await fetch(`${apiUrl}/content/our-story`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAdminAuthHeaders(),
         body: JSON.stringify({
           heroHeadline: headline,
           heroSubheadline: subheadline,
@@ -74,7 +75,7 @@ export default function AdminCmsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl w-full">
+    <div className="space-y-6 w-full">
       {/* Top Controls Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
         <div className="flex items-center gap-2">

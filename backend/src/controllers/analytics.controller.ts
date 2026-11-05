@@ -179,6 +179,14 @@ export const getAnalyticsOverview = async (req: Request, res: Response): Promise
 
     notifications.sort((a, b) => b.timestamp - a.timestamp);
 
+    // Product breakdown by category for admin dashboard donut chart (Active catalogue items only)
+    const categories = ['necklaces', 'rings', 'earrings', 'bracelets', 'engagement-promise-rings'];
+    const categoryCounts: Record<string, number> = {};
+    for (const cat of categories) {
+      categoryCounts[cat] = await Product.countDocuments({ isActive: true, category: cat });
+    }
+    const totalProductsCount = await Product.countDocuments({ isActive: true });
+
     res.json({
       success: true,
       data: {
@@ -186,6 +194,10 @@ export const getAnalyticsOverview = async (req: Request, res: Response): Promise
         totalOrders: ordersCount,
         pendingNgjaClearance: pendingNgjaCount,
         activeCatalogueProducts: productsCount,
+        productBreakdown: {
+          total: totalProductsCount || productsCount,
+          byCategory: categoryCounts,
+        },
         customQuotesTotal: customQuotesCount,
         whatsAppLeadsTotal: leadsCount,
         topSellingItems,

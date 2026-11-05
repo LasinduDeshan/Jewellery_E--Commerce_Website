@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   DollarSign,
@@ -19,6 +19,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useAdminAuth } from '../../context/AdminAuthContext';
 
 interface TopProduct {
   name: string;
@@ -36,6 +37,11 @@ interface ActivityItem {
   type: 'whatsapp' | 'order' | 'review' | 'shipping' | 'quote';
 }
 
+interface ProductBreakdown {
+  total: number;
+  byCategory: Record<string, number>;
+}
+
 interface AnalyticsData {
   totalRevenueAUD: number;
   totalOrders: number;
@@ -45,179 +51,436 @@ interface AnalyticsData {
   customQuotes: number;
   topSellingItems: TopProduct[];
   recentActivity: ActivityItem[];
+  productBreakdown?: ProductBreakdown;
+}
+
+function ProductDonutChart({
+  breakdown,
+  loading,
+  onRefresh,
+}: {
+  breakdown?: ProductBreakdown;
+  loading?: boolean;
+  onRefresh?: () => void;
+}) {
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+  const categoriesConfig = [
+    { key: 'rings', label: 'Rings', color: '#F59E0B' },
+    { key: 'necklaces', label: 'Necklaces', color: '#2563EB' },
+    { key: 'earrings', label: 'Earrings', color: '#EC4899' },
+    { key: 'bracelets', label: 'Bracelets', color: '#10B981' },
+    { key: 'engagement-promise-rings', label: 'Engagement Rings', color: '#8B5CF6' },
+  ];
+
+  const counts: Record<string, number> = breakdown?.byCategory || {};
+  const total = breakdown?.total ?? Object.values(counts).reduce((a, b) => a + Number(b || 0), 0);
+
+  // SVG arc calculation parameters
+  const radius = 52;
+  const circumference = 2 * Math.PI * radius; // ~326.72
+
+  let accumulatedPercent = 0;
+  const segments = categoriesConfig.map((cat) => {
+    const count = Number(counts[cat.key]) || 0;
+    const percent = total > 0 ? count / total : 0;
+    const strokeDasharray = `${percent * circumference} ${circumference}`;
+    const strokeDashoffset = -(accumulatedPercent * circumference);
+    if (count > 0) {
+      accumulatedPercent += percent;
+    }
+
+    return {
+      ...cat,
+      count,
+      percent: Math.round(percent * 100),
+      strokeDasharray,
+      strokeDashoffset,
+    };
+  });
+
+  const activeItem = activeCategory ? segments.find((s) => s.key === activeCategory) : null;
+
+  return (
+    <div className="flex flex-col h-full justify-between">
+      {/* Top Header */}
+      <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
+        <div>
+          
+          <h3 className="text-sm font-bold text-black flex items-center gap-1.5 mt-0.5">
+            
+            Products by Category
+          </h3>
+        </div>
+        <div className="flex items-center gap-2">
+          {onRefresh && (
+            <button
+              onClick={onRefresh}
+              className="p-1.5 rounded-full text-neutral-400 hover:text-black hover:bg-neutral-100 transition-colors cursor-pointer"
+              title="Sync with Live Catalogue"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-black' : ''}`} />
+            </button>
+          )}
+          <Link
+            href="/admin/products"
+            className="text-[11px] font-semibold text-neutral-500 hover:text-black flex items-center gap-1 transition-colors group"
+          >
+            <span>Catalogue</span>
+            <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </div>
+      </div>
+
+      {/* Donut Chart Visual & Category Breakdown */}
+      <div className="py-3 flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center justify-center gap-5">
+        {/* SVG Donut */}
+        <div className="relative w-36 h-36 shrink-0 flex items-center justify-center">
+          <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 140 140">
+            {/* Background Track */}
+            <circle
+              cx="70"
+              cy="70"
+              r={radius}
+              stroke="#F3F4F6"
+              strokeWidth="15"
+              fill="transparent"
+            />
+            {/* Category Slices */}
+            {total > 0 ? (
+              segments.map((seg) => {
+                if (seg.count <= 0) return null;
+                const isHovered = activeCategory === seg.key;
+                return (
+                  <circle
+                    key={seg.key}
+                    cx="70"
+                    cy="70"
+                    r={radius}
+                    stroke={seg.color}
+                    strokeWidth={isHovered ? '19' : '15'}
+                    strokeDasharray={seg.strokeDasharray}
+                    strokeDashoffset={seg.strokeDashoffset}
+                    fill="transparent"
+                    strokeLinecap="butt"
+                    className="transition-all duration-300 cursor-pointer"
+                    onMouseEnter={() => setActiveCategory(seg.key)}
+                    onMouseLeave={() => setActiveCategory(null)}
+                  />
+                );
+              })
+            ) : (
+              <circle
+                cx="70"
+                cy="70"
+                r={radius}
+                stroke="#E5E7EB"
+                strokeWidth="15"
+                fill="transparent"
+              />
+            )}
+          </svg>
+
+          {/* Center Text inside Donut */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none select-none">
+            {activeItem ? (
+              <>
+                <span className="text-xl font-bold text-black leading-none">
+                  {activeItem.count}
+                </span>
+                <span className="text-[10px] text-neutral-500 font-medium mt-0.5 max-w-[65px] truncate">
+                  {activeItem.label}
+                </span>
+                <span className="text-[9px] font-mono text-neutral-400">
+                  {activeItem.percent}%
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-2xl font-black text-black leading-none tracking-tight">
+                  {total}
+                </span>
+                <span className="text-[10px] text-neutral-400 font-medium uppercase tracking-wider mt-0.5">
+                  Products
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Breakdown Legend Pill List */}
+        <div className="flex-1 w-full space-y-1 text-xs">
+          {segments.map((seg) => {
+            const isHovered = activeCategory === seg.key;
+            return (
+              <div
+                key={seg.key}
+                onMouseEnter={() => setActiveCategory(seg.key)}
+                onMouseLeave={() => setActiveCategory(null)}
+                className={`flex items-center justify-between px-2.5 py-1 rounded-xl transition-all cursor-pointer ${
+                  isHovered ? 'bg-neutral-100 font-semibold' : 'hover:bg-neutral-50'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className="w-2.5 h-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: seg.color }}
+                  />
+                  <span className="text-neutral-700 text-xs truncate max-w-[90px] sm:max-w-none">
+                    {seg.label}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 font-mono text-xs">
+                  <span className="text-neutral-900 font-semibold">{seg.count}</span>
+                  <span className="text-[10px] text-neutral-400 w-7 text-right">
+                    {seg.percent}%
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Footer Status */}
+      <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+        <span>Active store catalogue</span>
+        <span className="font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full text-[10px]">
+          Published
+        </span>
+      </div>
+    </div>
+  );
 }
 
 export default function MasterAdminDashboardPage() {
   const { user } = useAuth();
+  const { adminToken } = useAdminAuth();
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     setLoading(true);
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-      const res = await fetch(`${apiUrl}/analytics/overview`);
-      const resJson = await res.json();
-      if (resJson.success && resJson.data) {
-        setData({
-          totalRevenueAUD: Number(resJson.data.totalRevenueAUD) || 0,
-          totalOrders: Number(resJson.data.totalOrders) || 0,
-          pendingNgjaClearance: Number(resJson.data.pendingNgjaClearance) || 0,
-          activeClientLeads:
-            (Number(resJson.data.customQuotesTotal) || 0) + (Number(resJson.data.whatsAppLeadsTotal) || 0),
-          whatsappLeads: Number(resJson.data.whatsAppLeadsTotal) || 0,
-          customQuotes: Number(resJson.data.customQuotesTotal) || 0,
-          topSellingItems: Array.isArray(resJson.data.topSellingItems) ? resJson.data.topSellingItems : [],
-          recentActivity: Array.isArray(resJson.data.recentActivity) ? resJson.data.recentActivity : [],
-        });
+      const token =
+        adminToken ||
+        (typeof window !== 'undefined' ? localStorage.getItem('aura_admin_token') : null);
+
+      // Fetch products catalogue directly (guaranteeing exact sync with /admin/products)
+      // and analytics overview concurrently
+      const [res, prodRes] = await Promise.all([
+        fetch(`${apiUrl}/analytics/overview`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        }).catch(() => null),
+        fetch(`${apiUrl}/products?limit=100`).catch(() => null),
+      ]);
+
+      let breakdown: ProductBreakdown = { total: 0, byCategory: {} };
+
+      if (prodRes && prodRes.ok) {
+        const prodJson = await prodRes.json();
+        if (prodJson.success && prodJson.data && Array.isArray(prodJson.data.products)) {
+          const prods = prodJson.data.products;
+          const cats: Record<string, number> = {};
+          for (const p of prods) {
+            const c = (p.category || 'rings').toLowerCase();
+            cats[c] = (cats[c] || 0) + 1;
+          }
+          breakdown = {
+            total: prodJson.data.total || prods.length,
+            byCategory: cats,
+          };
+        }
       }
+
+      if (res && res.ok) {
+        const resJson = await res.json();
+        if (resJson.success && resJson.data) {
+          const bd =
+            breakdown.total > 0
+              ? breakdown
+              : resJson.data.productBreakdown?.total > 0
+              ? resJson.data.productBreakdown
+              : breakdown;
+
+          setData({
+            totalRevenueAUD: Number(resJson.data.totalRevenueAUD) || 0,
+            totalOrders: Number(resJson.data.totalOrders) || 0,
+            pendingNgjaClearance: Number(resJson.data.pendingNgjaClearance) || 0,
+            activeClientLeads:
+              (Number(resJson.data.customQuotesTotal) || 0) + (Number(resJson.data.whatsAppLeadsTotal) || 0),
+            whatsappLeads: Number(resJson.data.whatsAppLeadsTotal) || 0,
+            customQuotes: Number(resJson.data.customQuotesTotal) || 0,
+            topSellingItems: Array.isArray(resJson.data.topSellingItems) ? resJson.data.topSellingItems : [],
+            recentActivity: Array.isArray(resJson.data.recentActivity) ? resJson.data.recentActivity : [],
+            productBreakdown: bd,
+          });
+          return;
+        }
+      }
+
+      // If analytics overview failed or returned empty, still set the accurate products breakdown!
+      setData((prev) => ({
+        totalRevenueAUD: prev?.totalRevenueAUD || 0,
+        totalOrders: prev?.totalOrders || 0,
+        pendingNgjaClearance: prev?.pendingNgjaClearance || 0,
+        activeClientLeads: prev?.activeClientLeads || 0,
+        whatsappLeads: prev?.whatsappLeads || 0,
+        customQuotes: prev?.customQuotes || 0,
+        topSellingItems: prev?.topSellingItems || [],
+        recentActivity: prev?.recentActivity || [],
+        productBreakdown: breakdown,
+      }));
     } catch (e) {
-      // Clear zero state on network error
-      setData({
-        totalRevenueAUD: 0,
-        totalOrders: 0,
-        pendingNgjaClearance: 0,
-        activeClientLeads: 0,
-        whatsappLeads: 0,
-        customQuotes: 0,
-        topSellingItems: [],
-        recentActivity: [],
-      });
+      console.error('Failed to load dashboard analytics:', e);
     } finally {
       setLoading(false);
     }
-  };
+  }, [adminToken]);
 
   useEffect(() => {
     fetchAnalytics();
-  }, []);
+  }, [fetchAnalytics]);
 
   return (
-    <div className="space-y-8 max-w-7xl w-full">
-          {/* ========================================================== */}
-          {/* 3. TOP 4 KPI CARDS ROW                                      */}
-          {/* ========================================================== */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-            {/* Card 1: Total Settled Revenue */}
-            <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3.5">
-                <div className="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
-                  <DollarSign className="w-5 h-5 text-neutral-800" />
-                </div>
-                <div>
-                  <span className="text-xs text-neutral-400 font-medium block">
-                    Total Settled Revenue
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-bold text-black mt-0.5 leading-none">
-                    ${data?.totalRevenueAUD.toLocaleString()} AUD
-                  </h3>
-                  <span className="text-[10px] text-neutral-400 font-light mt-1 inline-block">
-                    Direct Australian settlements (AUD)
-                  </span>
-                </div>
+    <div className="space-y-8 w-full">
+      {/* ========================================================== */}
+      {/* 3. KPI CARDS (2x2 GRID) + PRODUCT DONUT CHART (RIGHT)      */}
+      {/* ========================================================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        {/* Left Side: Current 4 Cards in a 2 by 2 Grid */}
+        <div className="lg:col-span-7 xl:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+          {/* Card 1: Total Settled Revenue */}
+          <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
+                <DollarSign className="w-5 h-5 text-neutral-800" />
               </div>
-
-              {/* Mini Sparkline Chart Mock */}
-              <div className="flex items-end gap-1 h-7 shrink-0 pl-2">
-                <span className="w-1 bg-neutral-200 rounded-xs h-[35%]" />
-                <span className="w-1 bg-neutral-200 rounded-xs h-[60%]" />
-                <span className="w-1 bg-neutral-200 rounded-xs h-[50%]" />
-                <span className="w-1 bg-neutral-300 rounded-xs h-[80%]" />
-                <span className="w-1 bg-neutral-900 rounded-xs h-[100%]" />
+              <div>
+                <span className="text-xs text-neutral-400 font-medium block">
+                  Total Settled Revenue
+                </span>
+                <h3 className="text-xl sm:text-2xl font-bold text-black mt-0.5 leading-none">
+                  ${data?.totalRevenueAUD.toLocaleString()} AUD
+                </h3>
+                <span className="text-[10px] text-neutral-400 font-light mt-1 inline-block">
+                  Direct Australian settlements (AUD)
+                </span>
               </div>
             </div>
 
-            {/* Card 2: Total Orders Dispatched */}
-            <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3.5">
-                <div className="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
-                  <Package className="w-5 h-5 text-neutral-800" />
-                </div>
-                <div>
-                  <span className="text-xs text-neutral-400 font-medium block">
-                    Total Orders Dispatched
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-bold text-black mt-0.5 leading-none">
-                    {data?.totalOrders} Orders
-                  </h3>
-                  <Link
-                    href="/admin/orders"
-                    className="text-[10px] text-black font-semibold hover:underline mt-1 inline-flex items-center gap-1"
-                  >
-                    <span>Manage logistics</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </Link>
-                </div>
-              </div>
-
-              {/* Mini Sparkline Chart Mock */}
-              <div className="flex items-end gap-1 h-7 shrink-0 pl-2">
-                <span className="w-1 bg-neutral-200 rounded-xs h-[40%]" />
-                <span className="w-1 bg-neutral-200 rounded-xs h-[45%]" />
-                <span className="w-1 bg-neutral-300 rounded-xs h-[75%]" />
-                <span className="w-1 bg-neutral-200 rounded-xs h-[60%]" />
-                <span className="w-1 bg-neutral-900 rounded-xs h-[90%]" />
-              </div>
-            </div>
-
-            {/* Card 3: NGJA Clearance Queue */}
-            <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3.5">
-                <div className="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
-                  <Truck className="w-5 h-5 text-neutral-800" />
-                </div>
-                <div>
-                  <span className="text-xs text-neutral-400 font-medium block">
-                    NGJA Clearance Queue
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-bold text-black mt-0.5 leading-none">
-                    {data?.pendingNgjaClearance} Pending
-                  </h3>
-                  <span className="text-[10px] text-neutral-400 font-light mt-1 inline-block">
-                    Awaiting assay seal in Colombo
-                  </span>
-                </div>
-              </div>
-
-              {/* Mini Sparkline Chart Mock */}
-              <div className="flex items-end gap-1 h-7 shrink-0 pl-2">
-                <span className="w-1 bg-neutral-200 rounded-xs h-[60%]" />
-                <span className="w-1 bg-neutral-200 rounded-xs h-[50%]" />
-                <span className="w-1 bg-neutral-200 rounded-xs h-[70%]" />
-                <span className="w-1 bg-neutral-300 rounded-xs h-[45%]" />
-                <span className="w-1 bg-neutral-900 rounded-xs h-[75%]" />
-              </div>
-            </div>
-
-            {/* Card 4: Active Client Leads */}
-            <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3.5">
-                <div className="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
-                  <MessageCircle className="w-5 h-5 text-neutral-800" />
-                </div>
-                <div>
-                  <span className="text-xs text-neutral-400 font-medium block">
-                    Active Client Leads
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-bold text-black mt-0.5 leading-none">
-                    {data?.activeClientLeads} Leads
-                  </h3>
-                  <span className="text-[10px] text-neutral-400 font-light mt-1 inline-block">
-                    {data?.whatsappLeads} WhatsApp + {data?.customQuotes} Custom
-                  </span>
-                </div>
-              </div>
-
-              {/* Mini Sparkline Chart Mock */}
-              <div className="flex items-end gap-1 h-7 shrink-0 pl-2">
-                <span className="w-1 bg-neutral-200 rounded-xs h-[30%]" />
-                <span className="w-1 bg-neutral-200 rounded-xs h-[55%]" />
-                <span className="w-1 bg-neutral-300 rounded-xs h-[70%]" />
-                <span className="w-1 bg-neutral-200 rounded-xs h-[65%]" />
-                <span className="w-1 bg-neutral-900 rounded-xs h-[95%]" />
-              </div>
+            {/* Mini Sparkline Chart Mock */}
+            <div className="flex items-end gap-1 h-7 shrink-0 pl-2">
+              <span className="w-1 bg-neutral-200 rounded-xs h-[35%]" />
+              <span className="w-1 bg-neutral-200 rounded-xs h-[60%]" />
+              <span className="w-1 bg-neutral-200 rounded-xs h-[50%]" />
+              <span className="w-1 bg-neutral-300 rounded-xs h-[80%]" />
+              <span className="w-1 bg-neutral-900 rounded-xs h-[100%]" />
             </div>
           </div>
+
+          {/* Card 2: Total Orders Dispatched */}
+          <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
+                <Package className="w-5 h-5 text-neutral-800" />
+              </div>
+              <div>
+                <span className="text-xs text-neutral-400 font-medium block">
+                  Total Orders Dispatched
+                </span>
+                <h3 className="text-xl sm:text-2xl font-bold text-black mt-0.5 leading-none">
+                  {data?.totalOrders} Orders
+                </h3>
+                <Link
+                  href="/admin/orders"
+                  className="text-[10px] text-black font-semibold hover:underline mt-1 inline-flex items-center gap-1"
+                >
+                  <span>Manage logistics</span>
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Mini Sparkline Chart Mock */}
+            <div className="flex items-end gap-1 h-7 shrink-0 pl-2">
+              <span className="w-1 bg-neutral-200 rounded-xs h-[40%]" />
+              <span className="w-1 bg-neutral-200 rounded-xs h-[45%]" />
+              <span className="w-1 bg-neutral-300 rounded-xs h-[75%]" />
+              <span className="w-1 bg-neutral-200 rounded-xs h-[60%]" />
+              <span className="w-1 bg-neutral-900 rounded-xs h-[90%]" />
+            </div>
+          </div>
+
+          {/* Card 3: NGJA Clearance Queue */}
+          <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
+                <Truck className="w-5 h-5 text-neutral-800" />
+              </div>
+              <div>
+                <span className="text-xs text-neutral-400 font-medium block">
+                  NGJA Clearance Queue
+                </span>
+                <h3 className="text-xl sm:text-2xl font-bold text-black mt-0.5 leading-none">
+                  {data?.pendingNgjaClearance} Pending
+                </h3>
+                <span className="text-[10px] text-neutral-400 font-light mt-1 inline-block">
+                  Awaiting assay seal in Colombo
+                </span>
+              </div>
+            </div>
+
+            {/* Mini Sparkline Chart Mock */}
+            <div className="flex items-end gap-1 h-7 shrink-0 pl-2">
+              <span className="w-1 bg-neutral-200 rounded-xs h-[60%]" />
+              <span className="w-1 bg-neutral-200 rounded-xs h-[50%]" />
+              <span className="w-1 bg-neutral-200 rounded-xs h-[70%]" />
+              <span className="w-1 bg-neutral-300 rounded-xs h-[45%]" />
+              <span className="w-1 bg-neutral-900 rounded-xs h-[75%]" />
+            </div>
+          </div>
+
+          {/* Card 4: Active Client Leads */}
+          <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
+                <MessageCircle className="w-5 h-5 text-neutral-800" />
+              </div>
+              <div>
+                <span className="text-xs text-neutral-400 font-medium block">
+                  Active Client Leads
+                </span>
+                <h3 className="text-xl sm:text-2xl font-bold text-black mt-0.5 leading-none">
+                  {data?.activeClientLeads} Leads
+                </h3>
+                <span className="text-[10px] text-neutral-400 font-light mt-1 inline-block">
+                  {data?.whatsappLeads} WhatsApp + {data?.customQuotes} Custom
+                </span>
+              </div>
+            </div>
+
+            {/* Mini Sparkline Chart Mock */}
+            <div className="flex items-end gap-1 h-7 shrink-0 pl-2">
+              <span className="w-1 bg-neutral-200 rounded-xs h-[30%]" />
+              <span className="w-1 bg-neutral-200 rounded-xs h-[55%]" />
+              <span className="w-1 bg-neutral-300 rounded-xs h-[70%]" />
+              <span className="w-1 bg-neutral-200 rounded-xs h-[65%]" />
+              <span className="w-1 bg-neutral-900 rounded-xs h-[95%]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side: New Donut Chart Card for Products Count */}
+        <div className="lg:col-span-5 xl:col-span-4 bg-white p-5 sm:p-6 rounded-2xl border border-neutral-200/90 shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between">
+          <ProductDonutChart
+            breakdown={data?.productBreakdown}
+            loading={loading}
+            onRefresh={fetchAnalytics}
+          />
+        </div>
+      </div>
 
           {/* ========================================================== */}
           {/* 4. MANAGEMENT SUITES & OPERATIONAL MODULES (6 CARDS)       */}

@@ -121,10 +121,10 @@ const Carousel_003 = ({
           autoplay={
             autoplay
               ? {
-                  delay: 4500,
-                  disableOnInteraction: false,
-                  pauseOnMouseEnter: true,
-                }
+                delay: 4500,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }
               : false
           }
           effect="coverflow"
@@ -142,16 +142,16 @@ const Carousel_003 = ({
           pagination={
             showPagination
               ? {
-                  clickable: true,
-                }
+                clickable: true,
+              }
               : false
           }
           navigation={
             showNavigation
               ? {
-                  nextEl: '.swiper-button-next',
-                  prevEl: '.swiper-button-prev',
-                }
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+              }
               : false
           }
           className="Carousal_003"
@@ -222,13 +222,13 @@ export const Skiper49 = ({
       {/* Topic on top of the card grid */}
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center mb-8 sm:mb-12 space-y-2">
         <span className="text-xs font-medium text-neutral-400">
-          Rare Ceylon Corundum
+          The Beauty of Ceylon Sapphires
         </span>
         <h2 className="text-3xl sm:text-5xl lg:text-6xl font-cormorant font-normal text-white">
-          Bespoke Sapphire Showcase
+          Discover the Art of Sapphire Jewellery
         </h2>
         <p className="text-xs sm:text-sm text-neutral-400 font-light max-w-lg mx-auto leading-relaxed">
-          Explore our signature Ceylon sapphire cuts, hue variations, and bespoke heirloom designs.
+          Explore the captivating colours, exquisite cuts, and timeless elegance of Ceylon sapphires. Discover beautifully crafted jewellery that celebrates the natural brilliance of every gemstone.
         </p>
       </div>
 
@@ -240,19 +240,19 @@ export const Skiper49 = ({
       {/* Small Description below the cards */}
       <div className="relative z-10 max-w-xl mx-auto px-4 sm:px-6 text-center mt-6 sm:mt-8">
         <p className="text-xs sm:text-sm text-neutral-400 font-light leading-relaxed">
-          Each natural Ceylon sapphire is ethically unearthed from the alluvial soils of Ratnapura and hand-selected for exceptional color saturation, crystalline purity, and optical brilliance.
+          Discover the extraordinary beauty of Ceylon sapphires, celebrated for their captivating colours and natural brilliance. Create a timeless jewellery piece that reflects your individuality and personal style.
         </p>
       </div>
 
       {/* Hero CTA Content */}
       <div className="relative z-10 text-center px-6 max-w-2xl mx-auto">
-        
+
         {onStartDesigning && (
           <button
             onClick={onStartDesigning}
             className="px-8 py-3.5 bg-white text-gray-900 rounded-full text-sm font-semibold hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-100 cursor-pointer"
           >
-            Start Designing →
+            Create Your Own Jewellery →
           </button>
         )}
       </div>
@@ -284,13 +284,13 @@ export const SapphireGallery: React.FC<SapphireGalleryProps> = ({
         className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center mb-8 sm:mb-12 space-y-2.5"
       >
         <span className="text-xs font-semibold  text-neutral-400 block">
-          Rare Ceylon Corundum
+          The Beauty of Ceylon Sapphires
         </span>
         <h2 className="text-3xl sm:text-5xl lg:text-6xl font-cormorant font-normal text-white">
-          Bespoke Sapphire Showcase
+          Discover the Art of Sapphire Jewellery
         </h2>
         <p className="text-xs sm:text-sm text-neutral-400 font-light max-w-lg mx-auto leading-relaxed">
-          Explore our signature Ceylon sapphire cuts, hue variations, and bespoke heirloom designs.
+          Explore the captivating colours, exquisite cuts, and timeless elegance of Ceylon sapphires. Discover beautifully crafted jewellery that celebrates the natural brilliance of every gemstone.
         </p>
       </motion.div>
 
@@ -308,7 +308,7 @@ export const SapphireGallery: React.FC<SapphireGalleryProps> = ({
         className="relative z-10 max-w-xl mx-auto px-4 sm:px-6 text-center mt-6 sm:mt-8"
       >
         <p className="text-xs sm:text-sm text-neutral-400 font-light leading-relaxed">
-          Each natural Ceylon sapphire is ethically unearthed from the alluvial soils of Ratnapura and hand-selected for exceptional color saturation, crystalline purity, and optical brilliance.
+         Discover the extraordinary beauty of Ceylon sapphires, celebrated for their captivating colours and natural brilliance. Create a timeless jewellery piece that reflects your individuality and personal style.
         </p>
       </motion.div>
 
@@ -319,7 +319,7 @@ export const SapphireGallery: React.FC<SapphireGalleryProps> = ({
             onClick={handleStart}
             className="px-8 py-3.5 bg-white text-gray-900 rounded-full text-sm font-semibold hover:bg-neutral-100 transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-100 cursor-pointer"
           >
-            Start Designing →
+            Create Your Own Jewellery →
           </button>
         </div>
       )}

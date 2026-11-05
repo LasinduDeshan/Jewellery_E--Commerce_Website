@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { AdminSidebar } from '../../components/admin/AdminSidebar';
 import { NotificationCenter } from '../../components/admin/NotificationCenter';
@@ -11,24 +11,159 @@ import {
   Menu,
   ExternalLink,
   LogOut,
-  RefreshCw,
-  Sparkles,
   Settings,
+  Shield,
+  KeyRound,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  Crown,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '../../context/AuthContext';
+import { AdminAuthProvider, useAdminAuth } from '../../context/AdminAuthContext';
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function AdminProtectedContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { adminUser, isLoading, isAuthenticated, isSuperAdmin, logoutAdmin, updateAdminPassword } = useAdminAuth();
+
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  // Mandatory First-Login Password Change Modal State
+  const [forceNewPassword, setForceNewPassword] = useState('');
+  const [forceConfirmPassword, setForceConfirmPassword] = useState('');
+  const [forceShowPassword, setForceShowPassword] = useState(false);
+  const [forceLoading, setForceLoading] = useState(false);
+  const [forceError, setForceError] = useState<string | null>(null);
+
+  // Enforce Route Guard: redirect immediately if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.replace(`/admin/login?redirect=${encodeURIComponent(pathname)}`);
+    }
+  }, [isLoading, isAuthenticated, pathname, router]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#0C0D12] flex flex-col items-center justify-center text-white px-4 select-none">
+        
+        <h2 className="text-sm font-semibold tracking-wide text-neutral-200">
+          Authenticating Executive Session...
+        </h2>
+        <p className="text-xs text-neutral-500 mt-1 font-light">
+          Securing encrypted administrative workspace
+        </p>
+      </div>
+    );
+  }
+
+  // Not authenticated redirecting state
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#0C0D12] flex flex-col items-center justify-center text-white px-4 select-none">
+        <div className="text-xs text-neutral-400 animate-pulse">
+          Redirecting to Admin Security Gateway...
+        </div>
+      </div>
+    );
+  }
+
+  // Mandatory password change gate (e.g. for freshly seeded super admin)
+  if (adminUser?.needsPasswordChange) {
+    const handleForcePasswordSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setForceError(null);
+      if (forceNewPassword.length < 8) {
+        setForceError('Password must be at least 8 characters long.');
+        return;
+      }
+      if (forceNewPassword !== forceConfirmPassword) {
+        setForceError('Passwords do not match. Please re-enter.');
+        return;
+      }
+      setForceLoading(true);
+      const res = await updateAdminPassword(forceNewPassword);
+      setForceLoading(false);
+      if (!res.success) {
+        setForceError(res.message);
+      }
+    };
+
+    return (
+      <div className="min-h-screen bg-[#0C0D12] flex flex-col items-center justify-center text-white px-4 select-none">
+        <div className="w-full max-w-md bg-[#13141C] border border-white/10 rounded-3xl p-8 shadow-2xl backdrop-blur-xl">
+          <div className="text-center mb-6">
+            <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 flex items-center justify-center mx-auto mb-3">
+              <KeyRound className="w-6 h-6" />
+            </div>
+            <h2 className="text-lg font-serif text-white">
+              Password Update Required
+            </h2>
+            <p className="text-xs text-neutral-400 mt-1">
+              Your administrator account requires a mandatory password update before accessing store operations.
+            </p>
+          </div>
+
+          {forceError && (
+            <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+              <span>{forceError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleForcePasswordSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-neutral-300 mb-1">
+                New Secure Password (Minimum 8 Characters)
+              </label>
+              <div className="relative">
+                <input
+                  type={forceShowPassword ? 'text' : 'password'}
+                  required
+                  value={forceNewPassword}
+                  onChange={(e) => setForceNewPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="w-full pl-4 pr-10 py-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white font-mono focus:outline-none focus:border-white/40"
+                />
+                <button
+                  type="button"
+                  onClick={() => setForceShowPassword(!forceShowPassword)}
+                  className="absolute right-3 top-2.5 text-neutral-400 hover:text-white cursor-pointer"
+                >
+                  {forceShowPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-neutral-300 mb-1">
+                Confirm New Password
+              </label>
+              <input
+                type="password"
+                required
+                value={forceConfirmPassword}
+                onChange={(e) => setForceConfirmPassword(e.target.value)}
+                placeholder="••••••••••••"
+                className="w-full px-4 py-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white font-mono focus:outline-none focus:border-white/40"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={forceLoading}
+              className="w-full py-3 rounded-xl bg-white hover:bg-neutral-100 text-black font-semibold text-xs transition-all shadow-xl disabled:opacity-50 cursor-pointer"
+            >
+              {forceLoading ? 'Updating Password...' : 'Save & Unlock Dashboard'}
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   // Dynamic header titles based on active route
   const getHeaderMeta = () => {
@@ -41,7 +176,7 @@ export default function AdminLayout({
     if (pathname.startsWith('/admin/products')) {
       return {
         title: 'Jewellery Master Catalogue',
-        subtitle: 'Manage gemstones, settings, stock counts, and 360° atelier media.',
+        subtitle: 'Manage gemstones, settings, stock counts, and 360° store media.',
       };
     }
     if (pathname.startsWith('/admin/orders')) {
@@ -68,7 +203,7 @@ export default function AdminLayout({
         subtitle: 'Moderate buyer testimonials and verified photo uploads before live display on product detail pages.',
       };
     }
-        if (pathname.startsWith('/admin/faqs')) {
+    if (pathname.startsWith('/admin/faqs')) {
       return {
         title: 'Bespoke Jewellery FAQ Manager',
         subtitle: 'Manage and customize frequently asked questions and answers displayed on the Customize page and store.',
@@ -82,13 +217,13 @@ export default function AdminLayout({
     }
     if (pathname.startsWith('/admin/settings')) {
       return {
-        title: 'Atelier Settings & Preferences',
+        title: 'Store Settings & Preferences',
         subtitle: 'Configure store profile, NGJA compliance, courier logistics, and concierge channels.',
       };
     }
     return {
       title: 'Management Suite',
-      subtitle: 'Zeyloraa Atelier Operations',
+      subtitle: 'Zeyloraa Store Operations',
     };
   };
 
@@ -102,7 +237,7 @@ export default function AdminLayout({
 
   return (
     <div className="admin-scope min-h-screen bg-[#F8F9FA] flex text-neutral-900 font-sans antialiased selection:bg-neutral-200 selection:text-neutral-900">
-      {/* 1. Left Sidebar Navigation (Always present on desktop, drawer on mobile) */}
+      {/* 1. Left Sidebar Navigation */}
       <AdminSidebar
         mobileOpen={mobileSidebarOpen}
         onCloseMobile={() => setMobileSidebarOpen(false)}
@@ -135,7 +270,7 @@ export default function AdminLayout({
 
             {/* Right: Search, Notifications & Profile Avatar */}
             <div className="flex items-center gap-3">
-              {/* Search Bar matching Reference Image */}
+              {/* Search Bar */}
               <form onSubmit={handleGlobalSearch} className="relative hidden md:block w-64 lg:w-80">
                 <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3.5 top-3" />
                 <input
@@ -150,7 +285,7 @@ export default function AdminLayout({
               {/* Currency Selector for Admin */}
               <CurrencySelector variant="admin" />
 
-              {/* Fully-functional Interactive Notification Center */}
+              {/* Interactive Notification Center */}
               <NotificationCenter />
 
               {/* Admin Avatar Pill Button */}
@@ -159,27 +294,44 @@ export default function AdminLayout({
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full bg-white border border-neutral-200/90 hover:border-black transition-all shadow-2xs cursor-pointer"
                 >
-                  <div className="w-7 h-7 rounded-full bg-black text-white text-xs font-bold flex items-center justify-center">
-                    {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+                  <div className="w-7 h-7 rounded-full bg-black text-white text-xs font-bold flex items-center justify-center relative">
+                    {adminUser?.name ? adminUser.name.charAt(0).toUpperCase() : 'A'}
+                    {isSuperAdmin && (
+                      <span className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 text-black rounded-full flex items-center justify-center text-[8px]" title="Super Admin">
+                        ★
+                      </span>
+                    )}
                   </div>
-                  <span className="text-xs font-semibold text-neutral-900 hidden sm:inline">
-                    Admin
-                  </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-neutral-400" />
+                  <div className="text-left hidden sm:block">
+                    <p className="text-xs font-semibold text-neutral-900 leading-tight">
+                      {adminUser?.name || 'Administrator'}
+                    </p>
+                    <p className="text-[10px] text-neutral-400 uppercase font-mono tracking-wider">
+                      {isSuperAdmin ? 'Super Admin' : 'Admin'}
+                    </p>
+                  </div>
+                  <ChevronDown className="w-3.5 h-3.5 text-neutral-400 ml-1" />
                 </button>
 
                 {/* Dropdown Menu */}
                 {userMenuOpen && (
                   <div
-                    className="absolute right-0 mt-2 w-52 bg-white rounded-2xl border border-neutral-200/90 shadow-xl py-2 z-50 animate-in fade-in zoom-in-95 duration-100"
+                    className="absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-neutral-200/90 shadow-xl py-2 z-50 animate-in fade-in zoom-in-95 duration-100"
                     onMouseLeave={() => setUserMenuOpen(false)}
                   >
                     <div className="px-4 py-2 border-b border-neutral-100">
-                      <p className="text-xs font-semibold text-black truncate">
-                        {user?.name || 'Administrator'}
-                      </p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-xs font-semibold text-black truncate">
+                          {adminUser?.name || 'Administrator'}
+                        </p>
+                        {isSuperAdmin && (
+                          <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold">
+                            SUPER
+                          </span>
+                        )}
+                      </div>
                       <p className="text-[10px] text-neutral-400 truncate">
-                        {user?.email || 'admin@auraceylon.com'}
+                        {adminUser?.email || 'admin@zeyloraa.com'}
                       </p>
                     </div>
 
@@ -199,7 +351,7 @@ export default function AdminLayout({
                       onClick={() => setUserMenuOpen(false)}
                     >
                       <Settings className="w-3.5 h-3.5 text-neutral-400" />
-                      <span>Atelier Settings</span>
+                      <span>Store Settings</span>
                     </Link>
 
                     <div className="border-t border-neutral-100 my-1" />
@@ -207,12 +359,12 @@ export default function AdminLayout({
                     <button
                       onClick={() => {
                         setUserMenuOpen(false);
-                        logout();
+                        logoutAdmin();
                       }}
                       className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-red-600 hover:bg-red-50 transition-colors cursor-pointer text-left"
                     >
                       <LogOut className="w-3.5 h-3.5 text-red-500" />
-                      <span>Sign Out</span>
+                      <span>Sign Out from Admin</span>
                     </button>
                   </div>
                 )}
@@ -227,5 +379,25 @@ export default function AdminLayout({
         </main>
       </div>
     </div>
+  );
+}
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+
+  return (
+    <AdminAuthProvider>
+      {pathname === '/admin/login' ? (
+        children
+      ) : (
+        <AdminProtectedContent>
+          {children}
+        </AdminProtectedContent>
+      )}
+    </AdminAuthProvider>
   );
 }

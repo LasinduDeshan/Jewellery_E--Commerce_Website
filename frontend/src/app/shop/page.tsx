@@ -252,7 +252,7 @@ export default function ShopCataloguePage() {
         <div className="absolute inset-0 z-0">
           <Image
             src={shopHeroBg}
-            alt="Natural Ceylon Sapphire Collection"
+            alt="Discover Our Fine Jewellery Collection"
             fill
             priority
             sizes="100vw"
@@ -266,10 +266,10 @@ export default function ShopCataloguePage() {
         <div className="relative z-10 max-w-7xl mx-auto text-center">
           
           <h1 className="text-3xl sm:text-5xl lg:text-4xl font-normal text-white tracking-tight">
-            Natural Ceylon Sapphire Collection
+            Discover Our Fine Jewellery Collection
           </h1>
           <p className="mt-3 text-sm sm:text-base text-neutral-300 max-w-2xl mx-auto font-light leading-relaxed">
-            Ethically gathered from Sri Lankan riverbeds, set in solid 925 sterling silver and 18K rose gold vermeil. Priced in AUD with insured express Australian delivery.
+            Explore a captivating collection of fine jewellery featuring exquisite Ceylon sapphires, elegant designs, and timeless craftsmanship. Discover beautifully crafted pieces that celebrate individuality and sophistication.
           </p>
 
           {/* Search Bar */}
@@ -456,16 +456,16 @@ export default function ShopCataloguePage() {
             <div className="p-4 rounded-2xl bg-neutral-100 border border-neutral-200 text-xs space-y-2">
               <div className="flex items-center gap-1.5 text-black font-bold">
                 
-                <span>Need a Custom Piece?</span>
+                <span>Create Something Truly Yours</span>
               </div>
               <p className="text-neutral-600 text-[11px] leading-relaxed">
-                Choose your exact unheated sapphire from our Ratnapura vaults and design your dream ring.
+                Bring your dream jewellery to life with a personalized design, exquisite gemstones, and timeless craftsmanship.
               </p>
               <Link
                 href="/customize"
                 className="inline-block text-[11px] font-bold text-black hover:underline pt-1"
               >
-                Launch Studio & Request Quote →
+                Design Your Own Piece →
               </Link>
             </div>
           </aside>

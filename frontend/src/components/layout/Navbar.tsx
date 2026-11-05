@@ -917,13 +917,13 @@ export const Navbar: React.FC = () => {
                 <div className="col-span-4 bg-neutral-900 text-white rounded-2xl p-6 border border-neutral-800 flex flex-col justify-between">
                   <div>
                     <span className="text-[9px] font-bold text-neutral-400 block mb-2">
-                      Custom Atelier
+                      Men's Bespoke Collection
                     </span>
                     <h4 className="text-sm font-bold text-white mb-2">
-                      Custom Men&apos;s Signet or Cufflinks
+                      Design Your Signature Piece
                     </h4>
                     <p className="text-xs text-neutral-300 leading-relaxed font-light mb-4">
-                      Select an unheated Ceylon star sapphire or royal blue cushion from our Ratnapura vaults. We cast directly in heavy sterling silver or 18K gold.
+                      Express your individuality with custom-designed signet rings and cufflinks, featuring exquisite Ceylon sapphires and refined craftsmanship.
                     </p>
                   </div>
 
@@ -993,16 +993,7 @@ export const Navbar: React.FC = () => {
                     )}
                   </Link>
 
-                  <div className="border-t border-neutral-100 my-1"></div>
 
-                  <Link
-                    href="/admin"
-                    onClick={closeAll}
-                    className="flex items-center gap-2.5 px-4 py-2 hover:bg-neutral-50 text-xs text-neutral-800 font-medium transition-colors"
-                  >
-                    <Shield className="w-3.5 h-3.5 text-neutral-900" />
-                    <span>Admin Workspace</span>
-                  </Link>
 
                   <button
                     type="button"
@@ -1056,14 +1047,7 @@ export const Navbar: React.FC = () => {
                     <Package className="w-3.5 h-3.5 text-neutral-500" />
                     <span>Track Your Order</span>
                   </Link>
-                  <Link
-                    href="/admin"
-                    onClick={closeAll}
-                    className="flex items-center gap-2.5 px-4 py-2 hover:bg-neutral-50 text-xs text-neutral-700 font-medium transition-colors"
-                  >
-                    <Shield className="w-3.5 h-3.5 text-neutral-500" />
-                    <span>Admin Workspace</span>
-                  </Link>
+
                 </div>
               </>
             )}

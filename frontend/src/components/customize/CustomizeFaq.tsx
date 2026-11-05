@@ -116,7 +116,7 @@ export const CustomizeFaq: React.FC<CustomizeFaqProps> = ({
           <div className="lg:col-span-5 flex flex-col justify-between self-stretch pr-0 lg:pr-6">
             <div>
               <span className="text-[10px] font-bold  text-neutral-400 block mb-3">
-                Bespoke Concierge
+                We're Here to Help
               </span>
               <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-neutral-900 tracking-tight leading-[1.12]">
                 General Questions <br className="hidden sm:inline" />
@@ -127,15 +127,14 @@ export const CustomizeFaq: React.FC<CustomizeFaqProps> = ({
             {/* Bottom Subtext & Call-to-Action */}
             <div className="mt-8 lg:mt-24 pt-6 border-t border-neutral-200/60 lg:border-t-0 lg:pt-0">
               <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-sm mb-5 font-normal">
-                Our master gemologists and goldsmiths are always here to help you with quick, clear,
-                and reliable answers whenever needed.
+                Have a question about our jewellery or bespoke designs? Our team is here to guide you, offering personalized assistance to make your Zeyloraa experience effortless and memorable.
               </p>
               <button
                 type="button"
                 onClick={handleContactAction}
                 className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-black text-white text-xs sm:text-sm font-semibold hover:bg-neutral-800 active:scale-95 transition-all shadow-sm cursor-pointer"
               >
-                <span>Contact Atelier</span>
+                <span>Contact Our Team</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>

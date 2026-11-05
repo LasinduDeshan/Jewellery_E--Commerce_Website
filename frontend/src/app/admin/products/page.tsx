@@ -69,7 +69,7 @@ export default function AdminProductsPage() {
     const activeToken =
       token ||
       (typeof window !== 'undefined'
-        ? localStorage.getItem('jewellery_token')
+        ? localStorage.getItem('aura_admin_token') || localStorage.getItem('jewellery_token')
         : null);
     return {
       'Content-Type': 'application/json',
@@ -458,7 +458,7 @@ export default function AdminProductsPage() {
   });
 
   return (
-    <div className="space-y-6 max-w-7xl w-full">
+    <div className="space-y-6 w-full">
       {/* Top Controls Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
         <div className="relative w-full sm:w-80">
@@ -631,7 +631,7 @@ export default function AdminProductsPage() {
                   {editingProduct ? 'Edit Jewellery Piece' : 'Add New Jewellery to Catalogue'}
                 </h3>
                 <p className="text-[11px] text-neutral-500 font-light">
-                  Complete product specifications, upload atelier images & 360° video.
+                  Complete product specifications, upload product images & 360° video.
                 </p>
               </div>
               <button
@@ -956,7 +956,7 @@ export default function AdminProductsPage() {
                         <div>
                           <h4 className="font-bold text-neutral-900 text-xs flex items-center gap-1.5">
                             <Film className="w-4 h-4 text-neutral-700" />
-                            <span>360° View & Sparkle Atelier Video</span>
+                            <span>360° View & Sparkle Product Video</span>
                           </h4>
                           <p className="text-[11px] text-neutral-500 font-light">
                             Add a rotating 360° video showcasing facet fire and pavilion sparkle.
@@ -1014,7 +1014,7 @@ export default function AdminProductsPage() {
                           <div className="flex-1 w-full space-y-2">
                             <div className="flex items-center gap-1.5 text-emerald-700 font-semibold text-xs">
                               <Check className="w-4 h-4 text-emerald-600" />
-                              <span>Atelier Video Linked & Ready</span>
+                              <span>Product Video Linked & Ready</span>
                             </div>
                             <p className="text-[10px] text-neutral-400 font-mono truncate max-w-md">
                               {formVideoUrl}
@@ -1095,7 +1095,7 @@ export default function AdminProductsPage() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-neutral-700 font-semibold mb-1">
-                        Atelier Description & Sourcing Story
+                        Product Description & Sourcing Story
                       </label>
                       <textarea
                         rows={3}
