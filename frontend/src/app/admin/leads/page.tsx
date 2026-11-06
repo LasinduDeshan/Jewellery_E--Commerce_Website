@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getAdminAuthHeaders } from '../../../utils/adminApi';
 import {
   MessageCircle,
@@ -14,6 +14,9 @@ import {
   DollarSign,
   FileText,
   Filter,
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 
 export default function AdminWhatsAppLeadsPage() {
@@ -22,6 +25,17 @@ export default function AdminWhatsAppLeadsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedLead, setSelectedLead] = useState<any | null>(null);
+
+  const filterScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollFilter = (direction: 'left' | 'right') => {
+    if (filterScrollRef.current) {
+      filterScrollRef.current.scrollBy({
+        left: direction === 'left' ? -200 : 200,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -80,8 +94,8 @@ export default function AdminWhatsAppLeadsPage() {
   return (
     <div className="space-y-6 w-full">
       {/* Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
-        <div className="relative w-full sm:w-80">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3.5 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
+        <div className="relative w-full sm:w-72 shrink-0">
           <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3.5 top-3" />
           <input
             type="text"
@@ -92,26 +106,55 @@ export default function AdminWhatsAppLeadsPage() {
           />
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto">
-          {['all', 'New', 'Contacted', 'Converted', 'Lost'].map((st) => (
-            <button
-              key={st}
-              onClick={() => setStatusFilter(st)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                statusFilter === st
-                  ? 'bg-neutral-900 text-white shadow-2xs'
-                  : 'bg-neutral-100 text-neutral-600 hover:text-black hover:bg-neutral-200'
-              }`}
-            >
-              {st}
-            </button>
-          ))}
+        {/* Filter Controls with Smooth Scroll, Wheel & Chevron Arrows */}
+        <div className="flex items-center gap-1.5 min-w-0 flex-1 justify-end">
           <button
-            onClick={fetchLeads}
-            className="p-2 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black transition-colors shadow-2xs cursor-pointer ml-1"
-            title="Refresh Leads"
+            type="button"
+            onClick={() => scrollFilter('left')}
+            className="p-1.5 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black shrink-0 transition-colors cursor-pointer bg-white"
+            title="Scroll left"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            <ChevronLeft className="w-3.5 h-3.5" />
+          </button>
+
+          <div
+            ref={filterScrollRef}
+            onWheel={(e) => {
+              if (e.deltaY !== 0) {
+                e.currentTarget.scrollLeft += e.deltaY;
+              }
+            }}
+            className="admin-horizontal-scroll flex items-center gap-1.5 pb-1 text-xs overflow-x-auto min-w-0"
+          >
+            {['all', 'New', 'Contacted', 'Converted', 'Lost'].map((st) => (
+              <button
+                key={st}
+                onClick={() => setStatusFilter(st)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+                  statusFilter === st
+                    ? 'bg-neutral-900 text-white shadow-2xs'
+                    : 'bg-neutral-100 text-neutral-600 hover:text-black hover:bg-neutral-200'
+                }`}
+              >
+                {st}
+              </button>
+            ))}
+            <button
+              onClick={fetchLeads}
+              className="p-2 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black transition-colors shadow-2xs cursor-pointer ml-1 shrink-0"
+              title="Refresh Leads"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => scrollFilter('right')}
+            className="p-1.5 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black shrink-0 transition-colors cursor-pointer bg-white"
+            title="Scroll right"
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
@@ -120,7 +163,7 @@ export default function AdminWhatsAppLeadsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-7 bg-white rounded-3xl border border-neutral-200/90 overflow-hidden shadow-2xs">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-[560px] text-left text-xs">
               <thead className="bg-neutral-50/80 border-b border-neutral-200/80 text-neutral-500 text-xs font-medium">
                 <tr>
                   <th className="py-3 px-4 font-semibold">Ticket</th>
@@ -181,9 +224,10 @@ export default function AdminWhatsAppLeadsPage() {
         </div>
 
         {/* Lead Detail Panel */}
-        <div className="lg:col-span-5 bg-white rounded-3xl border border-neutral-200/90 p-6 shadow-2xs">
+        <div className="lg:col-span-5 bg-white rounded-3xl border border-neutral-200/90 p-4 sm:p-6 shadow-2xs">
           {selectedLead ? (
             <div className="space-y-5 text-xs">
+
               <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
                 <div>
                   <span className="text-xs font-medium text-neutral-400">

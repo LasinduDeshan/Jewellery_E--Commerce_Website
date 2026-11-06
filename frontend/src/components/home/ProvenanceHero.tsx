@@ -10,13 +10,14 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
+import hheroImage from '../../assets/img/hhero.png';
 
 
 const VIDEOS = [
   {
     id: 'video-gemini',
     src: '/videos/gemini_generated_video_9cb08cca.mp4',
-    poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=2000&q=85',
+    poster: hheroImage.src,
     tag: 'Fine Jewellery Collection',
     headline: 'Elegance in Every Detail',
     description: 'Experience the extraordinary beauty of fine jewellery, where captivating gemstones, elegant designs, and exquisite details create unforgettable brilliance.',
@@ -28,7 +29,7 @@ const VIDEOS = [
   {
     id: 'video-1',
     src: '/videos/gemini_generated_video_81092fbd.mp4',
-    poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=2000&q=85',
+    poster: hheroImage.src,
     tag: 'Timeless Elegance',
     headline: 'The Beauty of Ceylon',
     description: 'Discover the timeless beauty of fine jewellery, where exquisite Ceylon sapphires meet exceptional craftsmanship to create pieces that last a lifetime.',

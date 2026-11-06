@@ -93,7 +93,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   ];
 
   const sidebarContent = (
-    <div className="w-64 h-full bg-black border-r border-neutral-800 flex flex-col justify-between p-5 select-none text-white">
+    <div className="w-64 h-full bg-black border-r border-neutral-800 flex flex-col justify-between p-5 select-none text-white overflow-y-auto no-scrollbar">
       <div>
         {/* Brand Logo Header */}
         <div className="flex items-center justify-between pb-6 border-b border-neutral-800">

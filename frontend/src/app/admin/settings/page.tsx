@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Save,
   Check,
@@ -19,6 +19,8 @@ import {
   EyeOff,
   AlertCircle,
   Crown,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { useAdminAuth } from '../../../context/AdminAuthContext';
 
@@ -106,6 +108,17 @@ export default function AdminSettingsPage() {
   // 2FA Toggle State
   const [twoFactorLoading, setTwoFactorLoading] = useState(false);
   const [twoFactorMsg, setTwoFactorMsg] = useState<string | null>(null);
+
+  const tabScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollTabs = (direction: 'left' | 'right') => {
+    if (tabScrollRef.current) {
+      tabScrollRef.current.scrollBy({
+        left: direction === 'left' ? -200 : 200,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   // Load saved settings from localStorage
   useEffect(() => {
@@ -195,7 +208,7 @@ export default function AdminSettingsPage() {
   return (
     <div className="space-y-6 w-full">
       {/* Top Banner and Quick Actions */}
-      <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-base font-semibold text-black">Store Operational Settings</h2>
           <p className="text-xs text-neutral-500 font-light mt-0.5">
@@ -203,7 +216,7 @@ export default function AdminSettingsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto justify-start sm:justify-end shrink-0">
           <button
             type="button"
             onClick={handleReset}
@@ -218,7 +231,7 @@ export default function AdminSettingsPage() {
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="px-6 py-2 bg-black hover:bg-neutral-800 text-white rounded-full text-xs font-medium transition-colors shadow-2xs cursor-pointer flex items-center gap-2 disabled:opacity-50"
+            className="px-5 sm:px-6 py-2 bg-black hover:bg-neutral-800 text-white rounded-full text-xs font-medium transition-colors shadow-2xs cursor-pointer flex items-center gap-2 disabled:opacity-50"
           >
             {saving ? (
               <>
@@ -240,33 +253,61 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
-      {/* Settings Navigation Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
-        {[
-          { id: 'profile', label: 'Store Profile', icon: Building2 },
-          { id: 'ngja', label: 'NGJA Export & Customs', icon: Shield },
-          { id: 'courier', label: 'Shipping & Couriers', icon: Truck },
-          { id: 'whatsapp', label: 'WhatsApp Concierge', icon: MessageCircle },
-          { id: 'inventory', label: 'Inventory & Alerts', icon: Sliders },
-          { id: 'security', label: 'Security & Password', icon: KeyRound },
-        ].map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all cursor-pointer whitespace-nowrap ${
-                isActive
-                  ? 'bg-black text-white font-medium shadow-2xs'
-                  : 'bg-white border border-neutral-200/90 text-neutral-600 hover:text-black hover:bg-neutral-50'
-              }`}
-            >
-              <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-neutral-400'}`} />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
+      {/* Settings Navigation Tabs with Smooth Scroll, Wheel & Chevron Arrows */}
+      <div className="flex items-center gap-1.5 w-full">
+        <button
+          type="button"
+          onClick={() => scrollTabs('left')}
+          className="p-1.5 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black shrink-0 transition-colors cursor-pointer bg-white"
+          title="Scroll tabs left"
+        >
+          <ChevronLeft className="w-3.5 h-3.5" />
+        </button>
+
+        <div
+          ref={tabScrollRef}
+          onWheel={(e) => {
+            if (e.deltaY !== 0) {
+              e.currentTarget.scrollLeft += e.deltaY;
+            }
+          }}
+          className="admin-horizontal-scroll flex items-center gap-2 pb-1 text-xs overflow-x-auto min-w-0 flex-1"
+        >
+          {[
+            { id: 'profile', label: 'Store Profile', icon: Building2 },
+            { id: 'ngja', label: 'NGJA Export & Customs', icon: Shield },
+            { id: 'courier', label: 'Shipping & Couriers', icon: Truck },
+            { id: 'whatsapp', label: 'WhatsApp Concierge', icon: MessageCircle },
+            { id: 'inventory', label: 'Inventory & Alerts', icon: Sliders },
+            { id: 'security', label: 'Security & Password', icon: KeyRound },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                  isActive
+                    ? 'bg-black text-white font-medium shadow-2xs'
+                    : 'bg-white border border-neutral-200/90 text-neutral-600 hover:text-black hover:bg-neutral-50'
+                }`}
+              >
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-neutral-400'}`} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => scrollTabs('right')}
+          className="p-1.5 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black shrink-0 transition-colors cursor-pointer bg-white"
+          title="Scroll tabs right"
+        >
+          <ChevronRight className="w-3.5 h-3.5" />
+        </button>
       </div>
 
       {/* Main Settings Form Container */}

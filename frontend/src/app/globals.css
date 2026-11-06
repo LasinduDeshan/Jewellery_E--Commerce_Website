@@ -115,6 +115,38 @@
   scrollbar-width: none !important;
 }
 
+/* 1b. ELEGANT LIGHT HORIZONTAL SCROLL FOR ADMIN TABS & PILLS   */
+.admin-horizontal-scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.admin-horizontal-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.admin-horizontal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-horizontal-scroll::-webkit-scrollbar-thumb {
+  background: #D4D4D8;
+  border-radius: 9999px;
+}
+
+.admin-horizontal-scroll::-webkit-scrollbar-thumb:hover {
+  background: #A1A1AA;
+}
+
+.admin-horizontal-scroll::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 /* 2. DARK LUXURY SCROLLBAR (Active on Home & Customize Pages)    */
 html.dark-scrollbar,
 html.dark-scrollbar body,

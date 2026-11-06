@@ -460,7 +460,7 @@ export default function AdminProductsPage() {
   return (
     <div className="space-y-6 w-full">
       {/* Top Controls Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3.5 bg-white p-3.5 sm:p-4 rounded-2xl border border-neutral-200/90 shadow-2xs">
         <div className="relative w-full sm:w-80">
           <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3.5 top-3" />
           <input
@@ -472,26 +472,28 @@ export default function AdminProductsPage() {
           />
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+        <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2.5 w-full sm:w-auto">
           <span className="text-xs text-neutral-500 font-light">
             Total Active Pieces: <strong className="text-black font-semibold">{products.length}</strong>
           </span>
 
-          <button
-            onClick={openCreateModal}
-            className="px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-full text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs shrink-0"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Add New Jewellery</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={openCreateModal}
+              className="px-3.5 sm:px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-full text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs shrink-0"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Add New Jewellery</span>
+            </button>
 
-          <button
-            onClick={fetchProducts}
-            className="p-2 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black transition-colors shadow-2xs cursor-pointer shrink-0"
-            title="Refresh Products"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          </button>
+            <button
+              onClick={fetchProducts}
+              className="p-2 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black transition-colors shadow-2xs cursor-pointer shrink-0"
+              title="Refresh Products"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -513,7 +515,7 @@ export default function AdminProductsPage() {
       {/* Product Table */}
       <div className="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[720px] text-left text-xs">
             <thead className="bg-neutral-50/80 border-b border-neutral-200/90 text-neutral-500 text-xs font-medium">
               <tr>
                 <th className="py-3 px-4">Item</th>
@@ -622,33 +624,40 @@ export default function AdminProductsPage() {
 
       {/* COMPACT, REDUCED-HEIGHT TABBED MODAL WITH FILE UPLOADS */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-4">
-          <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden border border-neutral-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-2.5 sm:p-4">
+          <div className="bg-white rounded-2xl sm:rounded-3xl max-w-4xl w-full max-h-[92vh] sm:max-h-[88vh] flex flex-col shadow-2xl overflow-hidden border border-neutral-200">
             {/* 1. Modal Fixed Header */}
-            <div className="px-6 py-4 border-b border-neutral-100 flex items-center justify-between bg-white shrink-0">
-              <div>
-                <h3 className="text-base font-bold text-neutral-900">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-neutral-100 flex items-center justify-between bg-white shrink-0">
+              <div className="min-w-0 pr-2">
+                <h3 className="text-sm sm:text-base font-bold text-neutral-900 truncate">
                   {editingProduct ? 'Edit Jewellery Piece' : 'Add New Jewellery to Catalogue'}
                 </h3>
-                <p className="text-[11px] text-neutral-500 font-light">
+                <p className="text-[10px] sm:text-[11px] text-neutral-500 font-light truncate">
                   Complete product specifications, upload product images & 360° video.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="p-2 text-neutral-400 hover:text-black rounded-full hover:bg-neutral-100 transition-colors cursor-pointer"
+                className="p-1.5 sm:p-2 text-neutral-400 hover:text-black rounded-full hover:bg-neutral-100 transition-colors cursor-pointer shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* 2. Modal Step Navigation Tabs (Reduces vertical height dramatically) */}
-            <div className="flex border-b border-neutral-100 bg-neutral-50/70 px-6 shrink-0 gap-2 pt-2.5 overflow-x-auto">
+            <div
+              onWheel={(e) => {
+                if (e.deltaY !== 0) {
+                  e.currentTarget.scrollLeft += e.deltaY;
+                }
+              }}
+              className="flex border-b border-neutral-100 bg-neutral-50/70 px-4 sm:px-6 shrink-0 gap-1.5 sm:gap-2 pt-2.5 overflow-x-auto admin-horizontal-scroll"
+            >
               <button
                 type="button"
                 onClick={() => setActiveModalTab('info')}
-                className={`pb-2.5 px-3.5 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+                className={`pb-2.5 px-3 sm:px-3.5 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                   activeModalTab === 'info'
                     ? 'border-black text-black'
                     : 'border-transparent text-neutral-500 hover:text-neutral-800'
@@ -661,7 +670,7 @@ export default function AdminProductsPage() {
               <button
                 type="button"
                 onClick={() => setActiveModalTab('media')}
-                className={`pb-2.5 px-3.5 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+                className={`pb-2.5 px-3 sm:px-3.5 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                   activeModalTab === 'media'
                     ? 'border-black text-black'
                     : 'border-transparent text-neutral-500 hover:text-neutral-800'
@@ -684,7 +693,7 @@ export default function AdminProductsPage() {
               <button
                 type="button"
                 onClick={() => setActiveModalTab('details')}
-                className={`pb-2.5 px-3.5 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+                className={`pb-2.5 px-3 sm:px-3.5 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                   activeModalTab === 'details'
                     ? 'border-black text-black'
                     : 'border-transparent text-neutral-500 hover:text-neutral-800'
@@ -697,7 +706,7 @@ export default function AdminProductsPage() {
 
             {/* 3. Modal Scrollable Content Container */}
             <form onSubmit={handleSaveProduct} className="flex flex-col flex-1 overflow-hidden text-xs">
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
                 {errorMsg && (
                   <div className="p-3 bg-red-50 text-red-700 border border-red-200 rounded-xl text-xs font-semibold flex items-center justify-between">
                     <span>{errorMsg}</span>
@@ -1151,7 +1160,7 @@ export default function AdminProductsPage() {
               </div>
 
               {/* 4. Modal Fixed Bottom Action Bar */}
-              <div className="px-6 py-3.5 border-t border-neutral-100 bg-neutral-50/70 flex items-center justify-between shrink-0">
+              <div className="px-4 sm:px-6 py-3 sm:py-3.5 border-t border-neutral-100 bg-neutral-50/70 flex items-center justify-between shrink-0">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}

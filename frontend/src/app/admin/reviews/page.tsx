@@ -58,8 +58,15 @@ export default function AdminReviewsPage() {
     <div className="space-y-6 w-full">
       {/* Top Filter and Controls Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar w-full sm:w-auto">
-          <div className="flex items-center gap-1.5 pl-2 pr-3 text-neutral-400 border-r border-neutral-100 mr-1 text-xs">
+        <div
+          onWheel={(e) => {
+            if (e.deltaY !== 0) {
+              e.currentTarget.scrollLeft += e.deltaY;
+            }
+          }}
+          className="admin-horizontal-scroll flex items-center gap-1.5 overflow-x-auto pb-1 w-full sm:w-auto"
+        >
+          <div className="flex items-center gap-1.5 pl-2 pr-3 text-neutral-400 border-r border-neutral-100 mr-1 text-xs shrink-0">
             <Filter className="w-3.5 h-3.5" />
             <span className="text-xs text-neutral-400 font-medium">Filter</span>
           </div>
@@ -67,7 +74,7 @@ export default function AdminReviewsPage() {
             <button
               key={st}
               onClick={() => setFilterStatus(st)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium capitalize transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-medium capitalize transition-all cursor-pointer shrink-0 ${
                 filterStatus === st
                   ? 'bg-neutral-900 text-white shadow-2xs'
                   : 'text-neutral-600 hover:text-black hover:bg-neutral-100'

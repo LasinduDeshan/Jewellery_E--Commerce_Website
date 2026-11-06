@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { getAdminAuthHeaders } from '../../../utils/adminApi';
 import Link from 'next/link';
 import {
@@ -17,6 +17,8 @@ import {
   AlertCircle,
   Gem,
   ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
   ExternalLink,
   Calendar,
   DollarSign,
@@ -104,6 +106,17 @@ export default function AdminOrdersFulfilmentPage() {
 
   // Modals
   const [labelModalOpen, setLabelModalOpen] = useState<boolean>(false);
+
+  const filterScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollFilter = (direction: 'left' | 'right') => {
+    if (filterScrollRef.current) {
+      filterScrollRef.current.scrollBy({
+        left: direction === 'left' ? -200 : 200,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
@@ -305,7 +318,7 @@ export default function AdminOrdersFulfilmentPage() {
         {/* Left Column: Filter & Orders List */}
         <div className="lg:col-span-5 flex flex-col space-y-4">
           {/* Search & Filter Bar */}
-          <div className="bg-white p-4 rounded-2xl border border-neutral-200/90 shadow-2xs space-y-3">
+          <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-neutral-200/90 shadow-2xs space-y-3">
             <div className="relative">
               <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-3" />
               <input
@@ -317,27 +330,56 @@ export default function AdminOrdersFulfilmentPage() {
               />
             </div>
 
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs">
-              <Filter className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
-              {[
-                { id: 'all', label: 'All Orders' },
-                { id: 'Processing', label: 'Processing' },
-                { id: 'Pending NGJA Export Clearance', label: 'NGJA Clearance' },
-                { id: 'Shipped', label: 'Shipped' },
-                { id: 'Delivered', label: 'Delivered' },
-              ].map((st) => (
-                <button
-                  key={st.id}
-                  onClick={() => setStatusFilter(st.id)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap cursor-pointer transition-colors ${
-                    statusFilter === st.id
-                      ? 'bg-black text-white shadow-2xs'
-                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
-                  }`}
-                >
-                  {st.label}
-                </button>
-              ))}
+            {/* Filter Pills with Horizontal Scroll, Wheel & Chevron Arrows */}
+            <div className="flex items-center gap-1.5 min-w-0">
+              <button
+                type="button"
+                onClick={() => scrollFilter('left')}
+                className="p-1.5 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black shrink-0 transition-colors cursor-pointer bg-white"
+                title="Scroll left"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+
+              <div
+                ref={filterScrollRef}
+                onWheel={(e) => {
+                  if (e.deltaY !== 0) {
+                    e.currentTarget.scrollLeft += e.deltaY;
+                  }
+                }}
+                className="admin-horizontal-scroll flex items-center gap-1.5 pb-1 text-xs overflow-x-auto min-w-0 flex-1"
+              >
+                <Filter className="w-3.5 h-3.5 text-neutral-400 shrink-0 ml-1" />
+                {[
+                  { id: 'all', label: 'All Orders' },
+                  { id: 'Processing', label: 'Processing' },
+                  { id: 'Pending NGJA Export Clearance', label: 'NGJA Clearance' },
+                  { id: 'Shipped', label: 'Shipped' },
+                  { id: 'Delivered', label: 'Delivered' },
+                ].map((st) => (
+                  <button
+                    key={st.id}
+                    onClick={() => setStatusFilter(st.id)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap cursor-pointer transition-colors shrink-0 ${
+                      statusFilter === st.id
+                        ? 'bg-black text-white shadow-2xs'
+                        : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
+                    }`}
+                  >
+                    {st.label}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => scrollFilter('right')}
+                className="p-1.5 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black shrink-0 transition-colors cursor-pointer bg-white"
+                title="Scroll right"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
 
@@ -417,7 +459,8 @@ export default function AdminOrdersFulfilmentPage() {
         {/* Right Column: Detailed Fulfilment Panel, Shipping Label, and Tracking Control */}
         <div className="lg:col-span-7">
           {selectedOrder ? (
-            <div className="bg-white rounded-2xl border border-neutral-200/90 shadow-2xs p-6 sm:p-8 space-y-6">
+            <div className="bg-white rounded-2xl border border-neutral-200/90 shadow-2xs p-4 sm:p-6 lg:p-8 space-y-6">
+
               {/* Header Action Bar */}
               <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-neutral-100">
                 <div>

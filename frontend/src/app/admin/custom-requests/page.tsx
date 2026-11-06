@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getAdminAuthHeaders } from '../../../utils/adminApi';
 import Link from 'next/link';
 import {
@@ -17,6 +17,9 @@ import {
   DollarSign,
   FileText,
   AlertCircle,
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 
 interface CustomRequestItem {
@@ -58,6 +61,17 @@ export default function AdminCustomRequestsPage() {
   const [editPrice, setEditPrice] = useState<string>('');
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [saveMessage, setSaveMessage] = useState<string>('');
+
+  const filterScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollFilter = (direction: 'left' | 'right') => {
+    if (filterScrollRef.current) {
+      filterScrollRef.current.scrollBy({
+        left: direction === 'left' ? -200 : 200,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   const fetchRequests = async () => {
     setLoading(true);
@@ -159,8 +173,8 @@ export default function AdminCustomRequestsPage() {
   return (
     <div className="space-y-6 w-full">
       {/* Top Filter and Controls Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
-        <div className="relative w-full sm:w-80">
+      <div className="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3.5 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
+        <div className="relative w-full xl:w-72 shrink-0">
           <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3.5 top-3" />
           <input
             type="text"
@@ -171,34 +185,63 @@ export default function AdminCustomRequestsPage() {
           />
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto">
-          {['all', 'New', 'Under Review', 'Quote Sent', 'In Production'].map((st) => (
-            <button
-              key={st}
-              onClick={() => setStatusFilter(st)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
-                statusFilter === st
-                  ? 'bg-neutral-900 text-white shadow-2xs'
-                  : 'bg-neutral-100 text-neutral-600 hover:text-black hover:bg-neutral-200'
-              }`}
-            >
-              {st === 'all' ? 'All Requests' : st}
-            </button>
-          ))}
-          <Link
-            href="/customize"
-            target="_blank"
-            className="px-3.5 py-1.5 rounded-full border border-neutral-200/90 hover:border-black text-xs font-medium text-neutral-700 hover:text-black flex items-center gap-1.5 transition-colors shadow-2xs shrink-0"
-          >
-            <Gem className="w-3.5 h-3.5 text-neutral-500" />
-            <span>Customer Studio</span>
-          </Link>
+        {/* Filter Controls with Smooth Scroll, Wheel & Chevron Arrows */}
+        <div className="flex items-center gap-1.5 min-w-0 flex-1 justify-end">
           <button
-            onClick={fetchRequests}
-            className="p-2 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black transition-colors shadow-2xs cursor-pointer shrink-0"
-            title="Refresh Requests"
+            type="button"
+            onClick={() => scrollFilter('left')}
+            className="p-1.5 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black shrink-0 transition-colors cursor-pointer bg-white"
+            title="Scroll left"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            <ChevronLeft className="w-3.5 h-3.5" />
+          </button>
+
+          <div
+            ref={filterScrollRef}
+            onWheel={(e) => {
+              if (e.deltaY !== 0) {
+                e.currentTarget.scrollLeft += e.deltaY;
+              }
+            }}
+            className="admin-horizontal-scroll flex items-center gap-1.5 pb-1 text-xs overflow-x-auto min-w-0"
+          >
+            {['all', 'New', 'Under Review', 'Quote Sent', 'In Production'].map((st) => (
+              <button
+                key={st}
+                onClick={() => setStatusFilter(st)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+                  statusFilter === st
+                    ? 'bg-neutral-900 text-white shadow-2xs'
+                    : 'bg-neutral-100 text-neutral-600 hover:text-black hover:bg-neutral-200'
+                }`}
+              >
+                {st === 'all' ? 'All Requests' : st}
+              </button>
+            ))}
+            <Link
+              href="/customize"
+              target="_blank"
+              className="px-3.5 py-1.5 rounded-full border border-neutral-200/90 hover:border-black text-xs font-medium text-neutral-700 hover:text-black flex items-center gap-1.5 transition-colors shadow-2xs shrink-0 whitespace-nowrap"
+            >
+              <Gem className="w-3.5 h-3.5 text-neutral-500" />
+              <span>Customer Studio</span>
+            </Link>
+            <button
+              onClick={fetchRequests}
+              className="p-2 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black transition-colors shadow-2xs cursor-pointer shrink-0"
+              title="Refresh Requests"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => scrollFilter('right')}
+            className="p-1.5 rounded-full border border-neutral-200/90 hover:border-black text-neutral-500 hover:text-black shrink-0 transition-colors cursor-pointer bg-white"
+            title="Scroll right"
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
@@ -280,7 +323,8 @@ export default function AdminCustomRequestsPage() {
         {/* Right Column: Detailed Request Inspector */}
         <div className="lg:col-span-7">
           {selectedRequest ? (
-            <div className="bg-white rounded-3xl border border-neutral-200/90 shadow-2xs p-6 sm:p-8 space-y-6">
+            <div className="bg-white rounded-3xl border border-neutral-200/90 shadow-2xs p-4 sm:p-6 lg:p-8 space-y-6">
+
               {/* Header */}
               <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-neutral-100">
                 <div>

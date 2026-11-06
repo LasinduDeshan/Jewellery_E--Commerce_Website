@@ -77,14 +77,14 @@ export default function AdminCmsPage() {
   return (
     <div className="space-y-6 w-full">
       {/* Top Controls Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-neutral-200/90 shadow-2xs">
         <div className="flex items-center gap-2">
           <span className="text-xs text-neutral-500 font-light">
             Live story page published on <code className="text-neutral-800 font-mono text-[11px] bg-neutral-100 px-1.5 py-0.5 rounded">/story</code>
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-start sm:justify-end">
           <Link
             href="/story"
             target="_blank"
@@ -112,7 +112,7 @@ export default function AdminCmsPage() {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Hero Section Card */}
-        <div className="bg-white p-6 sm:p-7 rounded-3xl border border-neutral-200/90 shadow-2xs space-y-4">
+        <div className="bg-white p-4 sm:p-7 rounded-3xl border border-neutral-200/90 shadow-2xs space-y-4">
           <div className="pb-3 border-b border-neutral-100">
             <span className="text-[10px] text-neutral-400 font-semibold block leading-none mb-1">
               Hero Intro

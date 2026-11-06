@@ -300,10 +300,10 @@ export default function AdminFaqsPage() {
       </div>
 
       {/* Control & Search Toolbar */}
-      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-neutral-200/80 shadow-2xs flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-        <div className="flex flex-1 items-center gap-3">
+      <div className="bg-white rounded-2xl p-3.5 sm:p-5 border border-neutral-200/80 shadow-2xs flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center gap-2.5 sm:gap-3">
           {/* Search Input */}
-          <div className="relative flex-1 max-w-md">
+          <div className="relative flex-1 max-w-none sm:max-w-md">
             <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
@@ -338,7 +338,7 @@ export default function AdminFaqsPage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 justify-end">
           <button
             type="button"
             onClick={() => setPreviewOpen(!previewOpen)}
