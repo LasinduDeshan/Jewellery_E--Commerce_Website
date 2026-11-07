@@ -7,6 +7,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
+    "cluster": "tsx src/cluster.ts",
+    "loadtest": "tsx src/scripts/loadTest.ts",
     "seed:admin": "tsx src/scripts/seedSuperAdmin.ts"
   },
   "keywords": [

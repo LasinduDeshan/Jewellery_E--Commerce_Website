@@ -70,8 +70,8 @@ export const CustomizeVideoBanner: React.FC<CustomizeVideoBannerProps> = ({ onOp
           <div className="max-w-7xl mx-auto w-full flex flex-col sm:flex-row sm:items-end justify-between gap-6">
             {/* Left Text Block */}
             <div className="max-w-xl">
-              <h3 className="text-xl sm:text-2xl lg:text-3xl font-normal text-white mb-2 tracking-tight">
-                Crafted with Passion. Defined by Elegance.
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-cormorant text-white mb-2 tracking-tight">
+                Crafted with Passion. <br></br>Defined by Elegance.
               </h3>
               <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed font-light">
                 Discover the artistry behind every Zeyloraa creation. From the captivating beauty of Ceylon sapphires to the intricate details of fine jewellery making, experience the craftsmanship that brings timeless designs to life.

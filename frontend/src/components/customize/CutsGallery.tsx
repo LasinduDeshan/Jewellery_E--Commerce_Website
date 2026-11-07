@@ -51,7 +51,7 @@ export const CutsGallery: React.FC<CutsGalleryProps> = ({ selectedCut, onSelectC
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-900 leading-[1.08] font-sans"
+              className="text-4xl sm:text-5xl lg:text-6xl font-cormorant font-bold tracking-tight text-neutral-900 leading-[1.08] font-sans"
             >
               Sapphire Cuts
             </motion.h2>
