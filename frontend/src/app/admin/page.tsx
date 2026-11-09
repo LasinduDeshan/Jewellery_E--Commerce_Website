@@ -217,20 +217,20 @@ function ProductDonutChart({
                 key={seg.key}
                 onMouseEnter={() => setActiveCategory(seg.key)}
                 onMouseLeave={() => setActiveCategory(null)}
-                className={`flex items-center justify-between px-2.5 py-1 rounded-xl transition-all cursor-pointer ${
+                className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl transition-all cursor-pointer ${
                   isHovered ? 'bg-neutral-100 font-semibold' : 'hover:bg-neutral-50'
                 }`}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <span
                     className="w-2.5 h-2.5 rounded-full shrink-0"
                     style={{ backgroundColor: seg.color }}
                   />
-                  <span className="text-neutral-700 text-xs truncate max-w-[90px] sm:max-w-none">
+                  <span className="text-neutral-700 text-xs truncate">
                     {seg.label}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 font-mono text-xs">
+                <div className="flex items-center gap-2 font-mono text-xs shrink-0">
                   <span className="text-neutral-900 font-semibold">{seg.count}</span>
                   <span className="text-[10px] text-neutral-400 w-7 text-right">
                     {seg.percent}%
@@ -350,28 +350,28 @@ export default function MasterAdminDashboardPage() {
       {/* ========================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
         {/* Left Side: Current 4 Cards in a 2 by 2 Grid */}
-        <div className="lg:col-span-7 xl:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+        <div className="lg:col-span-7 xl:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-5">
           {/* Card 1: Total Settled Revenue */}
-          <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-3.5">
-              <div className="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
-                <DollarSign className="w-5 h-5 text-neutral-800" />
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between gap-2.5 hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
+                <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-800" />
               </div>
-              <div>
-                <span className="text-xs text-neutral-400 font-medium block">
+              <div className="min-w-0">
+                <span className="text-xs text-neutral-400 font-medium block truncate">
                   Total Settled Revenue
                 </span>
-                <h3 className="text-xl sm:text-2xl font-bold text-black mt-0.5 leading-none">
+                <h3 className="text-lg sm:text-2xl font-bold text-black mt-0.5 leading-none truncate">
                   ${data?.totalRevenueAUD.toLocaleString()} AUD
                 </h3>
-                <span className="text-[10px] text-neutral-400 font-light mt-1 inline-block">
+                <span className="text-[10px] text-neutral-400 font-light mt-1 inline-block truncate">
                   Direct Australian settlements (AUD)
                 </span>
               </div>
             </div>
 
             {/* Mini Sparkline Chart Mock */}
-            <div className="flex items-end gap-1 h-7 shrink-0 pl-2">
+            <div className="flex items-end gap-1 h-7 shrink-0 pl-1 sm:pl-2">
               <span className="w-1 bg-neutral-200 rounded-xs h-[35%]" />
               <span className="w-1 bg-neutral-200 rounded-xs h-[60%]" />
               <span className="w-1 bg-neutral-200 rounded-xs h-[50%]" />
@@ -381,16 +381,16 @@ export default function MasterAdminDashboardPage() {
           </div>
 
           {/* Card 2: Total Orders Dispatched */}
-          <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-3.5">
-              <div className="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
-                <Package className="w-5 h-5 text-neutral-800" />
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between gap-2.5 hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
+                <Package className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-800" />
               </div>
-              <div>
-                <span className="text-xs text-neutral-400 font-medium block">
+              <div className="min-w-0">
+                <span className="text-xs text-neutral-400 font-medium block truncate">
                   Total Orders Dispatched
                 </span>
-                <h3 className="text-xl sm:text-2xl font-bold text-black mt-0.5 leading-none">
+                <h3 className="text-lg sm:text-2xl font-bold text-black mt-0.5 leading-none truncate">
                   {data?.totalOrders} Orders
                 </h3>
                 <Link
@@ -404,7 +404,7 @@ export default function MasterAdminDashboardPage() {
             </div>
 
             {/* Mini Sparkline Chart Mock */}
-            <div className="flex items-end gap-1 h-7 shrink-0 pl-2">
+            <div className="flex items-end gap-1 h-7 shrink-0 pl-1 sm:pl-2">
               <span className="w-1 bg-neutral-200 rounded-xs h-[40%]" />
               <span className="w-1 bg-neutral-200 rounded-xs h-[45%]" />
               <span className="w-1 bg-neutral-300 rounded-xs h-[75%]" />
@@ -414,26 +414,26 @@ export default function MasterAdminDashboardPage() {
           </div>
 
           {/* Card 3: NGJA Clearance Queue */}
-          <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-3.5">
-              <div className="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
-                <Truck className="w-5 h-5 text-neutral-800" />
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between gap-2.5 hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
+                <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-800" />
               </div>
-              <div>
-                <span className="text-xs text-neutral-400 font-medium block">
+              <div className="min-w-0">
+                <span className="text-xs text-neutral-400 font-medium block truncate">
                   NGJA Clearance Queue
                 </span>
-                <h3 className="text-xl sm:text-2xl font-bold text-black mt-0.5 leading-none">
+                <h3 className="text-lg sm:text-2xl font-bold text-black mt-0.5 leading-none truncate">
                   {data?.pendingNgjaClearance} Pending
                 </h3>
-                <span className="text-[10px] text-neutral-400 font-light mt-1 inline-block">
+                <span className="text-[10px] text-neutral-400 font-light mt-1 inline-block truncate">
                   Awaiting assay seal in Colombo
                 </span>
               </div>
             </div>
 
             {/* Mini Sparkline Chart Mock */}
-            <div className="flex items-end gap-1 h-7 shrink-0 pl-2">
+            <div className="flex items-end gap-1 h-7 shrink-0 pl-1 sm:pl-2">
               <span className="w-1 bg-neutral-200 rounded-xs h-[60%]" />
               <span className="w-1 bg-neutral-200 rounded-xs h-[50%]" />
               <span className="w-1 bg-neutral-200 rounded-xs h-[70%]" />
@@ -443,26 +443,26 @@ export default function MasterAdminDashboardPage() {
           </div>
 
           {/* Card 4: Active Client Leads */}
-          <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-3.5">
-              <div className="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
-                <MessageCircle className="w-5 h-5 text-neutral-800" />
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between gap-2.5 hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neutral-100 border border-neutral-200/80 text-black flex items-center justify-center shrink-0">
+                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-800" />
               </div>
-              <div>
-                <span className="text-xs text-neutral-400 font-medium block">
+              <div className="min-w-0">
+                <span className="text-xs text-neutral-400 font-medium block truncate">
                   Active Client Leads
                 </span>
-                <h3 className="text-xl sm:text-2xl font-bold text-black mt-0.5 leading-none">
+                <h3 className="text-lg sm:text-2xl font-bold text-black mt-0.5 leading-none truncate">
                   {data?.activeClientLeads} Leads
                 </h3>
-                <span className="text-[10px] text-neutral-400 font-light mt-1 inline-block">
+                <span className="text-[10px] text-neutral-400 font-light mt-1 inline-block truncate">
                   {data?.whatsappLeads} WhatsApp + {data?.customQuotes} Custom
                 </span>
               </div>
             </div>
 
             {/* Mini Sparkline Chart Mock */}
-            <div className="flex items-end gap-1 h-7 shrink-0 pl-2">
+            <div className="flex items-end gap-1 h-7 shrink-0 pl-1 sm:pl-2">
               <span className="w-1 bg-neutral-200 rounded-xs h-[30%]" />
               <span className="w-1 bg-neutral-200 rounded-xs h-[55%]" />
               <span className="w-1 bg-neutral-300 rounded-xs h-[70%]" />
@@ -473,7 +473,7 @@ export default function MasterAdminDashboardPage() {
         </div>
 
         {/* Right Side: New Donut Chart Card for Products Count */}
-        <div className="lg:col-span-5 xl:col-span-4 bg-white p-5 sm:p-6 rounded-2xl border border-neutral-200/90 shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between">
+        <div className="lg:col-span-5 xl:col-span-4 bg-white p-4 sm:p-6 rounded-2xl border border-neutral-200/90 shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between">
           <ProductDonutChart
             breakdown={data?.productBreakdown}
             loading={loading}

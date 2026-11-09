@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "tunnel": "ngrok http 3000 --url https://reliance-occupant-facing.ngrok-free.dev"
   },
   "dependencies": {
     "@react-oauth/google": "^0.13.5",

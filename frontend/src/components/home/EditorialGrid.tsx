@@ -120,13 +120,13 @@ export const EditorialGrid: React.FC<EditorialGridProps> = ({
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="space-y-2"
           >
-            <h2 className="text-xl sm:text-2xl font-bold text-black tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-black font-cormorant ">
               {title}
             </h2>
-            <div className="w-20 h-[2px] bg-black" />
+            
             <Link
               href={galleryHref}
-              className="inline-flex items-center gap-1.5 text-[10px] font-mono text-neutral-500 hover:text-black transition-colors pt-1 group"
+              className="inline-flex items-center gap-1.5 text-[10px]  text-neutral-500 hover:text-black transition-colors pt-1 group"
             >
               <span>{galleryLinkText}</span>
               <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

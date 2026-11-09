@@ -20,7 +20,7 @@ export const CutsGallery: React.FC<CutsGalleryProps> = ({ selectedCut, onSelectC
   return (
     <section
       id="sapphire-cuts-section"
-      className="py-16 sm:py-24 px-4 sm:px-6 lg:px-12 max-w-[1440px] mx-auto w-full bg-white border-y border-neutral-200 overflow-hidden select-none"
+      className="py-16 sm:py-24 px-4 sm:px-6 lg:px-12 max-w-[1440px] mx-auto w-full bg-white border-t border-neutral-200 overflow-hidden select-none"
     >
       <div className="flex flex-col lg:flex-row lg:items-start gap-10 lg:gap-14">
         
@@ -51,7 +51,7 @@ export const CutsGallery: React.FC<CutsGalleryProps> = ({ selectedCut, onSelectC
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-900 leading-[1.08] font-sans"
+              className="text-4xl sm:text-5xl lg:text-6xl font-cormorant font-bold tracking-tight text-neutral-900 leading-[1.08] font-sans"
             >
               Sapphire Cuts
             </motion.h2>

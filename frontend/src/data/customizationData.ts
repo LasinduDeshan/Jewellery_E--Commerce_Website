@@ -201,7 +201,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#4A3B69',
     symbolism: 'Constancy, inner resolve, and calm nobility',
     stylingNote: 'Styling recommendation offering a velvety alternative to garnet.',
-    image: '/img/203eda56cc198bbd78668d9f76616317.jpg',
+    image: '/img/Sapphire/january.jpg',
   },
   {
     month: 'February',
@@ -209,7 +209,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#8C6C9F',
     symbolism: 'Serenity, royalty, and creative intuition',
     stylingNote: 'Curated as a durable luxury alternative to amethyst.',
-    image: '/img/natural-pink-sapphires-Photoroom.png',
+    image: '/img/Sapphire/february.jpg',
   },
   {
     month: 'March',
@@ -217,7 +217,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#5B84B1',
     symbolism: 'Youthful vitality, oceanic tranquility, and truth',
     stylingNote: 'Matches the refreshing tones of aquamarine with superior lustre.',
-    image: '/img/cuts/oval.jpg',
+    image: '/img/Sapphire/march.jpg',
   },
   {
     month: 'April',
@@ -225,7 +225,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#98A3B2',
     symbolism: 'Purity, clarity, invincible strength',
     stylingNote: 'Natural corundum choice pairing diamond clarity with sustainable heritage.',
-    image: '/img/colorless-white-sapphires-scaled-Photoroom.png',
+    image: '/img/Sapphire/april.jpg',
   },
   {
     month: 'May',
@@ -233,7 +233,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#1E6B52',
     symbolism: 'Renewal, prosperity, and harmonic growth',
     stylingNote: 'A durable gemstone recommendation evoking emerald richness.',
-    image: '/img/091ce2cd7cf5cd013154c34765e13d6a.jpg',
+    image: '/img/Sapphire/may.jpg',
   },
   {
     month: 'June',
@@ -241,7 +241,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#E68A6C',
     symbolism: 'Warm affection, rare grace, and sunset allure',
     stylingNote: 'Curated styling choice inspired by the warm sheen of pearls.',
-    image: '/img/1-padparadschasapphirePA2051-300x300-Photoroom.png',
+    image: '/img/Sapphire/june.jpg',
   },
   {
     month: 'July',
@@ -249,7 +249,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#D1345B',
     symbolism: 'Passion, boundless courage, and heartfelt devotion',
     stylingNote: 'A radiant Sri Lankan sister gem to natural rubies.',
-    image: '/img/1-naturaluntreatedrubyU2639-Photoroom.png',
+    image: '/img/Sapphire/july.jpg',
   },
   {
     month: 'August',
@@ -257,7 +257,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#8E9A34',
     symbolism: 'Sunlit warmth, protection, and boundless energy',
     stylingNote: 'Echoes the joyful light of peridot in a scratch-resistant setting.',
-    image: '/img/cuts/emerald-cut.jpg',
+    image: '/img/Sapphire/august.jpg',
   },
   {
     month: 'September',
@@ -265,7 +265,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#0F2862',
     symbolism: 'Sincerity, wisdom, divine protection, and royalty',
     stylingNote: 'The official, historical birthstone for September worldwide.',
-    image: '/img/cuts/cushion.jpg',
+    image: '/img/Sapphire/september.jpg',
   },
   {
     month: 'October',
@@ -273,7 +273,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#E58A9F',
     symbolism: 'Compassion, unconditional tenderness, and luck',
     stylingNote: 'Curated pastel elegance recommended for October gifting.',
-    image: '/img/66eb990fb3b88ca8d1edabec3e9bbd1a.jpg',
+    image: '/img/Sapphire/october.jpg',
   },
   {
     month: 'November',
@@ -281,7 +281,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#D68910',
     symbolism: 'Abundance, radiant joy, and enduring wisdom',
     stylingNote: 'Styling recommendation capturing golden citrine tones.',
-    image: '/img/NSC-Y2448-radiant-cut-vivid-yellow-sapphire-Small-300x300-Photoroom.png',
+    image: '/img/Sapphire/november.jpg',
   },
   {
     month: 'December',
@@ -289,7 +289,7 @@ export const BIRTHSTONE_GUIDE: BirthstoneMonth[] = [
     stoneColor: '#1B4F72',
     symbolism: 'Intuition, peaceful stillness, and confidence',
     stylingNote: 'Deep blue hues complementing turquoise & tanzanite traditions.',
-    image: '/img/cuts/round-brilliant.jpg',
+    image: '/img/Sapphire/december.jpg',
   },
 ];
 

@@ -25,6 +25,25 @@ if (!fs.existsSync(uploadsDir)) {
 }
 app.use('/uploads', express.static(uploadsDir));
 
+// Attach worker identification header for cluster load-balancing inspection
+app.use((req, res, next) => {
+  res.setHeader('X-Worker-PID', process.pid.toString());
+  res.setHeader('X-Cluster-Worker', `worker-${process.pid}`);
+  next();
+});
+
+// Cluster & Server Health Check Endpoint
+app.get('/api/health', (req, res) => {
+  res.json({
+    success: true,
+    status: 'healthy',
+    service: 'jewellery-ecommerce-api',
+    workerPid: process.pid,
+    uptimeSeconds: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.use('/api', routes);
 
 // Global error handler

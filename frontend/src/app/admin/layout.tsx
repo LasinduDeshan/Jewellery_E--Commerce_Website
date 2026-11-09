@@ -246,32 +246,32 @@ function AdminProtectedContent({ children }: { children: React.ReactNode }) {
       {/* 2. Main Content Viewport on the Right */}
       <div className="flex-1 min-w-0 flex flex-col min-h-screen">
         {/* Top Header Bar */}
-        <header className="bg-white border-b border-neutral-200/90 sticky top-0 z-20 px-6 py-4">
-          <div className="flex items-center justify-between gap-4">
+        <header className="bg-white border-b border-neutral-200/90 sticky top-0 z-20 px-3.5 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2.5 sm:gap-4">
             {/* Left: Mobile Toggle & Page Greeting */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <button
                 onClick={() => setMobileSidebarOpen(true)}
-                className="lg:hidden p-2 rounded-xl text-neutral-500 hover:text-black hover:bg-neutral-100 transition-colors cursor-pointer"
+                className="lg:hidden p-2 rounded-xl text-neutral-500 hover:text-black hover:bg-neutral-100 transition-colors cursor-pointer shrink-0"
                 aria-label="Open navigation menu"
               >
                 <Menu className="w-5 h-5" />
               </button>
 
-              <div>
-                <h1 className="text-2xl font-semibold text-black leading-tight">
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-2xl font-semibold text-black leading-tight truncate">
                   {meta.title}
                 </h1>
-                <p className="text-xs text-neutral-500 font-normal hidden sm:block mt-0.5">
+                <p className="text-xs text-neutral-500 font-normal hidden sm:block mt-0.5 truncate">
                   {meta.subtitle}
                 </p>
               </div>
             </div>
 
             {/* Right: Search, Notifications & Profile Avatar */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               {/* Search Bar */}
-              <form onSubmit={handleGlobalSearch} className="relative hidden md:block w-64 lg:w-80">
+              <form onSubmit={handleGlobalSearch} className="relative hidden md:block w-48 lg:w-80">
                 <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3.5 top-3" />
                 <input
                   type="text"
@@ -292,9 +292,9 @@ function AdminProtectedContent({ children }: { children: React.ReactNode }) {
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full bg-white border border-neutral-200/90 hover:border-black transition-all shadow-2xs cursor-pointer"
+                  className="flex items-center gap-1.5 sm:gap-2 pl-1 pr-2 sm:pr-2.5 py-1 rounded-full bg-white border border-neutral-200/90 hover:border-black transition-all shadow-2xs cursor-pointer"
                 >
-                  <div className="w-7 h-7 rounded-full bg-black text-white text-xs font-bold flex items-center justify-center relative">
+                  <div className="w-7 h-7 rounded-full bg-black text-white text-xs font-bold flex items-center justify-center relative shrink-0">
                     {adminUser?.name ? adminUser.name.charAt(0).toUpperCase() : 'A'}
                     {isSuperAdmin && (
                       <span className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 text-black rounded-full flex items-center justify-center text-[8px]" title="Super Admin">
@@ -310,7 +310,7 @@ function AdminProtectedContent({ children }: { children: React.ReactNode }) {
                       {isSuperAdmin ? 'Super Admin' : 'Admin'}
                     </p>
                   </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-neutral-400 ml-1" />
+                  <ChevronDown className="w-3.5 h-3.5 text-neutral-400 sm:ml-1" />
                 </button>
 
                 {/* Dropdown Menu */}
@@ -374,7 +374,7 @@ function AdminProtectedContent({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Dynamic Section Content Viewport (Children) */}
-        <main className="flex-1 min-w-0 p-6 sm:p-8">
+        <main className="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8">
           {children}
         </main>
       </div>
