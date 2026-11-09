@@ -186,7 +186,7 @@ export function LatestReviewsSection() {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="text-center max-w-2xl mx-auto mb-16 sm:mb-20 space-y-4"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-cormorant font-bold tracking-tight text-neutral-900 leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-neutral-900 leading-tight">
             Read reviews, <br />
             <span className='font-sans'>Made to Make You Shine.</span>
           </h2>

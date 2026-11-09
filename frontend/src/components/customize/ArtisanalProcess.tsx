@@ -18,7 +18,7 @@ export const ArtisanalProcess: React.FC = () => {
   return (
     <section
       id="artisanal-process-section"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-neutral-950 text-white border-t border-neutral-800 overflow-hidden"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-black text-white overflow-hidden"
     >
       <div className="max-w-7xl mx-auto">
         
