@@ -48,7 +48,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-white text-neutral-900 font-sans selection:bg-black selection:text-white">
         <GoogleOAuthProvider
-          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
+          clientId={
+            process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
+            "982958918078-b9pfa8pev88vgfs9pi312a00lvajjjb5.apps.googleusercontent.com"
+          }
         >
           <AuthProvider>
             <AuthModalProvider>
