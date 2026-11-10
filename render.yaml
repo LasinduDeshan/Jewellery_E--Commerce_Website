@@ -1,0 +1,57 @@
+# =========================================================================
+# ZEYLORAA INFRASTRUCTURE BLUEPRINT (Render.com)
+# =========================================================================
+# Temporary Demonstration Deployment Blueprint
+# Compatible with Render Free Tier & 1-Click Migration to Railway
+
+services:
+  # -----------------------------------------------------------------------
+  # 1. Express & Node.js REST API Backend
+  # -----------------------------------------------------------------------
+  - type: web
+    name: zeyloraa-backend
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+        # Enter your MongoDB Atlas connection string in the Render Dashboard
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: FOUNDER_EMAIL
+        value: concierge@zeyloraa.com
+      - key: CLIENT_URL
+        value: "*" # Allows requests from your deployed frontend domain
+
+  # -----------------------------------------------------------------------
+  # 2. Next.js 16 Storefront & Atelier Admin Panel
+  # -----------------------------------------------------------------------
+  - type: web
+    name: zeyloraa-frontend
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: frontend
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+        # Set to: https://<your-backend-name>.onrender.com/api
+      - key: NEXT_PUBLIC_GOOGLE_CLIENT_ID
+        sync: false
+        # Optional: Google OAuth Client ID for customer social sign-in
+

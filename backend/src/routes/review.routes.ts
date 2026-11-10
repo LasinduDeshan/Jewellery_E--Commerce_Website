@@ -32,6 +32,9 @@ router.get('/eligibility/:productId', optionalAuthenticate, (req: AuthRequest, r
 // Review submission: strictly requires authentication & verified delivered purchase
 router.post('/', authenticate, createReviewController);
 
+// Public: Latest approved reviews for landing page
+router.get('/latest', getLatestReviewsController);
+
 // Public reviews list
 router.get('/', getAllReviewsController);
 
