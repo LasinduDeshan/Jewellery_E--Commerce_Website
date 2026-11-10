@@ -10,7 +10,26 @@ const app = express();
 
 app.use(
   cors({
-    origin: '*',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, Postman, health checks)
+      if (!origin) return callback(null, true);
+
+      // Permissive origins for local development, Render demonstration (*.onrender.com),
+      // Railway (*.railway.app), and ngrok tunnels (*.ngrok-free.dev)
+      if (
+        origin === config.clientUrl ||
+        origin.startsWith('http://localhost:') ||
+        origin.endsWith('.onrender.com') ||
+        origin.endsWith('.railway.app') ||
+        origin.includes('ngrok') ||
+        process.env.NODE_ENV !== 'production'
+      ) {
+        return callback(null, true);
+      }
+
+      // Default fallback allows the origin for demonstration resilience
+      return callback(null, true);
+    },
     credentials: true,
   })
 );
