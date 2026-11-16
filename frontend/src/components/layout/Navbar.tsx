@@ -364,27 +364,27 @@ export const Navbar: React.FC = () => {
           }}
           onMouseLeave={closeDropdownWithDelay}
         >
-          <div className="px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-[64px] sm:h-[70px]">
+          <div className="px-3 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-[58px] sm:h-[70px]">
             {/* -------------------------------------------------------- */}
             {/* 1. BRAND LOGO                                            */}
             {/* -------------------------------------------------------- */}
             <Link
               href="/"
               onClick={closeAll}
-              className="flex items-center space-x-2.5 shrink-0 group py-2"
+              className="flex items-center space-x-2 shrink-0 group py-2"
             >
               
               <div className="flex flex-col">
                 <span
-                  className={` text-lg leading-none transition-colors ${
+                  className={`text-base sm:text-lg font-serif tracking-tight leading-none transition-colors ${
                     isTransparent ? 'text-white' : 'text-black'
                   }`}
                 >
                   Zeyloraa
                 </span>
                 <span
-                  className={`text-[9px] font-medium mt-0.5 transition-colors ${
+                  className={`text-[8px] sm:text-[9px] font-medium tracking-wider uppercase mt-0.5 transition-colors ${
                     isTransparent ? 'text-neutral-300' : 'text-neutral-500'
                   }`}
                 >
@@ -514,40 +514,42 @@ export const Navbar: React.FC = () => {
             {/* -------------------------------------------------------- */}
             {/* 3. PERSISTENT ICONS (SEARCH, WISHLIST, BAG, ACCOUNT)     */}
             {/* -------------------------------------------------------- */}
-            <div className="flex items-center space-x-1 sm:space-x-2.5">
-              {/* Currency Selector */}
-              <CurrencySelector variant="navbar" isTransparent={isTransparent} />
+            <div className="flex items-center space-x-1 sm:space-x-2.5 shrink-0">
+              {/* Currency Selector (Hidden on mobile; fully accessible inside mobile menu drawer) */}
+              <div className="hidden md:block">
+                <CurrencySelector variant="navbar" isTransparent={isTransparent} />
+              </div>
 
               {/* Search Icon Button */}
               <button
                 type="button"
                 onClick={() => setSearchModalOpen(true)}
                 aria-label="Search Catalogue"
-                className={`p-2 rounded-full transition-colors cursor-pointer ${
+                className={`p-1.5 sm:p-2 rounded-full transition-colors cursor-pointer shrink-0 ${
                   isTransparent
                     ? 'text-white hover:bg-white/10'
                     : 'text-neutral-800 hover:text-black hover:bg-neutral-100'
                 }`}
                 title="Search Catalogue"
               >
-                <Search className="w-5 h-5" />
+                <Search className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
 
               {/* Persistent Wishlist Icon */}
               <Link
                 href="/account?tab=wishlist"
                 onClick={closeAll}
-                className={`relative p-2 rounded-full transition-colors ${
+                className={`relative p-1.5 sm:p-2 rounded-full transition-colors shrink-0 ${
                   isTransparent
                     ? 'text-white hover:bg-white/10'
                     : 'text-neutral-800 hover:text-black hover:bg-neutral-100'
                 }`}
                 title="My Wishlist"
               >
-                <Heart className="w-5 h-5" />
+                <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
                 {wishlistCount > 0 && (
                   <span
-                    className={`absolute top-1 right-1 text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center shadow-xs ${
+                    className={`absolute top-0.5 right-0.5 sm:top-1 sm:right-1 text-[9px] sm:text-[10px] font-bold rounded-full h-3.5 w-3.5 sm:h-4 sm:w-4 flex items-center justify-center shadow-xs ${
                       isTransparent ? 'bg-white text-black' : 'bg-black text-white'
                     }`}
                   >
@@ -560,17 +562,17 @@ export const Navbar: React.FC = () => {
               <Link
                 href="/cart"
                 onClick={closeAll}
-                className={`relative p-2 rounded-full transition-colors ${
+                className={`relative p-1.5 sm:p-2 rounded-full transition-colors shrink-0 ${
                   isTransparent
                     ? 'text-white hover:bg-white/10'
                     : 'text-neutral-800 hover:text-black hover:bg-neutral-100'
                 }`}
                 title="Shopping Bag"
               >
-                <ShoppingBag className="w-5 h-5" />
+                <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
                 {cartCount > 0 && (
                   <span
-                    className={`absolute top-1 right-1 text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center shadow-xs ${
+                    className={`absolute top-0.5 right-0.5 sm:top-1 sm:right-1 text-[9px] sm:text-[10px] font-bold rounded-full h-3.5 w-3.5 sm:h-4 sm:w-4 flex items-center justify-center shadow-xs ${
                       isTransparent ? 'bg-white text-black' : 'bg-black text-white'
                     }`}
                   >
@@ -579,9 +581,9 @@ export const Navbar: React.FC = () => {
                 )}
               </Link>
 
-              {/* Persistent Account Login / Profile Dropdown */}
+              {/* Persistent Account Login / Profile Dropdown (Desktop/Tablet; inside drawer on mobile) */}
               <div
-                className="relative"
+                className="relative hidden sm:block shrink-0"
                 onMouseEnter={() => {
                   if (user) {
                     openDropdown('user');
@@ -642,7 +644,7 @@ export const Navbar: React.FC = () => {
                 type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Toggle navigation drawer"
-                className={`lg:hidden p-2 rounded-full transition-colors cursor-pointer ${
+                className={`lg:hidden p-1.5 sm:p-2 rounded-full transition-colors cursor-pointer shrink-0 ${
                   isTransparent
                     ? 'text-white hover:bg-white/10'
                     : 'text-neutral-800 hover:text-black hover:bg-neutral-100'
@@ -1149,6 +1151,26 @@ export const Navbar: React.FC = () => {
                   <X className="w-5 h-5" />
                 </button>
               </div>
+
+              {/* Logged-in User Profile Card (Mobile) */}
+              {user && (
+                <div className="flex items-center gap-3 p-3 bg-neutral-50 rounded-2xl border border-neutral-200/80">
+                  <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold shrink-0">
+                    {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold text-neutral-900 truncate">{user.name}</p>
+                    <p className="text-[10px] text-neutral-500 truncate">{user.email}</p>
+                  </div>
+                  <Link
+                    href="/account"
+                    onClick={closeAll}
+                    className="text-[10px] font-bold text-black px-2.5 py-1 bg-white rounded-lg border border-neutral-200 hover:border-black shrink-0 transition-colors"
+                  >
+                    Portal
+                  </Link>
+                </div>
+              )}
 
               {/* Mobile Currency Selector */}
               <CurrencySelector variant="mobile" />
