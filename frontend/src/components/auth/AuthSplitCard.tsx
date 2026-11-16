@@ -317,11 +317,11 @@ export const AuthSplitCard: React.FC<AuthSplitCardProps> = ({
     >
       
       {/* ========================================================= */}
-      {/* LEFT SIDE: Dynamic Image Showcase with Footer Only        */}
+      {/* LEFT SIDE: Dynamic Image Showcase with Footer Only (Desktop) */}
       {/* ========================================================= */}
       <div
-        className={`relative border-b md:border-b-0 md:border-r border-white/5 p-5 sm:p-6 md:p-7 flex flex-col justify-end overflow-hidden bg-neutral-950 ${
-          isSignup ? 'min-h-[380px] md:min-h-[460px] lg:min-h-[480px]' : 'min-h-[440px] md:min-h-[520px]'
+        className={`relative border-b md:border-b-0 md:border-r border-white/5 p-5 sm:p-6 md:p-7 hidden md:flex flex-col justify-end overflow-hidden bg-neutral-950 ${
+          isSignup ? 'md:min-h-[460px] lg:min-h-[480px]' : 'md:min-h-[520px]'
         } group`}
       >
         

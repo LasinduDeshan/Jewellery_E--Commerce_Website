@@ -251,7 +251,7 @@ export default function CheckoutPage() {
                 href="/account"
                 className="font-bold text-neutral-950 hover:underline text-[11px]"
               >
-                Go to Client Portal →
+                Go to Client Profile→
               </Link>
             </div>
 
@@ -281,11 +281,11 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10 flex-1 w-full">
         {/* Checkout Header */}
-        <div className="flex items-center justify-between pb-6 border-b border-neutral-200 mb-8">
+        <div className="flex items-center justify-between pb-6 border-b border-neutral-200 mb-6 sm:mb-8">
           <div className="flex items-center gap-3">
-            <Link href="/cart" className="p-2 rounded-xl border border-neutral-300 hover:bg-neutral-100 text-neutral-600">
+            <Link href="/cart" className="p-2 rounded-xl border border-neutral-300 hover:bg-neutral-100 text-neutral-600 shrink-0">
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div>
@@ -301,11 +301,11 @@ export default function CheckoutPage() {
           
         </div>
 
-        <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10">
           {/* LEFT: Customer, Shipping, & Payment Forms (Cols 7) */}
           <div className="lg:col-span-7 space-y-6">
             {/* Visual Stepper Flow Progress Header */}
-            <div className="bg-white p-5 rounded-3xl border border-neutral-200 shadow-xs">
+            <div className="bg-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-neutral-200 shadow-xs">
               <div className="flex items-center justify-between max-w-md mx-auto relative px-2">
                 {/* Connecting Background Line */}
                 <div className="absolute top-1/2 left-8 right-8 -translate-y-1/2 h-[2px] bg-neutral-200 -z-0" />
@@ -667,14 +667,14 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  <div className="pt-2 flex items-center justify-between">
+                  <div className="pt-2 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3">
                     <button
                       type="button"
                       onClick={() => {
                         setStepError('');
                         setCurrentStep(1);
                       }}
-                      className="px-4 py-2.5 text-xs font-semibold text-neutral-600 hover:text-black flex items-center gap-1.5 cursor-pointer"
+                      className="w-full sm:w-auto px-4 py-2.5 text-xs font-semibold text-neutral-600 hover:text-black flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <ArrowLeft className="w-3.5 h-3.5" />
                       <span>Back to Contact</span>
@@ -690,7 +690,7 @@ export default function CheckoutPage() {
                         setStepError('');
                         setCurrentStep(3);
                       }}
-                      className="px-6 py-3 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                      className="w-full sm:w-auto px-6 py-3 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
                     >
                       <span>Continue to Payment</span>
                       <ArrowRight className="w-4 h-4" />
@@ -799,14 +799,14 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  <div className="pt-2 flex items-center justify-between">
+                  <div className="pt-2 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3">
                     <button
                       type="button"
                       onClick={() => {
                         setStepError('');
                         setCurrentStep(2);
                       }}
-                      className="px-4 py-2.5 text-xs font-semibold text-neutral-600 hover:text-black flex items-center gap-1.5 cursor-pointer"
+                      className="w-full sm:w-auto px-4 py-2.5 text-xs font-semibold text-neutral-600 hover:text-black flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <ArrowLeft className="w-3.5 h-3.5" />
                       <span>Back to Shipping</span>
@@ -815,7 +815,7 @@ export default function CheckoutPage() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="px-8 py-3.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
+                      className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-bold transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
                     >
                       <Lock className="w-4 h-4 text-white" />
                       <span>{isSubmitting ? 'Authorizing Payment...' : `Authorize $${total} AUD Payment`}</span>

@@ -21,9 +21,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenStudio }) => {
   const [legalModalType, setLegalModalType] = useState<LegalModalType>(null);
 
   return (
-    <footer className="w-full bg-white py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
+    <footer className="w-full bg-white py-10 sm:py-14 px-3 sm:px-6 lg:px-8">
       {/* Floating Island Card with balanced, elegant width */}
-      <div className="w-full max-w-7xl mx-auto bg-[#111113] text-neutral-300 rounded-[28px] sm:rounded-[36px] p-8 sm:p-10 lg:p-12 xl:p-14 border border-neutral-800/80 shadow-2xl">
+      <div className="w-full max-w-7xl mx-auto bg-[#111113] text-neutral-300 rounded-[24px] sm:rounded-[36px] p-6 sm:p-10 lg:p-12 xl:p-14 border border-neutral-800/80 shadow-2xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
           {/* ========================================================= */}

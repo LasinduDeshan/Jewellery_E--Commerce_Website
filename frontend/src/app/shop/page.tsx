@@ -237,7 +237,7 @@ export default function ShopCataloguePage() {
 
       {/* Toast Notification */}
       {notification && (
-        <div className="fixed bottom-6 right-6 z-50 bg-black text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-neutral-700 text-xs animate-in slide-in-from-bottom">
+        <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 bg-black text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-neutral-700 text-xs animate-in slide-in-from-bottom">
           <Check className="w-4 h-4 text-white" />
           <span>{notification}</span>
           <Link href="/cart" className="underline font-bold text-white ml-2">
