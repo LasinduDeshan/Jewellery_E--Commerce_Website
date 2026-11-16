@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Navbar } from '../../components/layout/Navbar';
@@ -32,6 +32,8 @@ import {
   Camera,
   Upload,
   Star,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 
 interface OrderItem {
@@ -114,6 +116,26 @@ function AccountPageContent() {
       router.push(`/account?tab=${tab}`);
     }
   };
+
+  // Mobile horizontal tab scrolling
+  const tabScrollRef = useRef<HTMLDivElement>(null);
+  const scrollTabs = (direction: 'left' | 'right') => {
+    if (tabScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -180 : 180;
+      tabScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  // Auto-center active tab on mobile
+  useEffect(() => {
+    if (tabScrollRef.current) {
+      const activeEl = tabScrollRef.current.querySelector<HTMLElement>('[data-active="true"]');
+      if (activeEl) {
+        activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  }, [activeTab]);
+
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [customQuotes, setCustomQuotes] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
@@ -431,12 +453,27 @@ function AccountPageContent() {
       {/* Account Workspace Grid */}
       <div className="max-w-7xl w-full mx-auto p-3 sm:p-6 lg:p-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8">
         
-        {/* Mobile Horizontal Tab Navigation (Sleek, Scrollable & Immediate Access) */}
+        {/* Mobile Horizontal Tab Navigation (Sleek, Scrollable with Left & Right Arrows) */}
         <div className="lg:hidden col-span-1 -mt-1 mb-1">
-          <div className="bg-white rounded-2xl border border-neutral-200/90 p-2 shadow-2xs">
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-0.5 scroll-smooth">
+          <div className="bg-white rounded-2xl border border-neutral-200/90 p-1.5 shadow-2xs flex items-center gap-1.5">
+            {/* Left Scroll Arrow Button */}
+            <button
+              type="button"
+              onClick={() => scrollTabs('left')}
+              aria-label="Scroll tabs left"
+              className="w-8 h-8 rounded-xl bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-700 flex items-center justify-center shrink-0 cursor-pointer transition-colors shadow-2xs"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Horizontal Scrollable Tabs */}
+            <div
+              ref={tabScrollRef}
+              className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-0.5 scroll-smooth flex-1"
+            >
               <button
                 onClick={() => handleTabChange('overview')}
+                data-active={activeTab === 'overview'}
                 className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                   activeTab === 'overview'
                     ? 'bg-black text-white shadow-xs'
@@ -449,6 +486,7 @@ function AccountPageContent() {
 
               <button
                 onClick={() => handleTabChange('orders')}
+                data-active={activeTab === 'orders'}
                 className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                   activeTab === 'orders'
                     ? 'bg-black text-white shadow-xs'
@@ -466,6 +504,7 @@ function AccountPageContent() {
 
               <button
                 onClick={() => handleTabChange('wishlist')}
+                data-active={activeTab === 'wishlist'}
                 className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                   activeTab === 'wishlist'
                     ? 'bg-black text-white shadow-xs'
@@ -483,6 +522,7 @@ function AccountPageContent() {
 
               <button
                 onClick={() => handleTabChange('addresses')}
+                data-active={activeTab === 'addresses'}
                 className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                   activeTab === 'addresses'
                     ? 'bg-black text-white shadow-xs'
@@ -495,6 +535,7 @@ function AccountPageContent() {
 
               <button
                 onClick={() => handleTabChange('custom_quotes')}
+                data-active={activeTab === 'custom_quotes'}
                 className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                   activeTab === 'custom_quotes'
                     ? 'bg-black text-white shadow-xs'
@@ -514,6 +555,7 @@ function AccountPageContent() {
 
               <button
                 onClick={() => handleTabChange('security')}
+                data-active={activeTab === 'security'}
                 className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                   activeTab === 'security'
                     ? 'bg-black text-white shadow-xs'
@@ -532,6 +574,16 @@ function AccountPageContent() {
                 <span>Sign Out</span>
               </button>
             </div>
+
+            {/* Right Scroll Arrow Button */}
+            <button
+              type="button"
+              onClick={() => scrollTabs('right')}
+              aria-label="Scroll tabs right"
+              className="w-8 h-8 rounded-xl bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-700 flex items-center justify-center shrink-0 cursor-pointer transition-colors shadow-2xs"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
