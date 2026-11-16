@@ -119,7 +119,7 @@ export default function CartPage() {
               {/* Items Card */}
               <div className="bg-white rounded-3xl border border-neutral-200 divide-y divide-neutral-100 shadow-xs overflow-hidden">
                 {cart.map((item) => (
-                  <div key={item.id} className="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                  <div key={item.id} className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
                     {/* Thumbnail */}
                     <img
                       src={item.image}
@@ -145,7 +145,7 @@ export default function CartPage() {
                     </div>
 
                     {/* Quantity & Controls */}
-                    <div className="flex items-center gap-4 shrink-0">
+                    <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 shrink-0 pt-3 sm:pt-0 border-t border-neutral-100 sm:border-0">
                       <div className="flex items-center border border-neutral-300 rounded-xl bg-white overflow-hidden text-xs">
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}

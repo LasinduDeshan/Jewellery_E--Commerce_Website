@@ -44,7 +44,7 @@ export function CustomizeJewellerySection() {
       </motion.div>
 
       {/* Top Half: Full-Width 3-Photo Triptych with Motion Stagger */}
-      <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8 w-full overflow-hidden relative z-10 px-4">
+      <div className="flex items-center justify-center gap-2.5 sm:gap-6 md:gap-8 w-full overflow-hidden relative z-10 px-2 sm:px-4">
         {/* Left Peek Image */}
         <motion.div
           initial={{ opacity: 0, x: -30, filter: 'blur(4px)' }}
@@ -52,7 +52,7 @@ export function CustomizeJewellerySection() {
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           whileHover={{ y: -6 }}
-          className="w-24 sm:w-44 md:w-64 lg:w-80 aspect-[3/4] sm:aspect-[4/5] overflow-hidden shrink-0 bg-neutral-900 rounded-2xl shadow-2xl transition-all duration-300"
+          className="w-16 sm:w-44 md:w-64 lg:w-80 aspect-[3/4] sm:aspect-[4/5] overflow-hidden shrink-0 bg-neutral-900 rounded-xl sm:rounded-2xl shadow-2xl transition-all duration-300 opacity-70 sm:opacity-100"
         >
           <img
             src="/img/a4dbfd433c3bd35c67c18b4894f6321a.jpg"
@@ -68,7 +68,7 @@ export function CustomizeJewellerySection() {
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
           whileHover={{ y: -6 }}
-          className="w-64 sm:w-96 md:w-[480px] lg:w-[560px] aspect-square sm:aspect-[4/5] overflow-hidden shrink-0 bg-neutral-900 rounded-3xl shadow-2xl transition-all duration-300"
+          className="w-56 sm:w-96 md:w-[480px] lg:w-[560px] aspect-square sm:aspect-[4/5] overflow-hidden shrink-0 bg-neutral-900 rounded-2xl sm:rounded-3xl shadow-2xl transition-all duration-300"
         >
           <img
             src="/img/58b04d6c32e22fba64656208a9442068.jpg"
@@ -84,7 +84,7 @@ export function CustomizeJewellerySection() {
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           whileHover={{ y: -6 }}
-          className="w-24 sm:w-44 md:w-64 lg:w-80 aspect-[3/4] sm:aspect-[4/5] overflow-hidden shrink-0 bg-neutral-900 rounded-2xl shadow-2xl transition-all duration-300"
+          className="w-16 sm:w-44 md:w-64 lg:w-80 aspect-[3/4] sm:aspect-[4/5] overflow-hidden shrink-0 bg-neutral-900 rounded-xl sm:rounded-2xl shadow-2xl transition-all duration-300 opacity-70 sm:opacity-100"
         >
           <img
             src="/img/49218f1fb573490eea4bc7f2e7d02113.jpg"
@@ -120,17 +120,17 @@ export function CustomizeJewellerySection() {
       </p>
 
       {/* Action CTAs */}
-      <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 w-full max-w-sm sm:max-w-none mx-auto">
         <Link
           href="/customize"
-          className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white hover:bg-neutral-200 text-black font-semibold text-xs transition-all shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white hover:bg-neutral-200 text-black font-semibold text-xs transition-all shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
         >
           <span>Create Your Own Jewellery</span>
         </Link>
 
         <button
           onClick={openDirectWhatsApp}
-          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-neutral-900/90 hover:bg-neutral-800 text-white border border-neutral-700/80 hover:border-neutral-500 text-xs font-semibold transition-all backdrop-blur-md shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-neutral-900/90 hover:bg-neutral-800 text-white border border-neutral-700/80 hover:border-neutral-500 text-xs font-semibold transition-all backdrop-blur-md shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
         >
           <MessageCircle className="w-4 h-4 text-neutral-300" />
           <span>Speak With Our Jewellery Team</span>

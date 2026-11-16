@@ -103,14 +103,14 @@ export const EditorialGrid: React.FC<EditorialGridProps> = ({
   };
 
   return (
-    <section className="bg-white py-20 sm:py-28 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto w-full overflow-hidden select-none">
+    <section className="bg-white py-14 sm:py-28 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto w-full overflow-hidden select-none">
       {/* 2-Column Asymmetrical Editorial Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         
         {/* ========================================================== */}
         {/* LEFT COLUMN: Heading + Horizontal Card + Micro-caption     */}
         {/* ========================================================== */}
-        <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-12 lg:space-y-20">
+        <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-8 sm:space-y-12 lg:space-y-20">
           
           {/* Top Left Title Block */}
           <motion.div

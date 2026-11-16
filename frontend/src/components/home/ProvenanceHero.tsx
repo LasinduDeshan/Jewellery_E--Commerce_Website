@@ -203,12 +203,12 @@ export function ProvenanceHero() {
               {currentVideo.description}
             </p>
 
-            {/* 3 Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto">
               {/* Button 1: Explore Collection */}
               <button
                 onClick={scrollToShop}
-                className="px-7 py-3.5 rounded-full bg-white hover:bg-neutral-200 text-black font-semibold text-xs transition-all duration-300 shadow-2xl shadow-black/80 flex items-center gap-2 cursor-pointer group hover:scale-[1.02]"
+                className="w-full sm:w-auto px-6 sm:px-7 py-3.5 rounded-full bg-white hover:bg-neutral-200 text-black font-semibold text-xs transition-all duration-300 shadow-2xl shadow-black/80 flex items-center justify-center gap-2 cursor-pointer group hover:scale-[1.02]"
               >
                 <span>Explore Collection</span>
                 <ArrowDown className="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform" />
@@ -217,7 +217,7 @@ export function ProvenanceHero() {
               {/* Button 2: Design Bespoke Piece */}
               <Link
                 href="/customize"
-                className="px-7 py-3.5 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/30 hover:border-white/60 font-semibold text-xs transition-all backdrop-blur-md flex items-center gap-2 shadow-2xl hover:scale-[1.02]"
+                className="w-full sm:w-auto px-6 sm:px-7 py-3.5 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/30 hover:border-white/60 font-semibold text-xs transition-all backdrop-blur-md flex items-center justify-center gap-2 shadow-2xl hover:scale-[1.02]"
               >
                 <span>Design Bespoke Piece</span>
               </Link>

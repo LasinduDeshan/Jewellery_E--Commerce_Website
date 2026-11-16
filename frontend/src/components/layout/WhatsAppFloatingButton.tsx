@@ -20,7 +20,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
   if (pathname?.startsWith('/admin')) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex items-end gap-3 select-none">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex items-end gap-3 select-none">
       {/* Reassurance Trust Tooltip */}
       {showTooltip && (
         <div className="hidden sm:flex items-center gap-2.5 bg-white text-neutral-800 text-xs px-4 py-2.5 rounded-2xl shadow-2xl border border-neutral-200/90 max-w-xs animate-in fade-in slide-in-from-bottom-2 duration-300">

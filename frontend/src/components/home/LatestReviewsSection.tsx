@@ -159,6 +159,23 @@ export function LatestReviewsSection() {
     fetchLatestApprovedReviews();
   }, []);
 
+  const [cardStep, setCardStep] = useState(364);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window !== 'undefined') {
+        if (window.innerWidth < 640) {
+          setCardStep(Math.min(340, window.innerWidth - 64) + 24);
+        } else {
+          setCardStep(364);
+        }
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const totalReviews = reviews.length;
   const maxIndex = Math.max(0, totalReviews - 1);
 
@@ -275,13 +292,13 @@ export function LatestReviewsSection() {
             <div
               className="flex gap-6 transition-transform duration-500 ease-out"
               style={{
-                transform: `translateX(-${currentIndex * 340}px)`,
+                transform: `translateX(-${currentIndex * cardStep}px)`,
               }}
             >
               {reviews.map((rev) => (
                 <div
                   key={rev._id}
-                  className="w-[300px] sm:w-[330px] md:w-[340px] shrink-0 flex flex-col"
+                  className="w-[calc(100vw-64px)] max-w-[340px] shrink-0 flex flex-col"
                 >
                   {/* SPEECH BUBBLE CARD */}
                   <div className="relative bg-white rounded-2xl p-6 sm:p-7 border border-neutral-100 shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-shadow duration-300 min-h-[220px] sm:min-h-[230px] flex flex-col justify-between">

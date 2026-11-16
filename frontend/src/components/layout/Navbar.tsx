@@ -967,7 +967,7 @@ export const Navbar: React.FC = () => {
                     className="flex items-center gap-2.5 px-4 py-2 hover:bg-neutral-50 text-xs text-neutral-800 font-medium transition-colors"
                   >
                     <User className="w-3.5 h-3.5 text-neutral-900" />
-                    <span>Client Portal & Profile</span>
+                    <span>Client Profile</span>
                   </Link>
 
                   <Link
@@ -1013,7 +1013,7 @@ export const Navbar: React.FC = () => {
             ) : (
               <>
                 <div className="px-4 py-2.5 border-b border-neutral-100">
-                  <p className="font-bold text-xs text-neutral-900">Zeyloraa Portal</p>
+                  <p className="font-bold text-xs text-neutral-900">Zeyloraa</p>
                   <p className="text-[10px] text-neutral-500">Access saved designs & track orders</p>
                 </div>
 
@@ -1167,7 +1167,7 @@ export const Navbar: React.FC = () => {
                     onClick={closeAll}
                     className="text-[10px] font-bold text-black px-2.5 py-1 bg-white rounded-lg border border-neutral-200 hover:border-black shrink-0 transition-colors"
                   >
-                    Portal
+                    Profile
                   </Link>
                 </div>
               )}
@@ -1378,7 +1378,7 @@ export const Navbar: React.FC = () => {
                   onClick={closeAll}
                   className="block py-2.5 text-xs font-medium text-neutral-600 border-b border-neutral-100 hover:text-black"
                 >
-                  Client Portal & Profile
+                  Client Profile
                 </Link>
               </div>
             </div>
