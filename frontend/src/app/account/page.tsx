@@ -429,9 +429,114 @@ function AccountPageContent() {
       </div>
 
       {/* Account Workspace Grid */}
-      <div className="max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Navigation Sidebar */}
-        <aside className="lg:col-span-3 space-y-3">
+      <div className="max-w-7xl w-full mx-auto p-3 sm:p-6 lg:p-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8">
+        
+        {/* Mobile Horizontal Tab Navigation (Sleek, Scrollable & Immediate Access) */}
+        <div className="lg:hidden col-span-1 -mt-1 mb-1">
+          <div className="bg-white rounded-2xl border border-neutral-200/90 p-2 shadow-2xs">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-0.5 scroll-smooth">
+              <button
+                onClick={() => handleTabChange('overview')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                  activeTab === 'overview'
+                    ? 'bg-black text-white shadow-xs'
+                    : 'bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200/60'
+                }`}
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>My Profile</span>
+              </button>
+
+              <button
+                onClick={() => handleTabChange('orders')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                  activeTab === 'orders'
+                    ? 'bg-black text-white shadow-xs'
+                    : 'bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200/60'
+                }`}
+              >
+                <Package className="w-3.5 h-3.5" />
+                <span>Orders</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                  activeTab === 'orders' ? 'bg-neutral-800 text-white' : 'bg-neutral-200 text-neutral-700'
+                }`}>
+                  {orders.length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => handleTabChange('wishlist')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                  activeTab === 'wishlist'
+                    ? 'bg-black text-white shadow-xs'
+                    : 'bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200/60'
+                }`}
+              >
+                <Heart className="w-3.5 h-3.5" />
+                <span>Wishlist</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                  activeTab === 'wishlist' ? 'bg-neutral-800 text-white' : 'bg-neutral-200 text-neutral-700'
+                }`}>
+                  {wishlist.length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => handleTabChange('addresses')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                  activeTab === 'addresses'
+                    ? 'bg-black text-white shadow-xs'
+                    : 'bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200/60'
+                }`}
+              >
+                <MapPin className="w-3.5 h-3.5" />
+                <span>Addresses</span>
+              </button>
+
+              <button
+                onClick={() => handleTabChange('custom_quotes')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                  activeTab === 'custom_quotes'
+                    ? 'bg-black text-white shadow-xs'
+                    : 'bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200/60'
+                }`}
+              >
+                <Gem className="w-3.5 h-3.5" />
+                <span>Quotes</span>
+                {customQuotes.length > 0 && (
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                    activeTab === 'custom_quotes' ? 'bg-neutral-800 text-white' : 'bg-neutral-200 text-neutral-800'
+                  }`}>
+                    {customQuotes.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => handleTabChange('security')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+                  activeTab === 'security'
+                    ? 'bg-black text-white shadow-xs'
+                    : 'bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200/60'
+                }`}
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                <span>Security</span>
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 text-red-500 bg-red-50/70 hover:bg-red-100 border border-red-200/50 transition-colors cursor-pointer shrink-0"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Left Navigation Sidebar (Hidden on Mobile) */}
+        <aside className="hidden lg:block lg:col-span-3 space-y-3">
           <div className="bg-white rounded-2xl border border-neutral-200/90 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-3 space-y-1">
             <button
               onClick={() => handleTabChange('overview')}
@@ -581,46 +686,46 @@ function AccountPageContent() {
               )}
 
               {/* ================= CARD 1: AVATAR & CLIENT IDENTITY ================= */}
-              <div className="bg-white rounded-2xl border border-neutral-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] p-6 sm:p-7 space-y-5">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-5">
+              <div className="bg-white rounded-2xl border border-neutral-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] p-4 sm:p-7 space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3.5 sm:gap-4">
+                  <div className="flex items-center gap-3.5 sm:gap-5 min-w-0">
                     {/* Avatar Circle with image or luxury monogram */}
                     <div
                       className="relative group cursor-pointer shrink-0"
                       onClick={() => setIsEditingAvatar(!isEditingAvatar)}
                       title="Click to change avatar image"
                     >
-                      <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-black border-2 border-neutral-800 shadow-md flex items-center justify-center">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-black border-2 border-neutral-800 shadow-md flex items-center justify-center">
                         {user?.avatar ? (
                           <img src={user.avatar} alt={user?.name || 'Client Avatar'} className="w-full h-full object-cover" />
                         ) : (
-                          <span className="text-white font-serif text-2xl font-semibold">
+                          <span className="text-white font-serif text-xl sm:text-2xl font-semibold">
                             {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                           </span>
                         )}
                       </div>
                       {/* Hover overlay with Camera icon */}
                       <div className="absolute inset-0 rounded-full bg-black/50 text-white flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Camera className="w-4 h-4" />
-                        <span className="text-[9px] font-semibold mt-0.5">Change</span>
+                        <Camera className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <span className="text-[8px] sm:text-[9px] font-semibold mt-0.5">Change</span>
                       </div>
                     </div>
 
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-lg sm:text-xl font-serif font-semibold text-neutral-900">
+                    <div className="space-y-1 min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                        <h3 className="text-base sm:text-xl font-serif font-semibold text-neutral-900 truncate">
                           {user?.name || 'Client'}
                         </h3>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-neutral-100 text-neutral-800 border border-neutral-200">
+                        <span className="px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-semibold bg-neutral-100 text-neutral-800 border border-neutral-200 shrink-0">
                           {user?.role === 'admin' ? 'Atelier Director' : 'VIP Private Client'}
                         </span>
                       </div>
                       {user?.bio && (
-                        <p className="text-xs text-neutral-600 font-medium">
+                        <p className="text-xs text-neutral-600 font-medium line-clamp-2">
                           {user.bio}
                         </p>
                       )}
-                      <p className="text-xs text-neutral-400">
+                      <p className="text-[11px] sm:text-xs text-neutral-400 truncate">
                         {savedAddressesList[0]?.city
                           ? `${savedAddressesList[0].city}${savedAddressesList[0].country ? `, ${savedAddressesList[0].country}` : ''}`
                           : 'Location not set'}
@@ -631,10 +736,10 @@ function AccountPageContent() {
                   {/* Edit Button */}
                   <button
                     onClick={() => setIsEditingAvatar(!isEditingAvatar)}
-                    className="px-3.5 py-1.5 rounded-full border border-neutral-200 hover:border-neutral-900 bg-white hover:bg-neutral-50 text-neutral-700 hover:text-black text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                    className="self-end sm:self-start px-3.5 py-1.5 rounded-full border border-neutral-200 hover:border-neutral-900 bg-white hover:bg-neutral-50 text-neutral-700 hover:text-black text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs shrink-0"
                   >
                     <Edit2 className="w-3 h-3" />
-                    <span>{isEditingAvatar ? 'Close' : 'Edit'}</span>
+                    <span>{isEditingAvatar ? 'Close' : 'Edit Profile'}</span>
                   </button>
                 </div>
 
@@ -1489,6 +1594,26 @@ function AccountPageContent() {
               </form>
             </div>
           )}
+
+          {/* Mobile Concierge Support (Rendered at bottom of active tab content on mobile) */}
+          <div className="lg:hidden mt-8 bg-white border border-neutral-200/90 rounded-2xl p-4 text-xs text-neutral-800 space-y-2.5 shadow-2xs">
+            <div className="flex items-center gap-2 font-semibold text-neutral-900">
+              <MessageCircle className="w-4 h-4 text-neutral-700" />
+              <span>Dedicated Concierge</span>
+            </div>
+            <p className="text-neutral-600 text-[11px] leading-relaxed">
+              Questions regarding international customs, duty estimates, or resizing? Chat directly with our team.
+            </p>
+            <a
+              href="https://wa.me/94771234567"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-900 hover:underline"
+            >
+              <span>WhatsApp +94 77 123 4567</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
         </div>
       </div>
 
@@ -1509,7 +1634,7 @@ function AccountPageContent() {
             </div>
 
             <form onSubmit={handleSaveAddress} className="space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-semibold text-neutral-700 mb-1">Address Label</label>
                   <input
@@ -1558,7 +1683,7 @@ function AccountPageContent() {
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block font-semibold text-neutral-700 mb-1">City / Suburb</label>
                   <input
@@ -1603,7 +1728,7 @@ function AccountPageContent() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-semibold text-neutral-700 mb-1">Country</label>
                   <input
